@@ -1,0 +1,23 @@
+exporters:
+  logging:
+    logLevel: debug
+  
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+processors:
+  batch:
+  resource:
+    attributes:
+      - key: application
+        value: "Application Name"
+        action: insert
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp] 
+      processors: [batch, resource]
+      exporters: [logging]
