@@ -15,11 +15,15 @@
  */
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import {
+  BatchSpanProcessor,
+  SpanExporter,
+} from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
-import {_configDefaultOptions, Options} from "./options";
+import { _configDefaultOptions, Options } from './options';
 
 export function init(userOptions: Options) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
@@ -27,35 +31,29 @@ export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
-    diag.error('FSO default options is not properly configured.')
+    diag.error('FSO default options is not properly configured.');
     return;
   }
 
+  const provider = new NodeTracerProvider();
+  provider.addSpanProcessor(
+    new BatchSpanProcessor(createDefaultExporter(options))
+  );
+  provider.register();
+
+  registerInstrumentations({
+    tracerProvider: provider,
+    instrumentations: getNodeAutoInstrumentations(),
+  });
+}
+
+function createDefaultExporter(options: Options): SpanExporter {
   const metadata = new grpc.Metadata();
-  metadata.set('X-Epsagon-Token', options.FSOToken);
+  metadata.set('X-FSO-Token', options.FSOToken);
 
   const collectorOptions = {
     url: options.FSOEndpoint,
   };
 
-  // create trace provider
-  const provider = new NodeTracerProvider();
-
-  // option to create console exporter
-
-  // create grpc otlp exporter
-  const traceExporter = new OTLPTraceExporter(collectorOptions);
-
-  // put exported inside bacth processor
-  // put batch processor inside provider
-  provider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
-
-  // register the provider
-  provider.register();
-
-  registerInstrumentations({
-    tracerProvider: provider,
-    instrumentations: [
-    ],
-  });
+  return new OTLPTraceExporter(collectorOptions);
 }
