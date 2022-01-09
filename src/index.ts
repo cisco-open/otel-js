@@ -13,5 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * as opentelemetry from '@opentelemetry/api';
-export * as epsagon from './tracing';
+export * as fso from './tracing';

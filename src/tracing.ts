@@ -17,51 +17,45 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
+import {_configDefaultOptions, Options} from "./options";
 
-export function init(_configData: any) {
-  const configData = _configData;
+export function init(userOptions: Options) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
+  const options = _configDefaultOptions(userOptions);
+
+  if (!options) {
+    diag.error('FSO default options is not properly configured.')
+    return;
+  }
+
   const metadata = new grpc.Metadata();
-  // For instance, an API key or access token might go here.
-  metadata.set('X-Epsagon-Token', configData.token);
+  metadata.set('X-Epsagon-Token', options.FSOToken);
 
   const collectorOptions = {
-    //serviceName: configData.appName || 'DEFAULT APPLICATION NAME',
-    url: configData.collectorURL,
-    // credentials: grpc.credentials.createSsl(),
-    // metadata,
-    // headers: {
-    //   'X-Epsagon-Token': `${configData.token}`,
-    // },
+    url: options.FSOEndpoint,
   };
-  diag.info('configData: ', configData);
 
-  //create trace provider
+  // create trace provider
   const provider = new NodeTracerProvider();
 
-  //option to create console exporter
-  //const consoleExporter = new opentelemetry.tracing.ConsoleSpanExporter();
+  // option to create console exporter
 
-  //create grpc otlp exporter
+  // create grpc otlp exporter
   const traceExporter = new OTLPTraceExporter(collectorOptions);
 
-  //put exported inside bacth processor
-  //put batch processor inside provider
+  // put exported inside bacth processor
+  // put batch processor inside provider
   provider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
-  //register the provider
-  provider.register(); //optinally supply contextManager and propagator
+  // register the provider
+  provider.register();
 
   registerInstrumentations({
-    tracerProvider: provider, // optional, only if global TracerProvider shouldn't be used
-    //meterProvider: meterProvider, // optional, only if global MeterProvider shouldn't be used
+    tracerProvider: provider,
     instrumentations: [
-      // getNodeAutoInstrumentations(),
-      new HttpInstrumentation(),
     ],
   });
 }
