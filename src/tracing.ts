@@ -53,6 +53,7 @@ function createDefaultExporter(options: Options): SpanExporter {
 
   const collectorOptions = {
     url: options.FSOEndpoint,
+    metadata
   };
 
   return new OTLPTraceExporter(collectorOptions);

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { epsagon } from '../src';
+import { fso, Options } from '../src';
 
-epsagon.init({
-  appName: 'my-app-name',
-  token: 'sometoken',
-  collectorURL: 'http://localhost:4317',
-});
+const userOptions: Options = { 
+  FSOEndpoint: 'http://localhost:4317',
+  serviceName: 'my-app-name',
+  FSOToken: 'sometoken',
+}
+
+fso.init(userOptions);
 
 const express = require('express');
 
