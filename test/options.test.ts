@@ -58,4 +58,18 @@ describe('Options tests', () => {
       sinon.assert.calledOnce(logger.error);
     });
   });
+
+  describe('user Options configuration', () => {
+    it('should assign properly the user default configuration and not override', function () {
+      const userOptions = <Options> {
+        FSOToken: 'SomeToken',
+        FSOEndpoint: 'Not the default Endpoint',
+        serviceName: 'Not the default service name',
+      }
+      const options = _configDefaultOptions(userOptions)
+      assert.ok(options);
+      assert.deepStrictEqual(options, userOptions);
+      sinon.assert.neverCalledWith(logger.error);
+    });
+  })
 });
