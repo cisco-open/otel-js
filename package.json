@@ -11,7 +11,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "lint": "eslint . --ext .ts",
         "lint:commits": "commitlint",
-        "build": "tsc -p . && node build/test/app.js",
+        "build": "tsc -p . && node build/test/app.js"
     },
     "dependencies": {
         "@opentelemetry/api": "^1.0.4",
