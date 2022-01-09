@@ -10,27 +10,34 @@
     "scripts": {
         "lint:fix": "eslint . --ext .ts --fix",
         "lint": "eslint . --ext .ts",
-        "lint:commits": "commitlint"
+        "lint:commits": "commitlint",
+        "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
+        "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p ."
     },
     "dependencies": {
         "@opentelemetry/api": "^1.0.4",
         "@opentelemetry/auto-instrumentations-node": "^0.27.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
         "@opentelemetry/sdk-node": "^0.27.0",
-        "@opentelemetry/sdk-trace-node": "^0.27.0",
-        "@opentelemetry/sdk-trace-base": "^0.27.0",
+        "@opentelemetry/sdk-trace-node": "~1.0.0",
+        "@opentelemetry/sdk-trace-base": "~1.0.0",
         "@opentelemetry/instrumentation": "^0.27.0",
         "@opentelemetry/instrumentation-http": "^0.27.0",
         "express": "^4.17.2"
     },
     "devDependencies": {
+        "@types/mocha": "9.0.0",
+        "@types/sinon": "^10.0.2",
         "typescript": "4.4.4",
         "@typescript-eslint/eslint-plugin": "^5.3.0",
         "@typescript-eslint/parser": "^5.3.0",
         "eslint-plugin-prettier": "^4.0.0",
         "prettier": ">=2.3.2",
+        "sinon": "^11.1.2",
         "gts": "3.1.0",
         "eslint": "^8.1.0",
+        "ts-mocha": "8.0.0",
+        "mocha": "^8.4.0",
         "eslint-plugin-header": "^3.1.1",
         "eslint-plugin-node": "^11.1.0"
     }
