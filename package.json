@@ -7,11 +7,31 @@
     "main": "build/src/index.js",
     "types": "build/src/index.d.ts",
     "repository": "epsagon/otel-js",
+    "scripts": {
+        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint . --ext .ts",
+        "lint:commits": "commitlint"
+    },
     "dependencies": {
         "@opentelemetry/api": "^1.0.4",
         "@opentelemetry/auto-instrumentations-node": "^0.27.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
         "@opentelemetry/sdk-node": "^0.27.0",
+        "@opentelemetry/sdk-trace-node": "^0.27.0",
+        "@opentelemetry/sdk-trace-base": "^0.27.0",
+        "@opentelemetry/instrumentation": "^0.27.0",
+        "@opentelemetry/instrumentation-http": "^0.27.0",
         "express": "^4.17.2"
+    },
+    "devDependencies": {
+        "typescript": "4.4.4",
+        "@typescript-eslint/eslint-plugin": "^5.3.0",
+        "@typescript-eslint/parser": "^5.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "prettier": ">=2.3.2",
+        "gts": "3.1.0",
+        "eslint": "^8.1.0",
+        "eslint-plugin-header": "^3.1.1",
+        "eslint-plugin-node": "^11.1.0"
     }
 }
