@@ -1,4 +1,11 @@
-require('../src/tracing.ts')
+import {epsagon} from '../src';
+
+epsagon.init({
+  appName: 'my-app-name',
+  token: 'sometoken',
+  collectorURL: 'http://localhost:4317'
+})
+
 const express = require("express");
 
 const PORT = process.env.PORT || "8081";
