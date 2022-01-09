@@ -36,7 +36,7 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   }
 
   options.FSOEndpoint =
-    options.FSOToken || process.env.FSO_ENDPOINT || 'http://localhost:4713';
+    options.FSOEndpoint || process.env.FSO_ENDPOINT || 'http://localhost:4713';
 
   options.serviceName =
     options.serviceName || process.env.SERVICE_NAME || 'application';
