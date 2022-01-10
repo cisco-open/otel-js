@@ -31,7 +31,7 @@ export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
-    diag.error('FSO default options is not properly configured.');
+    diag.error('FSO default options are not properly configured.');
     return;
   }
 
@@ -53,7 +53,7 @@ function createDefaultExporter(options: Options): SpanExporter {
 
   const collectorOptions = {
     url: options.FSOEndpoint,
-    metadata
+    metadata,
   };
 
   return new OTLPTraceExporter(collectorOptions);

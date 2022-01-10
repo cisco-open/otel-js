@@ -15,11 +15,11 @@
  */
 import { fso, Options } from '../src';
 
-const userOptions: Options = { 
+const userOptions: Options = {
   FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
-}
+};
 
 fso.init(userOptions);
 
