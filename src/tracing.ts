@@ -40,10 +40,10 @@ export function init(userOptions: Options) {
   }
 
   const resource = new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'fso-application',
+    [SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
   });
 
-  const provider = new NodeTracerProvider({ resource: resource });
+  const provider = new NodeTracerProvider({ resource });
   provider.addSpanProcessor(
     new BatchSpanProcessor(createDefaultExporter(options))
   );
