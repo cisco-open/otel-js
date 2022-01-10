@@ -24,6 +24,10 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
+// eslint-disable-next-line node/no-unpublished-import
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+// eslint-disable-next-line node/no-unpublished-import
+import { Resource } from '@opentelemetry/resources';
 
 export function init(userOptions: Options) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
@@ -35,7 +39,11 @@ export function init(userOptions: Options) {
     return;
   }
 
-  const provider = new NodeTracerProvider();
+  const resource = new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: 'fso-application',
+  });
+
+  const provider = new NodeTracerProvider({ resource: resource });
   provider.addSpanProcessor(
     new BatchSpanProcessor(createDefaultExporter(options))
   );
