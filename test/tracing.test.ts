@@ -17,46 +17,34 @@
 import * as assert from 'assert';
 // eslint-disable-next-line node/no-unpublished-import
 import * as sinon from 'sinon';
-import {
-  BatchSpanProcessor,
-  // SimpleSpanProcessor,
-  // ConsoleSpanExporter,
-  // InMemorySpanExporter,
-} from '@opentelemetry/sdk-trace-base';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { diag } from '@opentelemetry/api';
+import { fso, Options } from '../src';
 
-import { epsagon } from '../src';
-// import * as utils from '../utils';
-
-describe('tracing:otlp', () => {
+describe('Tracing test', () => {
   let addSpanProcessorMock;
+  const createLoggerStub = sinon.fake();
 
-  // before(() => {
-  //   addSpanProcessorMock = sinon.stub(
-  //     NodeTracerProvider.prototype,
-  //     'addSpanProcessor'
-  //   );
-  // });
+  beforeEach(() => {
+    addSpanProcessorMock = sinon.stub(
+      NodeTracerProvider.prototype,
+      'addSpanProcessor'
+    );
+    diag.setLogger = createLoggerStub;
+  });
 
-  // beforeEach(() => {
-  //   utils.cleanEnvironment();
-  //   addSpanProcessorMock.reset();
-  // });
-
-  // after(() => {
-  //   addSpanProcessorMock.restore();
-  // });
+  afterEach(() => {
+    addSpanProcessorMock.restore();
+    createLoggerStub.resetHistory();
+  });
 
   function assertTracingPipeline(
     exportURL: string,
     serviceName: string,
     accessToken?: string
   ) {
-    console.log('exportURL: ', exportURL);
-    console.log('serviceName: ', serviceName);
-    console.log('accessToken: ', accessToken);
-
     sinon.assert.calledOnce(addSpanProcessorMock);
     const processor = addSpanProcessorMock.getCall(0).args[0];
 
@@ -68,73 +56,27 @@ describe('tracing:otlp', () => {
 
     if (accessToken) {
       // gRPC not yet supported in ingest
-      assert.equal(exporter?.metadata?.get('x-epsagon-token'), accessToken);
+      assert.equal(exporter?.metadata?.get('X-FSO-Token'), accessToken);
     }
   }
 
   it('setups tracing with custom options', () => {
-    addSpanProcessorMock = sinon.stub(
-      NodeTracerProvider.prototype,
-      'addSpanProcessor'
-    );
-
-    epsagon.init({
-      appName: 'my-app-name',
-      token: 'epsagon-token',
-      collectorURL: 'http://localhost:4317',
-    });
-    assertTracingPipeline('localhost:4317', 'my-app-name', 'epsagon-token');
+    const userOptions: Options = {
+      FSOEndpoint: 'http://localhost:4317',
+      serviceName: 'my-app-name',
+      FSOToken: 'fso-token',
+    };
+    fso.init(userOptions);
+    assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
   });
 
-  // it('setups tracing with custom options', () => {
-  //   const endpoint = 'custom-endpoint:1111';
-  //   const serviceName = 'test-node-service';
-  //   const accessToken = '1234';
-  //   startTracing({
-  //     endpoint,
-  //     serviceName,
-  //     accessToken,
-  //   });
-  //   assertTracingPipeline(endpoint, serviceName, accessToken);
-  //   stopTracing();
-  // });
-
-  // it('setups tracing with custom options from env', () => {
-  //   const url = 'url-from-env:3030';
-  //   const serviceName = 'env-service';
-  //   const accessToken = 'zxcvb';
-
-  //   process.env.OTEL_EXPORTER_OTLP_ENDPOINT = url;
-  //   process.env.OTEL_SERVICE_NAME = serviceName;
-  //   process.env.SPLUNK_ACCESS_TOKEN = accessToken;
-
-  //   startTracing();
-  //   assertTracingPipeline(url, serviceName, accessToken);
-  //   stopTracing();
-  // });
-
-  // it('setups tracing with multiple processors', () => {
-  //   startTracing({
-  //     spanProcessorFactory: function (options) {
-  //       return [
-  //         new SimpleSpanProcessor(new ConsoleSpanExporter()),
-  //         new BatchSpanProcessor(new InMemorySpanExporter()),
-  //       ];
-  //     },
-  //   });
-
-  //   sinon.assert.calledTwice(addSpanProcessorMock);
-  //   const p1 = addSpanProcessorMock.getCall(0).args[0];
-
-  //   assert(p1 instanceof SimpleSpanProcessor);
-  //   const exp1 = p1['_exporter'];
-  //   assert(exp1 instanceof ConsoleSpanExporter);
-
-  //   const p2 = addSpanProcessorMock.getCall(1).args[0];
-  //   assert(p2 instanceof BatchSpanProcessor);
-  //   const exp2 = p2['_exporter'];
-  //   assert(exp2 instanceof InMemorySpanExporter);
-
-  //   stopTracing();
-  // });
+  it('setups tracing with defaults', () => {
+    const userOptions: Options = {
+      FSOEndpoint: '',
+      serviceName: '',
+      FSOToken: '',
+    };
+    fso.init(userOptions);
+    sinon.assert.notCalled(addSpanProcessorMock);
+  });
 });
