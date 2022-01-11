@@ -76,6 +76,10 @@ describe('Tracing test', () => {
       serviceName: '',
       FSOToken: '',
     };
+    process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
+    process.env.SERVICE_NAME = userOptions.serviceName;
+    process.env.FSO_TOKEN = userOptions.FSOToken;
+
     fso.init(userOptions);
     sinon.assert.notCalled(addSpanProcessorMock);
   });
