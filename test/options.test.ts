@@ -16,6 +16,7 @@
 import { Options, _configDefaultOptions } from '../src/options';
 import * as utils from './utils';
 import * as assert from 'assert';
+// eslint-disable-next-line node/no-unpublished-import
 import * as sinon from 'sinon';
 import * as api from '@opentelemetry/api';
 
@@ -60,36 +61,36 @@ describe('Options tests', () => {
   });
 
   describe('user Options configuration', () => {
-    it('should assign properly the user default configuration and not override', function () {
-      const userOptions = <Options> {
+    it('should assign properly the user default configuration and not override', () => {
+      const userOptions = <Options>{
         FSOToken: 'SomeToken',
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
-      }
-      const options = _configDefaultOptions(userOptions)
+      };
+      const options = _configDefaultOptions(userOptions);
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
     });
-  })
+  });
 
   describe('user Options Env vars configuration', () => {
-    it('should assign properly the user default configuration and not override', function () {
-      const userOptions = <Options> {
+    it('should assign properly the user default configuration and not override', () => {
+      const userOptions = <Options>{
         FSOToken: 'SomeToken',
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
-      }
+      };
 
-      process.env.FSO_TOKEN = userOptions.FSOToken
-      process.env.FSO_ENDPOINT = userOptions.FSOEndpoint
-      process.env.SERVICE_NAME = userOptions.serviceName
+      process.env.FSO_TOKEN = userOptions.FSOToken;
+      process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
+      process.env.SERVICE_NAME = userOptions.serviceName;
 
-      const options = _configDefaultOptions(<Options>{})
+      const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
 
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
     });
-  })
+  });
 });

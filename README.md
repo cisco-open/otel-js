@@ -1,7 +1,9 @@
 # otel-js
+
 This package provides a Launcher for OpenTelemetry Node.js
 
 ## Usage
+
 ```javascript
 import { fso, Options } from '../src';
 
