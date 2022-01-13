@@ -31,3 +31,5 @@
         - name: Coverage
           if: matrix.container == 'node:14'
           run: npm run codecov
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
