@@ -29,4 +29,5 @@
         - name: Unit tests
           run: npm run test
         - name: Coverage
+          if: matrix.container == 'node:14'
           run: npm run codecov
