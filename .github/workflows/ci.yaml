@@ -26,7 +26,7 @@
             key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
-        - name: Boostrap Dependencies
-          run: npx lerna bootstrap --no-ci
         - name: Unit tests
-          run: npm run test -- --coverage
+          run: npm run test
+        - name: Coverage
+          run: npm run codecov
