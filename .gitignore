@@ -3,3 +3,4 @@ build/
 .vscode
 .idea/
 .nyc_output/
+coverage/
