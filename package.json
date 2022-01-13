@@ -29,6 +29,7 @@
         "nyc": "^15.1.0"
     },
     "devDependencies": {
+        "codecov": "3.7.2",
         "@opentelemetry/resources": "^1.0.1",
         "@opentelemetry/semantic-conventions": "^1.0.1",
         "@commitlint/cli": "13.1.0",
