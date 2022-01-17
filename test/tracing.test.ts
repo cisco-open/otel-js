@@ -15,7 +15,6 @@
  */
 
 import * as assert from 'assert';
-// eslint-disable-next-line node/no-unpublished-import
 import * as sinon from 'sinon';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
