@@ -26,7 +26,6 @@
         "LICENSE",
         "README.md"
     ],
-
     "dependencies": {
         "@opentelemetry/api": "^1.0.4",
         "@opentelemetry/auto-instrumentations-node": "^0.27.1",
