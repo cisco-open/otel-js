@@ -47,7 +47,7 @@ To test the launcher:
 3. Run from the root:
 
       ```sh
-      node build/test/app.js
+      node lib/test/app.js
       ```
 
 4. Go to <http://localhost:8081/> and verify you see "Hello World"

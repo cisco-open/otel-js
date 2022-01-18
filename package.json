@@ -2,11 +2,15 @@
     "name": "cisco-opentelemetry-node",
     "version": "1.0.0",
     "description": "Epsagon Instrumentation for Node.js",
-    "author": "Epsagon Team <support@epsagon.com>",
+    "author": "Cisco Epsagon Team <support@epsagon.com>",
     "license": "MIT",
-    "main": "build/src/index.js",
-    "types": "build/src/index.d.ts",
-    "repository": "epsagon/otel-js",
+    "main": "lib/src/index.js",
+    "types": "lib/src/index.d.ts",
+    "homepage": "https://github.com/epsagon/otel-js#readme",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/epsagon/otel-js.git"
+    },
     "scripts": {
         "prepare": "husky install",
         "lint:fix": "eslint . --ext .ts,.js --fix",
@@ -19,9 +23,9 @@
     "files": [
         "index.js",
         "bin/*.js",
-        "lib/**/*.js",
-        "lib/**/*.js.map",
-        "lib/**/*.d.ts",
+        "lib/src/*.js",
+        "lib/src/*.js.map",
+        "lib/src/*.d.ts",
         "doc",
         "LICENSE",
         "README.md"
