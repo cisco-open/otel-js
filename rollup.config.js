@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import copy from 'rollup-plugin-copy';
-import eslint from '@rollup/plugin-eslint';
-import { terser } from 'rollup-plugin-terser';
+const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
+const copy = require('rollup-plugin-copy');
+const eslint = require('@rollup/plugin-eslint');
+const { terser } = require('rollup-plugin-terser');
 
 module.exports = {
   input: 'build/src/index.js',
