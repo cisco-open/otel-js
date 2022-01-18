@@ -16,7 +16,6 @@
 import { Options, _configDefaultOptions } from '../src/options';
 import * as utils from './utils';
 import * as assert from 'assert';
-// eslint-disable-next-line node/no-unpublished-import
 import * as sinon from 'sinon';
 import * as api from '@opentelemetry/api';
 

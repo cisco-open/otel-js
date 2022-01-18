@@ -24,9 +24,7 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
-// eslint-disable-next-line node/no-unpublished-import
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-// eslint-disable-next-line node/no-unpublished-import
 import { Resource } from '@opentelemetry/resources';
 
 export function init(userOptions: Options) {
