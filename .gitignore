@@ -1,6 +1,5 @@
 node_modules/
 build/
-dist/
 .vscode
 .idea/
 .nyc_output/
