@@ -1,11 +1,37 @@
 # otel-js
 
-This package provides a Launcher for OpenTelemetry Node.js
+An Aplha version
+
+This package provides a Cisco Launcher for OpenTelemetry Node.js
+
+## Installation
+
+To install Cisco launcher for OpenTelemtry simply run:
+
+```sh
+npm install cisco-opentelemetry-node
+```
 
 ## Usage
 
+### javascript
+
 ```javascript
-import { fso, Options } from '../src';
+const { fso, Options } = require('cisco-opentelemetry-node');
+
+const userOptions = {
+  FSOEndpoint: 'http://localhost:4317',
+  serviceName: 'my-app-name',
+  FSOToken: 'fso-token',
+}
+
+fso.init(userOptions);
+```
+
+### typescript
+
+```javascript
+import { fso, Options } from 'cisco-opentelemetry-node';
 
 const userOptions: Options = {
   FSOEndpoint: 'http://localhost:4317',
@@ -23,7 +49,7 @@ Advanced options can be configured as a parameter to the init() method:
 |-------------------|-------|-------------------------|---------------------|
 |FSOEndpoint        |String | `http://localhost:4713` | The address of the trace collector to send traces to |
 |serviceName        |String | `application`           | Application name that will be set for traces         |
-|FSOToken           |String | -                       | Epsagon account token                                |
+|FSOToken           |String | -                       | Cisco account token                                |
 
 To test the launcher:
 
