@@ -14,6 +14,8 @@ npm install cisco-opentelemetry-node
 
 ## Usage
 
+### javascript
+
 ```javascript
 const { fso, Options } = require('cisco-opentelemetry-node');
 
@@ -23,6 +25,19 @@ const userOptions = {
   FSOToken: 'fso-token',
 }
 
+fso.init(userOptions);
+```
+
+### typescript
+
+```javascript
+import { fso, Options } from 'cisco-opentelemetry-node';
+
+const userOptions: Options = {
+  FSOEndpoint: 'http://localhost:4317',
+  serviceName: 'my-app-name',
+  FSOToken: 'sometoken',
+};
 fso.init(userOptions);
 ```
 
