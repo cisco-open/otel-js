@@ -1,5 +1,7 @@
 # otel-js
 
+An Aplha version
+
 This package provides a Cisco Launcher for OpenTelemetry Node.js
 
 ## Installation
