@@ -36,8 +36,8 @@ app.get('/shalom', (req, res) => {
   res.send('Shalom World!');
 });
 
-app.get('/aloha', (req, res) => {
-  res.send('Aloha World!');
+app.get('/shalom', (req, res) => {
+  res.send('Shalom World!');
 });
 
 app.listen(parseInt(PORT, 10), () => {
