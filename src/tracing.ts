@@ -26,6 +26,7 @@ import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
+import { getInstrumentations } from './instrumentatios';
 
 export function init(userOptions: Options) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
@@ -49,7 +50,7 @@ export function init(userOptions: Options) {
 
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: getNodeAutoInstrumentations(),
+    instrumentations: getInstrumentations(options),
   });
 }
 
