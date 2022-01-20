@@ -21,6 +21,9 @@
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
     "semantic-release": "semantic-release"
   },
+  "release": {
+    "branches": ["main"]
+  },
   "files": [
     "index.js",
     "bin/*.js",
