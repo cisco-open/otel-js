@@ -36,6 +36,10 @@ app.get('/shalom', (req, res) => {
   res.send('Shalom World!');
 });
 
+app.get('/aloha', (req, res) => {
+  res.send('Aloha World!');
+});
+
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`);
 });
