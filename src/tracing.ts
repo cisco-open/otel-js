@@ -21,6 +21,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
@@ -49,7 +50,7 @@ export function init(userOptions: Options) {
 
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: getNodeAutoInstrumentations(),
+    instrumentations: [getNodeAutoInstrumentations(), new AwsInstrumentation()],
   });
 }
 
