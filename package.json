@@ -22,7 +22,9 @@
     "semantic-release": "semantic-release"
   },
   "release": {
-    "branches": ["main"]
+    "branches": [
+      "main"
+    ]
   },
   "files": [
     "index.js",
@@ -39,6 +41,7 @@
     "@opentelemetry/auto-instrumentations-node": "^0.27.1",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
     "@opentelemetry/instrumentation": "^0.27.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.4.0",
     "@opentelemetry/instrumentation-http": "^0.27.0",
     "@opentelemetry/sdk-node": "^0.27.0",
     "@opentelemetry/sdk-trace-base": "~1.0.1",
