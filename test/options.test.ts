@@ -89,7 +89,7 @@ describe('Options tests', () => {
       process.env.FSO_TOKEN = userOptions.FSOToken;
       process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
       process.env.SERVICE_NAME = userOptions.serviceName;
-      process.env.FSO_DEBUG = userOptions.serviceName;
+      process.env.FSO_DEBUG = String(userOptions.debug);
 
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
