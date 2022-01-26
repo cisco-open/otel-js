@@ -19,6 +19,7 @@ export interface Options {
   FSOEndpoint: string;
   serviceName: string;
   FSOToken: string;
+  debug: boolean;
 }
 
 /**
@@ -38,8 +39,20 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   options.FSOEndpoint =
     options.FSOEndpoint || process.env.FSO_ENDPOINT || 'http://localhost:4713';
 
+  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
+
   options.serviceName =
     options.serviceName || process.env.SERVICE_NAME || 'application';
 
   return options;
+}
+
+function getEnvBoolean(key: string, defaultValue = true) {
+  const value = process.env[key];
+
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  return ['false'].indexOf(value.trim().toLowerCase()) < 0;
 }

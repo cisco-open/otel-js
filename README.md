@@ -45,11 +45,12 @@ fso.init(userOptions);
 
 Advanced options can be configured as a parameter to the init() method:
 
-|Parameter          |Type   |Default                  |Description          |
-|-------------------|-------|-------------------------|---------------------|
-|FSOEndpoint        |String | `http://localhost:4713` | The address of the trace collector to send traces to |
-|serviceName        |String | `application`           | Application name that will be set for traces         |
-|FSOToken           |String | -                       | Cisco account token                                |
+|Parameter          |Env          |Type   |Default                  |Description          |
+|-------------------|-------------|-------|-------------------------|---------------------|
+|FSOToken           |FSO_TOKEN    |string | -                       | Cisco account token                                |
+|FSOEndpoint        |FSO_ENDPOINT |string | `http://localhost:4713` | The address of the trace collector to send traces to |
+|serviceName        |SERVICE_NAME |string | `application`           | Application name that will be set for traces         |
+|debug              |FSO_DEBUG    |string | `false`                 | Debug logs                                |
 
 To test the launcher:
 

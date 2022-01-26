@@ -24,10 +24,12 @@ describe('Options tests', () => {
 
   beforeEach(() => {
     utils.cleanEnvironmentVariables();
+
     logger = {
       warn: sinon.spy(),
       error: sinon.spy(),
     };
+
     api.diag.setLogger(logger, api.DiagLogLevel.ALL);
     // Setting logger logs stuff. Cleaning that up.
     logger.warn.resetHistory();
@@ -48,6 +50,7 @@ describe('Options tests', () => {
         FSOToken: defaultToken,
         FSOEndpoint: 'http://localhost:4713',
         serviceName: 'application',
+        debug: false,
       });
       sinon.assert.neverCalledWith(logger.error);
     });
@@ -65,6 +68,7 @@ describe('Options tests', () => {
         FSOToken: 'SomeToken',
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
+        debug: true,
       };
       const options = _configDefaultOptions(userOptions);
       assert.ok(options);
@@ -79,11 +83,13 @@ describe('Options tests', () => {
         FSOToken: 'SomeToken',
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
+        debug: true,
       };
 
       process.env.FSO_TOKEN = userOptions.FSOToken;
       process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
       process.env.SERVICE_NAME = userOptions.serviceName;
+      process.env.FSO_DEBUG = String(userOptions.debug);
 
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);

@@ -20,22 +20,23 @@ import {
   SpanExporter,
 } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
+import { getInstrumentations } from './instrumentatios';
 
 export function init(userOptions: Options) {
-  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
     diag.error('FSO default options are not properly configured.');
     return;
+  }
+
+  if (options.debug) {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
   }
 
   const resource = new Resource({
@@ -46,11 +47,12 @@ export function init(userOptions: Options) {
   provider.addSpanProcessor(
     new BatchSpanProcessor(createDefaultExporter(options))
   );
+
   provider.register();
 
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: [getNodeAutoInstrumentations(), new AwsInstrumentation()],
+    instrumentations: getInstrumentations(options),
   });
 }
 
