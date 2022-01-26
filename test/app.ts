@@ -29,7 +29,15 @@ const PORT = process.env.PORT || '8081';
 const app = express();
 
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('Hello World!');
+});
+
+app.get('/shalom', (req, res) => {
+  res.send('Shalom World!');
+});
+
+app.get('/shalom', (req, res) => {
+  res.send('Shalom World!');
 });
 
 app.listen(parseInt(PORT, 10), () => {
