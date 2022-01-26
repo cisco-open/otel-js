@@ -8,8 +8,8 @@
     "types": "lib/src/index.d.ts",
     "homepage": "https://github.com/epsagon/otel-js#readme",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/epsagon/otel-js.git"
+        "type": "git",
+        "url": "https://github.com/epsagon/otel-js.git"
     },
     "scripts": {
         "prepare": "husky install",
@@ -17,7 +17,7 @@
         "lint": "eslint . --ext .ts",
         "lint:commits": "commitlint",
         "build": "tsc -p .",
-        "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
+        "test": "nyc ts-mocha -p tsconfig.json 'test/**/http.test.ts'",
         "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p ."
     },
     "files": [

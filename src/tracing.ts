@@ -28,6 +28,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentatios';
 
+
 export function init(userOptions: Options) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 

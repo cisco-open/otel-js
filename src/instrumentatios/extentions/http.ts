@@ -22,7 +22,7 @@ import {
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
 import {IncomingMessage, ServerResponse} from 'http';
-import { diag, isSpanContextValid } from '@opentelemetry/api';
+import { isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -77,7 +77,7 @@ function createHttpRequestHook(
         }
 
         if (request instanceof IncomingMessage) {
-            span.setAttribute('req_osher', 'is da milech')
+            // TODO: add attributes here
         }
     };
 }
@@ -94,6 +94,6 @@ function createHttpResponseHook (options: Options ): HttpResponseCustomAttribute
         if (!isSpanContextValid(spanContext)) {
             return;
         }
-        span.setAttribute("osher", "is the fucking king")
+        // TODO: add attributes here
     }
 }
