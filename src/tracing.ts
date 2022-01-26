@@ -25,7 +25,7 @@ import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
-import { getInstrumentations } from './instrumentatios';
+import { getInstrumentations } from './instrumentations';
 
 export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
