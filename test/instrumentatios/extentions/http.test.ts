@@ -16,7 +16,7 @@
 import * as utils from '../../utils';
 
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
-import { configureHttpInstrumentation } from '../../../src/instrumentatios/extentions/http';
+import { configureHttpInstrumentation } from '../../../src/instrumentations/extentions/http';
 import { Options } from '../../../src';
 import {
   BasicTracerProvider,
