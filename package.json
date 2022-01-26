@@ -29,9 +29,9 @@
   "files": [
     "index.js",
     "bin/*.js",
-    "lib/src/*.js",
-    "lib/src/*.js.map",
-    "lib/src/*.d.ts",
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts",
     "doc",
     "LICENSE",
     "README.md"
