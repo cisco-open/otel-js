@@ -17,11 +17,13 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureHttpInstrumentation } from './extentions/http';
 import { diag } from '@opentelemetry/api';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
+  instrumentations.push(new AwsInstrumentation());
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {

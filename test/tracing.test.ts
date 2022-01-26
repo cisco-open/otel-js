@@ -64,6 +64,7 @@ describe('Tracing test', () => {
       FSOEndpoint: 'http://localhost:4317',
       serviceName: 'my-app-name',
       FSOToken: 'fso-token',
+      debug: false
     };
     fso.init(userOptions);
     assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
@@ -74,6 +75,7 @@ describe('Tracing test', () => {
       FSOEndpoint: '',
       serviceName: '',
       FSOToken: '',
+      debug: false
     };
     process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
     process.env.SERVICE_NAME = userOptions.serviceName;
