@@ -52,7 +52,7 @@ export function init(userOptions: Options) {
 
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: getInstrumentations(options)
+    instrumentations: getInstrumentations(options),
   });
 }
 
