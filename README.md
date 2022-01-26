@@ -1,4 +1,6 @@
 # otel-js
+[![NPM Published Version][npm-img]][npm-url]
+[![Apache License][license-image]][license-image]
 
 An Aplha version
 
@@ -79,3 +81,8 @@ To test the launcher:
 
 4. Go to <http://localhost:8081/> and verify you see "Hello World"
 5. Check the collector, you should see a trace there.
+
+[npm-url]: https://www.npmjs.com/package/cisco-opentelemetry-node
+[npm-img]: https://badge.fury.io/js/cisco-opentelemetry-node.svg
+[license-url]: https://github.com/https://github.com/epsagon/otel-js/blob/main/LICENSE
+[license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=flat

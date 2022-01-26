@@ -19,7 +19,7 @@ export interface Options {
   FSOEndpoint: string;
   serviceName: string;
   FSOToken: string;
-  debug: boolean;
+  debug?: boolean;
 }
 
 /**

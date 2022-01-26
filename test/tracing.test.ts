@@ -75,7 +75,6 @@ describe('Tracing test', () => {
       FSOEndpoint: '',
       serviceName: '',
       FSOToken: '',
-      debug: false,
     };
     process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
     process.env.SERVICE_NAME = userOptions.serviceName;
