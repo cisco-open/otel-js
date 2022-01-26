@@ -21,7 +21,7 @@ import {
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import {IncomingMessage, ServerResponse} from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
@@ -34,11 +34,11 @@ export function configureHttpInstrumentation(
   ) {
     return;
   }
-    let config = instrumentation.getConfig() as HttpInstrumentationConfig;
+  let config = instrumentation.getConfig() as HttpInstrumentationConfig;
 
-    if (config === undefined) {
-        config = {};
-    }
+  if (config === undefined) {
+    config = {};
+  }
 
   const responseHook = createHttpResponseHook(options);
 
@@ -52,48 +52,48 @@ export function configureHttpInstrumentation(
     };
   }
 
-    const requestHook = createHttpRequestHook(options);
-    if (config.requestHook === undefined) {
-      config.requestHook = requestHook;
-    } else {
-      const original = config.requestHook;
-      config.requestHook = function (this: unknown, span, request) {
-        requestHook(span, request);
-        original.call(this, span, request);
-      };
-    }
+  const requestHook = createHttpRequestHook(options);
+  if (config.requestHook === undefined) {
+    config.requestHook = requestHook;
+  } else {
+    const original = config.requestHook;
+    config.requestHook = function (this: unknown, span, request) {
+      requestHook(span, request);
+      original.call(this, span, request);
+    };
+  }
   instrumentation.setConfig(config);
 }
 
-
 function createHttpRequestHook(
-    options: Options
+  options: Options
 ): HttpRequestCustomAttributeFunction {
-    return (span, request) => {
-        const spanContext = span.spanContext();
+  return (span, request) => {
+    const spanContext = span.spanContext();
 
-        if (!isSpanContextValid(spanContext)) {
-            return;
-        }
+    if (!isSpanContextValid(spanContext)) {
+      return;
+    }
 
-        if (request instanceof IncomingMessage) {
-            // TODO: add attributes here
-        }
-    };
+    if (request instanceof IncomingMessage) {
+      // TODO: add attributes here
+    }
+  };
 }
 
-function createHttpResponseHook (options: Options ): HttpResponseCustomAttributeFunction  {
-
-    return (span, response) => {
-        if (!(response instanceof ServerResponse)) {
-            return;
-        }
-
-        const spanContext = span.spanContext();
-
-        if (!isSpanContextValid(spanContext)) {
-            return;
-        }
-        // TODO: add attributes here
+function createHttpResponseHook(
+  options: Options
+): HttpResponseCustomAttributeFunction {
+  return (span, response) => {
+    if (!(response instanceof ServerResponse)) {
+      return;
     }
+
+    const spanContext = span.spanContext();
+
+    if (!isSpanContextValid(spanContext)) {
+      return;
+    }
+    // TODO: add attributes here
+  };
 }

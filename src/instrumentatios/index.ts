@@ -17,8 +17,8 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { configureHttpInstrumentation } from "./extentions/http";
-import { diag } from "@opentelemetry/api";
+import { configureHttpInstrumentation } from './extentions/http';
+import { diag } from '@opentelemetry/api';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
@@ -27,8 +27,8 @@ export function getInstrumentations(options: Options): Instrumentation[] {
     switch (instrumentation.instrumentationName) {
       // TODO: remove the 'skip' the moment this supported
       case '@opentelemetry/instrumentation-http-skip':
-        diag.debug('Adding FSO http patching')
-        configureHttpInstrumentation(instrumentation, options)
+        diag.debug('Adding FSO http patching');
+        configureHttpInstrumentation(instrumentation, options);
     }
   }
   return instrumentations;
