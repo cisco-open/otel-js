@@ -18,8 +18,9 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { configureHttpInstrumentation } from './extentions/http';
 import { diag } from '@opentelemetry/api';
+import { configureHttpInstrumentation } from './extentions/http';
+import { configureAWSInstrumentation } from './extentions/aws_sdk';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
@@ -31,6 +32,10 @@ export function getInstrumentations(options: Options): Instrumentation[] {
       case '@opentelemetry/instrumentation-http-skip':
         diag.debug('Adding FSO http patching');
         configureHttpInstrumentation(instrumentation, options);
+        break;
+      case '@opentelemetry/instrumentation-aws-sdk':
+        diag.debug('Adding FSO aws-sdk patching');
+        configureAWSInstrumentation(instrumentation, options);
     }
   }
   return instrumentations;
