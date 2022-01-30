@@ -151,10 +151,35 @@ const SQSEventCreator = {
   },
 };
 
+const DynamoDBEventCreator = {
+  requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation) {
+    switch (requestInfo.request.commandName) {
+      case 'PutItem':
+        span.setAttribute(
+          'Table Name',
+          requestInfo.request.commandInput.TableName
+        );
+        span.setAttribute(
+          'Item',
+          JSON.stringify(requestInfo.request.commandInput.Item)
+        );
+        break;
+    }
+  },
+  responseHandler(span: Span, responseInfo: AwsSdkResponseHookInformation) {
+    switch (responseInfo.response.request.commandName) {
+      case 'PutItem':
+        span.setAttribute('data', JSON.stringify(responseInfo.response.data));
+        break;
+    }
+  },
+};
+
 /**
  * a map between AWS resource names and their appropriate creator object.
  */
 const specificEventCreators = {
   SNS: SNSEventCreator,
   SQS: SQSEventCreator,
+  DynamoDB: DynamoDBEventCreator,
 };
