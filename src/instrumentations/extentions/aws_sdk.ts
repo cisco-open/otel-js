@@ -111,6 +111,10 @@ const SNSEventCreator = {
           'Notification Message',
           requestInfo.request.commandInput.Message
         );
+        span.setAttribute(
+          'Notification Message Attributes',
+          JSON.stringify(requestInfo.request.commandInput.MessageAttributes)
+        );
         break;
     }
   },
