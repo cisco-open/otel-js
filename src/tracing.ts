@@ -15,17 +15,13 @@
  */
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import {
-  BatchSpanProcessor,
-  SpanExporter,
-} from '@opentelemetry/sdk-trace-base';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
-import grpc = require('@grpc/grpc-js');
 import { _configDefaultOptions, Options } from './options';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+//import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
+import { exporterFactory } from './exporter-factory';
 
 export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
@@ -40,13 +36,18 @@ export function init(userOptions: Options) {
   }
 
   const resource = new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
+    // TODO: temporarily this is 'application' duo to BC. rename after FSO is ready
+    //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
+    ['application']: options.serviceName,
   });
 
   const provider = new NodeTracerProvider({ resource });
-  provider.addSpanProcessor(
-    new BatchSpanProcessor(createDefaultExporter(options))
-  );
+
+  const exporter = exporterFactory(options);
+  if (!exporter) {
+    return;
+  }
+  provider.addSpanProcessor(new BatchSpanProcessor(exporter));
 
   provider.register();
 
@@ -54,16 +55,4 @@ export function init(userOptions: Options) {
     tracerProvider: provider,
     instrumentations: getInstrumentations(options),
   });
-}
-
-function createDefaultExporter(options: Options): SpanExporter {
-  const metadata = new grpc.Metadata();
-  metadata.set('X-FSO-Token', options.FSOToken);
-
-  const collectorOptions = {
-    url: options.FSOEndpoint,
-    metadata,
-  };
-
-  return new OTLPTraceExporter(collectorOptions);
 }
