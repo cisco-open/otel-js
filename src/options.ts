@@ -46,7 +46,7 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
 
   options.maxPayloadSize =
-      options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
+    options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
 
   return options;
 }

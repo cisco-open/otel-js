@@ -22,7 +22,8 @@ import {
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
 import { IncomingMessage } from 'http';
-import {diag, isSpanContextValid} from '@opentelemetry/api';
+// @ts-ignore
+import { diag, isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -75,29 +76,33 @@ function createHttpRequestHook(
       return;
     }
 
-    let headers = !(request instanceof IncomingMessage) ? request.getHeaders() : request.headers;
-    for (let headerKey in headers) {
-      let headerValue = headers[headerKey];
+    const headers = !(request instanceof IncomingMessage)
+      ? request.getHeaders()
+      : request.headers;
+    for (const headerKey in headers) {
+      const headerValue = headers[headerKey];
 
       if (headerValue === undefined) {
         continue;
       }
-      span.setAttribute(`http.request.header.${headerKey.toLocaleLowerCase()}`, headerValue)
+      span.setAttribute(
+        `http.request.header.${headerKey.toLocaleLowerCase()}`,
+        headerValue
+      );
     }
 
     if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
         console.log('Dataaa: ', chunk);
-      }
+      };
 
-      request.on("data", listener);
-      request.once("end", () => {
+      request.on('data', listener);
+      request.once('end', () => {
         request.removeListener('data', listener);
-      })
+      });
     }
   };
-
 }
 
 function createHttpResponseHook(
@@ -110,29 +115,34 @@ function createHttpResponseHook(
       return;
     }
 
-    let headers = !(response instanceof IncomingMessage) ? response.getHeaders() : response.headers;
-    for (let headerKey in headers) {
-      let headerValue = headers[headerKey];
+    const headers = !(response instanceof IncomingMessage)
+      ? response.getHeaders()
+      : response.headers;
+    for (const headerKey in headers) {
+      const headerValue = headers[headerKey];
 
       if (headerValue === undefined) {
         continue;
       }
 
-      span.setAttribute(`http.response.header.${headerKey.toLocaleLowerCase()}`, headerValue)
+      span.setAttribute(
+        `http.response.header.${headerKey.toLocaleLowerCase()}`,
+        headerValue
+      );
     }
 
     // request body capture
     if (response instanceof IncomingMessage) {
       const listener = (chunk: any) => {
         console.log('Dataaa: ', chunk);
-      }
+      };
 
-      response.on("data", listener);
-      response.once("end", () => {
+      response.on('data', listener);
+      response.once('end', () => {
         response.removeListener('data', listener);
-      })
+      });
     }
 
-    console.log('done bruh')
+    console.log('done bruh');
   };
 }
