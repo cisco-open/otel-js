@@ -18,9 +18,10 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { OTLPTraceExporter as OTLPGrpcTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { diag } from '@opentelemetry/api';
 import { fso, Options } from '../src';
+import * as utils from "./utils";
 
 describe('Tracing test', () => {
   let addSpanProcessorMock;
@@ -32,6 +33,8 @@ describe('Tracing test', () => {
       'addSpanProcessor'
     );
     diag.setLogger = createLoggerStub;
+
+    utils.cleanEnvironmentVariables();
   });
 
   afterEach(() => {
@@ -49,7 +52,7 @@ describe('Tracing test', () => {
 
     assert(processor instanceof BatchSpanProcessor);
     const exporter = processor['_exporter'];
-    assert(exporter instanceof OTLPTraceExporter);
+    assert(exporter instanceof OTLPGrpcTraceExporter);
 
     assert.deepEqual(exporter.url, exportURL);
 
