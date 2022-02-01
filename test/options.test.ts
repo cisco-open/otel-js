@@ -51,7 +51,7 @@ describe('Options tests', () => {
         FSOEndpoint: 'http://localhost:4713',
         serviceName: 'application',
         debug: false,
-        maxPayloadSize: 1024
+        maxPayloadSize: 1024,
       });
       sinon.assert.neverCalledWith(logger.error);
     });
@@ -70,7 +70,7 @@ describe('Options tests', () => {
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
-        maxPayloadSize: 10000
+        maxPayloadSize: 10000,
       };
       const options = _configDefaultOptions(userOptions);
       assert.ok(options);
@@ -86,7 +86,7 @@ describe('Options tests', () => {
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
-        maxPayloadSize: 10000
+        maxPayloadSize: 10000,
       };
 
       process.env.FSO_TOKEN = userOptions.FSOToken;
