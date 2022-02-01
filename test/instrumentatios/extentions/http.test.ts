@@ -99,7 +99,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       res.on('data', data => {
         console.log('my dataaa bruhh: ' + data);
       });
-      res.end();
+      //res.end();
       span.end();
       memoryExporter.getFinishedSpans();
       done();
