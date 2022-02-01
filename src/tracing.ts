@@ -21,7 +21,7 @@ import { _configDefaultOptions, Options } from './options';
 //import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
-import { exporterFactory } from "./exporter-factory";
+import { exporterFactory } from './exporter-factory';
 
 export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
@@ -47,9 +47,7 @@ export function init(userOptions: Options) {
   if (!exporter) {
     return;
   }
-  provider.addSpanProcessor(
-    new BatchSpanProcessor(exporter)
-  );
+  provider.addSpanProcessor(new BatchSpanProcessor(exporter));
 
   provider.register();
 

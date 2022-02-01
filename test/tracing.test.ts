@@ -21,7 +21,7 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { OTLPTraceExporter as OTLPGrpcTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { diag } from '@opentelemetry/api';
 import { fso, Options } from '../src';
-import * as utils from "./utils";
+import * as utils from './utils';
 
 describe('Tracing test', () => {
   let addSpanProcessorMock;

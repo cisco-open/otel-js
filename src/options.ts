@@ -46,7 +46,7 @@ export function _configDefaultOptions(options: Options): Options | undefined {
     options.serviceName || process.env.SERVICE_NAME || 'application';
 
   options.exporterType =
-      options.exporterType || process.env.EXPORTER_TYPE || 'otlp-grpc'
+    options.exporterType || process.env.EXPORTER_TYPE || 'otlp-grpc';
 
   return options;
 }
