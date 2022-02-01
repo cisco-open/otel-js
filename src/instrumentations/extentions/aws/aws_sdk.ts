@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
-import { Options } from '../../options';
+import { Options } from '../../../options';
 
 import {
   AwsSdkInstrumentationConfig,
@@ -25,6 +25,10 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { Span } from '@opentelemetry/api';
+import { AWSEventCreator } from './event-creator-interface';
+import { SNSEventCreator } from './SNSEventCreator';
+import { SQSEventCreator } from './SQSEventCreator';
+import { DynamoDBEventCreator } from './DynamoDBEventCreator';
 
 export function configureAWSInstrumentation(
   instrumentation: Instrumentation,
@@ -77,10 +81,11 @@ function createAWSsdkRequestHook(
     }
 
     const serviceIdentifier = requestInfo.request.serviceName;
-    if (!(serviceIdentifier in specificEventCreators)) {
+    const creator = specificEventCreators.get(serviceIdentifier);
+    if (!creator) {
       return;
     }
-    specificEventCreators[serviceIdentifier].requestHandler(span, requestInfo);
+    creator.requestHandler(span, requestInfo);
   };
 }
 
@@ -93,97 +98,19 @@ function createAWSsdkResponseHook(
       return;
     }
     const serviceIdentifier = responseInfo.response.request.serviceName;
-    if (!(serviceIdentifier in specificEventCreators)) {
+    const creator = specificEventCreators.get(serviceIdentifier);
+    if (!creator) {
       return;
     }
-    specificEventCreators[serviceIdentifier].responseHandler(
-      span,
-      responseInfo
-    );
+    creator.responseHandler(span, responseInfo);
   };
 }
-
-const SNSEventCreator = {
-  requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation) {
-    switch (requestInfo.request.commandName) {
-      case 'Publish':
-        span.setAttribute(
-          'Notification Message',
-          requestInfo.request.commandInput.Message
-        );
-        span.setAttribute(
-          'Notification Message Attributes',
-          JSON.stringify(requestInfo.request.commandInput.MessageAttributes)
-        );
-        break;
-    }
-  },
-  responseHandler(span: Span, responseInfo: AwsSdkResponseHookInformation) {
-    switch (responseInfo.response.request.commandName) {
-      case 'Publish':
-        span.setAttribute('Message ID', responseInfo.response.data.MessageId);
-        break;
-    }
-  },
-};
-
-const SQSEventCreator = {
-  requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation) {
-    switch (requestInfo.request.commandName) {
-      case 'SendMessage':
-        span.setAttribute(
-          'Message Body',
-          requestInfo.request.commandInput.MessageBody
-        );
-        span.setAttribute(
-          'Message Attributes',
-          JSON.stringify(requestInfo.request.commandInput.MessageAttributes)
-        );
-        break;
-    }
-  },
-  responseHandler(span: Span, responseInfo: AwsSdkResponseHookInformation) {
-    switch (responseInfo.response.request.commandName) {
-      case 'SendMessage':
-        span.setAttribute('Message ID', responseInfo.response.data.MessageId);
-        span.setAttribute(
-          'MD5 Of Message Body',
-          responseInfo.response.data.MD5OfMessageBody
-        );
-        break;
-    }
-  },
-};
-
-const DynamoDBEventCreator = {
-  requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation) {
-    switch (requestInfo.request.commandName) {
-      case 'PutItem':
-        span.setAttribute(
-          'Table Name',
-          requestInfo.request.commandInput.TableName
-        );
-        span.setAttribute(
-          'Item',
-          JSON.stringify(requestInfo.request.commandInput.Item)
-        );
-        break;
-    }
-  },
-  responseHandler(span: Span, responseInfo: AwsSdkResponseHookInformation) {
-    switch (responseInfo.response.request.commandName) {
-      case 'PutItem':
-        span.setAttribute('data', JSON.stringify(responseInfo.response.data));
-        break;
-    }
-  },
-};
 
 /**
  * a map between AWS resource names and their appropriate creator object.
  */
-const specificEventCreators = {
-  SNS: SNSEventCreator,
-  SQS: SQSEventCreator,
-  DynamoDB: DynamoDBEventCreator,
-};
+const specificEventCreators = new Map<string, AWSEventCreator>([
+  ['SNS', new SNSEventCreator()],
+  ['SQS', new SQSEventCreator()],
+  ['DynamoDB', new DynamoDBEventCreator()],
+]);

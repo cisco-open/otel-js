@@ -20,7 +20,7 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
-import { configureAWSInstrumentation } from './extentions/aws_sdk';
+import { configureAWSInstrumentation } from './extentions/aws/aws_sdk';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
