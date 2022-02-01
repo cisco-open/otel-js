@@ -22,7 +22,6 @@ import {
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
 import { IncomingMessage } from 'http';
-// @ts-ignore
 import { diag, isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
