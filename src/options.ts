@@ -20,6 +20,7 @@ export interface Options {
   serviceName: string;
   FSOToken: string;
   debug?: boolean;
+  maxPayloadSize?: number;
 }
 
 /**
@@ -39,10 +40,13 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   options.FSOEndpoint =
     options.FSOEndpoint || process.env.FSO_ENDPOINT || 'http://localhost:4713';
 
-  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
-
   options.serviceName =
     options.serviceName || process.env.SERVICE_NAME || 'application';
+
+  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
+
+  options.maxPayloadSize =
+      options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
 
   return options;
 }
@@ -55,4 +59,20 @@ function getEnvBoolean(key: string, defaultValue = true) {
   }
 
   return ['false'].indexOf(value.trim().toLowerCase()) < 0;
+}
+
+export function getEnvNumber(key: string, defaultValue: number): number {
+  const value = process.env[key];
+
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  const numberValue = parseInt(value);
+
+  if (isNaN(numberValue)) {
+    return defaultValue;
+  }
+
+  return numberValue;
 }

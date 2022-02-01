@@ -21,8 +21,8 @@ import {
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage, ServerResponse } from 'http';
-import { isSpanContextValid } from '@opentelemetry/api';
+import { IncomingMessage } from 'http';
+import {diag, isSpanContextValid} from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -75,25 +75,64 @@ function createHttpRequestHook(
       return;
     }
 
+    let headers = !(request instanceof IncomingMessage) ? request.getHeaders() : request.headers;
+    for (let headerKey in headers) {
+      let headerValue = headers[headerKey];
+
+      if (headerValue === undefined) {
+        continue;
+      }
+      span.setAttribute(`http.request.header.${headerKey.toLocaleLowerCase()}`, headerValue)
+    }
+
     if (request instanceof IncomingMessage) {
-      // TODO: add attributes here
+      // request body capture
+      const listener = (chunk: any) => {
+        console.log('Dataaa: ', chunk);
+      }
+
+      request.on("data", listener);
+      request.once("end", () => {
+        request.removeListener('data', listener);
+      })
     }
   };
+
 }
 
 function createHttpResponseHook(
   options: Options
 ): HttpResponseCustomAttributeFunction {
   return (span, response) => {
-    if (!(response instanceof ServerResponse)) {
-      return;
-    }
-
     const spanContext = span.spanContext();
 
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    // TODO: add attributes here
+
+    let headers = !(response instanceof IncomingMessage) ? response.getHeaders() : response.headers;
+    for (let headerKey in headers) {
+      let headerValue = headers[headerKey];
+
+      if (headerValue === undefined) {
+        continue;
+      }
+
+      span.setAttribute(`http.response.header.${headerKey.toLocaleLowerCase()}`, headerValue)
+    }
+
+    // request body capture
+    if (response instanceof IncomingMessage) {
+      const listener = (chunk: any) => {
+        console.log('Dataaa: ', chunk);
+      }
+
+      response.on("data", listener);
+      response.once("end", () => {
+        response.removeListener('data', listener);
+      })
+    }
+
+    console.log('done bruh')
   };
 }

@@ -67,8 +67,14 @@ describe('Capturing HTTP Headers/Bodies', () => {
   const setupServer = () => {
     http = require('http');
     server = http.createServer((req, res) => {
-      console.log('here');
-      res.end('ok');
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Response-header': 'some response'
+      });
+      res.end(JSON.stringify({
+        data: 'Hello World!'
+      }));
+
     });
     server.listen(PORT);
     console.log('Server is up');
@@ -89,6 +95,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
     const span = tracer.startSpan('updateRootSpan');
     http.get(SERVER_URL, requestOptions, res => {
+      res.on('data', (data) => {
+        console.log('my dataaa bruhh: ' + data)
+      })
+      res.end()
       span.end();
       memoryExporter.getFinishedSpans();
       done();
