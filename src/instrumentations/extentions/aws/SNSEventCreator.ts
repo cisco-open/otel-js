@@ -23,20 +23,25 @@ import { AWSEventCreator } from './event-creator-interface';
 export class SNSEventCreator implements AWSEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     switch (requestInfo.request.commandName) {
-      case 'Publish':
+      case 'Publish': {
+        const cmdInput = requestInfo.request.commandInput;
+        span.setAttribute('aws.sns.message', cmdInput.Message);
         span.setAttribute(
-          'aws.sns.message',
-          requestInfo.request.commandInput.Message
+          'aws.sns.MessageStructure',
+          cmdInput.MessageStructure
         );
-        span.setAttribute(
-          'aws.sns.message_attributes',
-          JSON.stringify(requestInfo.request.commandInput.MessageAttributes)
-        );
-        span.setAttribute(
-          'aws.sns.subject',
-          requestInfo.request.commandInput.Subject
-        );
+        for (const [key, value] of Object.entries(cmdInput.MessageAttributes)) {
+          span.setAttribute(
+            `aws.sns.message_attribute.${key}`,
+            JSON.stringify(value)
+          );
+        }
+        span.setAttribute('aws.sns.PhoneNumber', cmdInput.PhoneNumber);
+        span.setAttribute('aws.sns.TargetArn', cmdInput.TargetArn);
+        span.setAttribute('aws.sns.TopicArn', cmdInput.TopicArn);
+        span.setAttribute('aws.sns.subject', cmdInput.Subject);
         break;
+      }
     }
   }
   responseHandler(

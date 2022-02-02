@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Span } from '@opentelemetry/api';
+import { diag, Span } from '@opentelemetry/api';
 import {
   AwsSdkRequestHookInformation,
   AwsSdkResponseHookInformation,
@@ -22,50 +22,70 @@ import { AWSEventCreator } from './event-creator-interface';
 
 export class SQSEventCreator implements AWSEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
-    const queueUrl = requestInfo.request.commandInput.QueueUrl;
-    const splited = queueUrl.split('/');
+    const cmdInput = requestInfo.request.commandInput;
+    if (!cmdInput || !cmdInput.QueueUrl) {
+      diag.debug('No QueueUrl parameter');
+      return;
+    }
+    const splited = cmdInput.QueueUrl.split('/');
+    if (!splited) {
+      diag.debug('QueueUrl parse failed', cmdInput.QueueUrl);
+      return;
+    }
+    // assuming this structure for QueueUrl:
+    // https://sqs.<region>.amazonaws.com/<accountId>/<queueName>
     span.setAttribute('aws.sqs.queue_name', splited.pop());
     span.setAttribute('aws.account_id', splited.pop());
-    // span.setAttribute('aws.region', `${requestInfo.request.region}`);
 
     switch (requestInfo.request.commandName) {
-      case 'SendMessage':
-        span.setAttribute(
-          'aws.sqs.record.message_body',
-          requestInfo.request.commandInput.MessageBody
-        );
-        // span.setAttribute(
-        //   'aws.sqs.record.message_attributes',
-        //   JSON.stringify(requestInfo.request.commandInput.MessageAttributes)
-        // );
+      case 'SendMessage': {
+        span.setAttribute('aws.sqs.record.message_body', cmdInput.MessageBody);
         span.setAttribute(
           'aws.sqs.record.delay_seconds',
-          requestInfo.request.commandInput.DelaySeconds
+          cmdInput.DelaySeconds
         );
+        for (const [key, value] of Object.entries(cmdInput.MessageAttributes)) {
+          span.setAttribute(
+            `aws.sqs.message_attribute.${key}`,
+            JSON.stringify(value)
+          );
+        }
         break;
-      case 'SendMessageBatch':
-        span.setAttribute(
-          'aws.sqs.entries',
-          JSON.stringify(requestInfo.request.commandInput.Entries)
-        );
+      }
+      case 'SendMessageBatch': {
+        for (const [key, value] of Object.entries(cmdInput.Entries)) {
+          span.setAttribute(
+            `aws.sqs.request_entry.${key}`,
+            JSON.stringify(value)
+          );
+        }
         break;
+      }
       case 'ReceiveMessage':
-        // span.setAttribute(
-        //   'aws.sqs.record.message_attributes',
-        //   requestInfo.request.commandInput.MessageAttributeNames
-        // );
         span.setAttribute(
           'aws.sqs.visibility_timeout',
-          requestInfo.request.commandInput.VisibilityTimeout
+          cmdInput.VisibilityTimeout
         );
         span.setAttribute(
           'aws.sqs.wait_time_seconds',
-          requestInfo.request.commandInput.WaitTimeSeconds
+          cmdInput.WaitTimeSeconds
         );
         span.setAttribute(
           'aws.sqs.max_number_of_messages',
-          requestInfo.request.commandInput.MaxNumberOfMessages
+          cmdInput.MaxNumberOfMessages
         );
+        for (const i in cmdInput.AttributeNames) {
+          span.setAttribute(
+            `aws.sqs.attribute_name.${i}`,
+            JSON.stringify(cmdInput.AttributeNames[i])
+          );
+        }
+        for (const i in cmdInput.MessageAttributeNames) {
+          span.setAttribute(
+            `aws.sqs.message_attribute_name.${i}`,
+            JSON.stringify(cmdInput.MessageAttributeNames[i])
+          );
+        }
         break;
     }
   }
@@ -77,49 +97,58 @@ export class SQSEventCreator implements AWSEventCreator {
       case 'SendMessage':
         span.setAttribute(
           'aws.sqs.record.message_id',
-          responseInfo.response.data.MessageId
+          responseInfo.response.data?.MessageId
         );
         break;
-      case 'SendMessageBatch':
-        span.setAttribute(
-          'aws.sqs.record',
-          JSON.stringify(responseInfo.response.data)
-        );
-        break;
-      case 'ReceiveMessage': {
-        if (responseInfo.response.data.Messages.length == 1) {
+      case 'SendMessageBatch': {
+        const successMsgList = responseInfo.response.data?.Successful;
+        for (const i in successMsgList) {
           span.setAttribute(
-            'aws.sqs.record.message_body',
-            responseInfo.response.data.Messages[0].Body
-          );
-          span.setAttribute(
-            'aws.sqs.record.message_attributes',
-            JSON.stringify(
-              responseInfo.response.data.Messages[0].MessageAttributes
-            )
-          );
-          span.setAttribute(
-            'aws.sqs.record.message_id',
-            responseInfo.response.data.Messages[0].MessageId
-          );
-          span.setAttribute(
-            'aws.sqs.record.attributes.sender_id',
-            responseInfo.response.data.Messages[0].Attributes.SenderId
-          );
-          span.setAttribute(
-            'aws.sqs.record.attributes.sent_timestamp',
-            responseInfo.response.data.Messages[0].Attributes.SentTimestamp
-          );
-          span.setAttribute(
-            'aws.sqs.record.attributes.aws_trace_header',
-            responseInfo.response.data.Messages[0].Attributes.AWSTraceHeader
+            `aws.sqs.result_entry.${i}`,
+            JSON.stringify(successMsgList[i])
           );
         }
-        if (responseInfo.response.data.Messages.length > 1) {
+        const failedMsgList = responseInfo.response.data?.Failed;
+        for (const i in failedMsgList) {
           span.setAttribute(
-            'aws.sqs.record',
-            JSON.stringify(responseInfo.response.data.Messages)
+            `aws.sqs.result_error_entry.${i}`,
+            JSON.stringify(successMsgList[i])
           );
+        }
+        break;
+      }
+      case 'ReceiveMessage': {
+        const data = responseInfo.response.data;
+        if (!data) {
+          diag.debug('no data attribute in the response');
+          return;
+        }
+        if (data.Messages.length == 1) {
+          span.setAttribute(
+            'aws.sqs.record.message_body',
+            data.Messages[0].Body
+          );
+          const atts = data.Messages[0].Attributes;
+          for (const [key, value] of Object.entries(atts)) {
+            span.setAttribute(
+              `aws.sqs.record.attribute.${key}`,
+              JSON.stringify(value)
+            );
+          }
+          const msgAtts = data.Messages[0].MessageAttributes;
+          for (const [key, value] of Object.entries(msgAtts)) {
+            span.setAttribute(
+              `aws.sqs.record.message_attribute.${key}`,
+              JSON.stringify(value)
+            );
+          }
+          span.setAttribute(
+            'aws.sqs.record.message_id',
+            data.Messages[0].MessageId
+          );
+        }
+        if (data.Messages.length > 1) {
+          span.setAttribute('aws.sqs.record', JSON.stringify(data.Messages));
         }
         break;
       }

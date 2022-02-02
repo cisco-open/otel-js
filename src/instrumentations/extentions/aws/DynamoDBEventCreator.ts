@@ -20,16 +20,13 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AWSEventCreator } from './event-creator-interface';
 
+// TODO: follow spec and fix the attribute names accordingly.
 export class DynamoDBEventCreator implements AWSEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     switch (requestInfo.request.commandName) {
       case 'PutItem':
         span.setAttribute(
-          'Table Name',
-          requestInfo.request.commandInput.TableName
-        );
-        span.setAttribute(
-          'Item',
+          'db.item',
           JSON.stringify(requestInfo.request.commandInput.Item)
         );
         break;
@@ -41,7 +38,10 @@ export class DynamoDBEventCreator implements AWSEventCreator {
   ): void {
     switch (responseInfo.response.request.commandName) {
       case 'PutItem':
-        span.setAttribute('data', JSON.stringify(responseInfo.response.data));
+        span.setAttribute(
+          'db.data',
+          JSON.stringify(responseInfo.response.data)
+        );
         break;
     }
   }
