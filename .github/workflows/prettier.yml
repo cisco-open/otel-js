@@ -1,4 +1,4 @@
-name: Verify 
+name: Continuous Integration 
 
 # This action works with pull requests and pushes
 on:
