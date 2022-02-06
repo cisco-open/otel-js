@@ -22,7 +22,7 @@ import {
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
 import { IncomingMessage } from 'http';
-import { diag, isSpanContextValid } from '@opentelemetry/api';
+import { isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -90,6 +90,7 @@ function createHttpRequestHook(
       );
     }
 
+    /* TODO: add body capture
     if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
@@ -101,6 +102,7 @@ function createHttpRequestHook(
         request.removeListener('data', listener);
       });
     }
+     */
   };
 }
 
@@ -131,6 +133,7 @@ function createHttpResponseHook(
     }
 
     // request body capture
+    /* TODO: add body capture
     if (response instanceof IncomingMessage) {
       const listener = (chunk: any) => {
         console.log('Dataaa: ', chunk);
@@ -143,5 +146,6 @@ function createHttpResponseHook(
     }
 
     console.log('done bruh');
+     */
   };
 }

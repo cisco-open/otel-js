@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as utils from '../../utils';
 
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { configureHttpInstrumentation } from '../../../src/instrumentations/extentions/http';
@@ -26,7 +25,9 @@ import {
 
 const instrumentation = new HttpInstrumentation();
 instrumentation.enable();
-instrumentation.disable();
+import * as http from 'http'
+import * as utils from '../../utils';
+import * as assert from "assert";
 
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
@@ -34,24 +35,59 @@ instrumentation.setTracerProvider(provider);
 const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
-const PORT = 11337;
-const SERVER_URL = `http://localhost:${PORT}`;
-
 describe('Capturing HTTP Headers/Bodies', () => {
-  let http;
-  let server;
   const options = <Options>{
     FSOToken: 'some-token',
     FSOEndpoint: 'http://localhost:4713',
     serviceName: 'application',
   };
 
-  before(() => {
-    instrumentation.enable();
+  const express = require('express');
+  const bodyParser = require('body-parser');
+
+  const app = express();
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+
+  app.get('/test', (req: any, res: any) => {
+    res.send({ status: 'success' });
+  });
+  app.post('/test_post', (req: any, res: any) => {
+    res.send({ status: 'post_success' });
   });
 
-  before(() => {
-    instrumentation.disable();
+  app.post('/test_post_end', (req: any, res: any) => {
+    const body = JSON.stringify(req.body);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(body);
+  });
+
+  app.get('/circular-test', (req: any, res: any) => {
+    http
+      .request({ host: 'localhost', port: 8000, path: '/test' }, res2 => {
+        let str = '';
+
+        res2.on('data', chunk => {
+          str += chunk;
+        });
+
+        res2.on('end', () => {
+          console.log(str);
+          res.setHeader('Content-Type', 'application/json');
+          res.send(str);
+        });
+      })
+      .end();
+  });
+
+  const server = http.createServer(app);
+
+  before(done => {
+    server.listen(8000);
+    server.on('listening', () => {
+      done();
+    });
+    instrumentation.enable();
   });
 
   beforeEach(() => {
@@ -64,45 +100,34 @@ describe('Capturing HTTP Headers/Bodies', () => {
     server.close();
   });
 
-  const setupServer = () => {
-    http = require('http');
-    server = http.createServer((req, res) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Response-header': 'some response',
-      });
-      res.end(
-        JSON.stringify({
-          data: 'Hello World!',
-        })
-      );
-    });
-    server.listen(PORT);
-    console.log('Server is up');
-  };
-
-  it('test sanity - unstable', done => {
-    setupServer();
-
-    const requestOptions = {
-      content: JSON.stringify({ impuestos: [1, 2] }),
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Test-Header': 'Some Header',
-      },
+  it('test capture request headers - post', async () => {
+    const span = tracer.startSpan('updateRootSpan');
+    let request_headers = {
+          'content-type': 'application/json',
+          'extra-spam-header': 'span-value'
     };
 
-    const span = tracer.startSpan('updateRootSpan');
-    http.get(SERVER_URL, requestOptions, res => {
-      res.on('data', data => {
-        console.log('my dataaa bruhh: ' + data);
-      });
-      //res.end();
-      span.end();
-      memoryExporter.getFinishedSpans();
-      done();
-    });
+    await utils.httpRequest.post(
+      {
+        host: 'localhost',
+        port: 8000,
+        path: '/test_post',
+        headers: request_headers
+      },
+
+      JSON.stringify({ test: 'req data' })
+    );
+    span.end();
+
+    const spans = memoryExporter.getFinishedSpans();
+
+    assert.equal(spans.length, 3)
+    const httpClientSpan = spans[1];
+
+    for (const headerKey in request_headers) {
+      const headerValue = request_headers[headerKey];
+      assert.equal(httpClientSpan.attributes[`http.request.header.${headerKey.toLocaleLowerCase()}`], headerValue)
+    }
+    console.log(httpClientSpan)
   });
 });
