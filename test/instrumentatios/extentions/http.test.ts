@@ -25,9 +25,9 @@ import {
 
 const instrumentation = new HttpInstrumentation();
 instrumentation.enable();
-import * as http from 'http'
+import * as http from 'http';
 import * as utils from '../../utils';
-import * as assert from "assert";
+import * as assert from 'assert';
 
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
@@ -102,9 +102,9 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
   it('test capture request headers - post', async () => {
     const span = tracer.startSpan('updateRootSpan');
-    let request_headers = {
-          'content-type': 'application/json',
-          'extra-spam-header': 'span-value'
+    const request_headers = {
+      'content-type': 'application/json',
+      'extra-spam-header': 'span-value',
     };
 
     await utils.httpRequest.post(
@@ -112,7 +112,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
         host: 'localhost',
         port: 8000,
         path: '/test_post',
-        headers: request_headers
+        headers: request_headers,
       },
 
       JSON.stringify({ test: 'req data' })
@@ -121,13 +121,18 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
     const spans = memoryExporter.getFinishedSpans();
 
-    assert.equal(spans.length, 3)
+    assert.equal(spans.length, 3);
     const httpClientSpan = spans[1];
 
     for (const headerKey in request_headers) {
       const headerValue = request_headers[headerKey];
-      assert.equal(httpClientSpan.attributes[`http.request.header.${headerKey.toLocaleLowerCase()}`], headerValue)
+      assert.equal(
+        httpClientSpan.attributes[
+          `http.request.header.${headerKey.toLocaleLowerCase()}`
+        ],
+        headerValue
+      );
     }
-    console.log(httpClientSpan)
+    console.log(httpClientSpan);
   });
 });
