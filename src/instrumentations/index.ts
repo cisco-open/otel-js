@@ -21,6 +21,7 @@ import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAWSInstrumentation } from './extentions/aws/aws_sdk';
+import { configureRedisnstrumentation } from './extentions/redis';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
@@ -36,6 +37,10 @@ export function getInstrumentations(options: Options): Instrumentation[] {
       case '@opentelemetry/instrumentation-aws-sdk':
         diag.debug('Adding FSO aws-sdk patching');
         configureAWSInstrumentation(instrumentation, options);
+        break;
+      case '@opentelemetry/instrumentation-redis':
+        diag.debug('Adding FSO redis patching');
+        configureRedisnstrumentation(instrumentation, options);
     }
   }
   return instrumentations;
