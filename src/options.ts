@@ -21,6 +21,7 @@ export interface Options {
   FSOToken: string;
   debug?: boolean;
   maxPayloadSize?: number;
+  exporterType?: string;
 }
 
 /**
@@ -47,6 +48,9 @@ export function _configDefaultOptions(options: Options): Options | undefined {
 
   options.maxPayloadSize =
     options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
+
+  options.exporterType =
+    options.exporterType || process.env.EXPORTER_TYPE || 'otlp-grpc';
 
   return options;
 }
