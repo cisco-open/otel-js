@@ -53,6 +53,7 @@ Advanced options can be configured as a parameter to the init() method:
 |FSOEndpoint        |FSO_ENDPOINT |string | `http://localhost:4713` | The address of the trace collector to send traces to |
 |serviceName        |SERVICE_NAME |string | `application`           | Application name that will be set for traces         |
 |debug              |FSO_DEBUG    |string | `false`                 | Debug logs                                |
+|exporterType       |EXPORTER_TYPE|string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported)  |
 
 To test the launcher:
 
