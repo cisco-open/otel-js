@@ -21,7 +21,7 @@ import {
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 
 export function configureHttpInstrumentation(
@@ -75,9 +75,35 @@ function createHttpRequestHook(
       return;
     }
 
-    if (request instanceof IncomingMessage) {
-      // TODO: add attributes here
+    const headers =
+      request instanceof IncomingMessage
+        ? request.headers
+        : request.getHeaders();
+    for (const headerKey in headers) {
+      const headerValue = headers[headerKey];
+
+      if (headerValue === undefined) {
+        continue;
+      }
+      span.setAttribute(
+        `http.request.header.${headerKey.toLocaleLowerCase()}`,
+        headerValue
+      );
     }
+
+    /* TODO: add body capture
+    if (request instanceof IncomingMessage) {
+      // request body capture
+      const listener = (chunk: any) => {
+        console.log('Dataaa: ', chunk);
+      };
+
+      request.on('data', listener);
+      request.once('end', () => {
+        request.removeListener('data', listener);
+      });
+    }
+     */
   };
 }
 
@@ -85,15 +111,41 @@ function createHttpResponseHook(
   options: Options
 ): HttpResponseCustomAttributeFunction {
   return (span, response) => {
-    if (!(response instanceof ServerResponse)) {
-      return;
-    }
-
     const spanContext = span.spanContext();
 
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    // TODO: add attributes here
+
+    const headers =
+      response instanceof IncomingMessage
+        ? response.headers
+        : response.getHeaders();
+    for (const headerKey in headers) {
+      const headerValue = headers[headerKey];
+
+      if (headerValue === undefined) {
+        continue;
+      }
+
+      span.setAttribute(
+        `http.response.header.${headerKey.toLocaleLowerCase()}`,
+        headerValue
+      );
+    }
+
+    // request body capture
+    /* TODO: add body capture
+    if (response instanceof IncomingMessage) {
+      const listener = (chunk: any) => {
+        console.log('Dataaa: ', chunk);
+      };
+
+      response.on('data', listener);
+      response.once('end', () => {
+        response.removeListener('data', listener);
+      });
+    }
+    */
   };
 }
