@@ -1,4 +1,5 @@
 /*
+/*
  * Copyright The Cisco Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
 import sizeof from 'object-sizeof';
 
 import { Options } from '../../options';
@@ -37,3 +39,4 @@ export class HttpBodyHandler {
     const chunkSize = sizeof(chunk);
   }
 }
+ */

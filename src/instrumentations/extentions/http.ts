@@ -144,8 +144,6 @@ function createHttpResponseHook(
         response.removeListener('data', listener);
       });
     }
-
-    console.log('done bruh');
-     */
+    */
   };
 }
