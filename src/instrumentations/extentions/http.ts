@@ -75,9 +75,9 @@ function createHttpRequestHook(
       return;
     }
 
-    const headers = !(request instanceof IncomingMessage)
-      ? request.getHeaders()
-      : request.headers;
+    const headers = (request instanceof IncomingMessage)
+      ? request.headers
+      : request.getHeaders();
     for (const headerKey in headers) {
       const headerValue = headers[headerKey];
 
@@ -116,9 +116,9 @@ function createHttpResponseHook(
       return;
     }
 
-    const headers = !(response instanceof IncomingMessage)
-      ? response.getHeaders()
-      : response.headers;
+    const headers = (response instanceof IncomingMessage)
+      ? response.headers
+      : response.getHeaders();
     for (const headerKey in headers) {
       const headerValue = headers[headerKey];
 
