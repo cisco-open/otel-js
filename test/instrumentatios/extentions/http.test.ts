@@ -202,8 +202,8 @@ describe('Capturing HTTP Headers/Bodies', () => {
     });
   });
 
-  describe('test capture extra data - post requests', () => {
-    it('test capture request headers - sanity', async () => {
+  describe('test capture extra data - POST requests', () => {
+    it('test capture request/response headers - sanity', async () => {
       const span = tracer.startSpan('updateRootSpan');
       await utils.httpRequest.post(
         {
@@ -216,6 +216,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       span.end();
       const spans = memoryExporter.getFinishedSpans();
+      console.log(spans[1]);
       assert.equal(spans.length, 3);
       assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
       assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
