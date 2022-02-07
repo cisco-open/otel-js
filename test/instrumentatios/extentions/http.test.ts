@@ -20,6 +20,7 @@ import { Options } from '../../../src';
 import {
   BasicTracerProvider,
   InMemorySpanExporter,
+  ReadableSpan,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
 
@@ -28,7 +29,6 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
-
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -36,10 +36,36 @@ const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('Capturing HTTP Headers/Bodies', () => {
+  function assertExpectedHeaders(
+    span: ReadableSpan,
+    headers: any,
+    command: string
+  ) {
+    for (const headerKey in headers) {
+      const headerValue = headers[headerKey];
+      assert.equal(
+        span.attributes[
+          `http.${command}.header.${headerKey.toLocaleLowerCase()}`
+        ],
+        headerValue
+      );
+    }
+  }
+
   const options = <Options>{
     FSOToken: 'some-token',
     FSOEndpoint: 'http://localhost:4713',
     serviceName: 'application',
+  };
+
+  const REQUEST_HEADERS = {
+    'content-type': 'application/json',
+    'extra-spam-header-request': 'spam-value from the request',
+  };
+
+  const EXTRA_RESPONSE_HEADERS = {
+    'extra-spam-header-response': 'spam-value from the response',
+    'and-another-one': 'bites to dust',
   };
 
   const express = require('express');
@@ -49,14 +75,17 @@ describe('Capturing HTTP Headers/Bodies', () => {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  app.get('/test', (req: any, res: any) => {
+  app.get('/test_get', (req: any, res: any) => {
+    res.set(EXTRA_RESPONSE_HEADERS);
     res.send({ status: 'success' });
   });
   app.post('/test_post', (req: any, res: any) => {
+    res.set(EXTRA_RESPONSE_HEADERS);
     res.send({ status: 'post_success' });
   });
 
   app.post('/test_post_end', (req: any, res: any) => {
+    res.set(EXTRA_RESPONSE_HEADERS);
     const body = JSON.stringify(req.body);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(body);
@@ -72,7 +101,6 @@ describe('Capturing HTTP Headers/Bodies', () => {
         });
 
         res2.on('end', () => {
-          console.log(str);
           res.setHeader('Content-Type', 'application/json');
           res.send(str);
         });
@@ -96,43 +124,149 @@ describe('Capturing HTTP Headers/Bodies', () => {
     utils.cleanEnvironmentVariables();
   });
 
-  afterEach(() => {
+  after(() => {
     server.close();
   });
 
-  it('test capture request headers - post', async () => {
-    const span = tracer.startSpan('updateRootSpan');
-    const request_headers = {
-      'content-type': 'application/json',
-      'extra-spam-header': 'span-value',
-    };
+  describe('when user configuration specified', () => {
+    afterEach(() => {
+      instrumentation.setConfig({});
+      configureHttpInstrumentation(instrumentation, options);
+    });
 
-    await utils.httpRequest.post(
-      {
+    it('should see user request hook tags', async () => {
+      instrumentation.setConfig({
+        requestHook: (span, request) => {
+          span.setAttribute('user.attribute', 'dont change me');
+          span.setAttribute(
+            'http.request.header.missed-header',
+            'header-u-missed'
+          );
+        },
+      });
+      configureHttpInstrumentation(instrumentation, options);
+
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.get({
         host: 'localhost',
         port: 8000,
-        path: '/test_post',
-        headers: request_headers,
-      },
+        path: '/test_get',
+        headers: REQUEST_HEADERS,
+      });
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+      // make sure our request hook still triggered
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
 
-      JSON.stringify({ test: 'req data' })
-    );
-    span.end();
-
-    const spans = memoryExporter.getFinishedSpans();
-
-    assert.equal(spans.length, 3);
-    const httpClientSpan = spans[1];
-
-    for (const headerKey in request_headers) {
-      const headerValue = request_headers[headerKey];
+      assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
-        httpClientSpan.attributes[
-          `http.request.header.${headerKey.toLocaleLowerCase()}`
-        ],
-        headerValue
+        spans[1].attributes['http.request.header.missed-header'],
+        'header-u-missed'
       );
-    }
-    console.log(httpClientSpan);
+    });
+
+    it('should see user response hook tags', async () => {
+      instrumentation.setConfig({
+        responseHook: (span, request) => {
+          span.setAttribute('user.attribute', 'dont change me');
+          span.setAttribute(
+            'http.response.header.missed-header',
+            'header-u-missed'
+          );
+        },
+      });
+      configureHttpInstrumentation(instrumentation, options);
+
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.get({
+        host: 'localhost',
+        port: 8000,
+        path: '/test_get',
+        headers: REQUEST_HEADERS,
+      });
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+
+      // make sure our response hook still triggered
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+
+      assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
+      assert.equal(
+        spans[1].attributes['http.response.header.missed-header'],
+        'header-u-missed'
+      );
+    });
+  });
+
+  describe('test capture extra data - post requests', () => {
+    it('test capture request headers - sanity', async () => {
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.post(
+        {
+          host: 'localhost',
+          port: 8000,
+          path: '/test_post',
+          headers: REQUEST_HEADERS,
+        },
+        JSON.stringify({ test: 'req data' })
+      );
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+    });
+
+    it('test capture request headers - non existing endpoint', async () => {
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.post(
+        {
+          host: 'localhost',
+          port: 8000,
+          path: '/non_existing_endpoint',
+          headers: REQUEST_HEADERS,
+        },
+        JSON.stringify({ test: 'req data' })
+      );
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+    });
+  });
+
+  describe('test capture extra data - get requests', () => {
+    it('test capture request headers - sanity', async () => {
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.get({
+        host: 'localhost',
+        port: 8000,
+        path: '/test_get',
+        headers: REQUEST_HEADERS,
+      });
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+    });
+
+    it('test capture request headers - non existing endpoint', async () => {
+      const span = tracer.startSpan('updateRootSpan');
+      await utils.httpRequest.get({
+        host: 'localhost',
+        port: 8000,
+        path: '/non_existing_endpoint',
+        headers: REQUEST_HEADERS,
+      });
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 3);
+      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+    });
   });
 });
