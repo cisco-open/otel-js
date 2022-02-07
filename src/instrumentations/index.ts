@@ -27,8 +27,7 @@ export function getInstrumentations(options: Options): Instrumentation[] {
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
-      // TODO: remove the 'skip' the moment this supported
-      case '@opentelemetry/instrumentation-http-skip':
+      case '@opentelemetry/instrumentation-http':
         diag.debug('Adding FSO http patching');
         configureHttpInstrumentation(instrumentation, options);
     }
