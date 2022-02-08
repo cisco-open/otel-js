@@ -32,10 +32,12 @@ describe('Tracing test', () => {
       serviceName: 'my-app-name',
       FSOToken: 'fso-token',
       debug: false,
-      exporterType: 'otlp-grpc',
+      exporterTypes: ['otlp-grpc'],
     };
 
-    const traceExporter = exporterFactory(userOptions) as OTLPGrpcTraceExporter;
+    const traceExporter = exporterFactory(
+      userOptions
+    )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
     assert.deepEqual(traceExporter.metadata?.get('x-fso-token'), [
       userOptions.FSOToken,
@@ -49,10 +51,12 @@ describe('Tracing test', () => {
       serviceName: 'my-app-name',
       FSOToken: 'fso-token',
       debug: false,
-      exporterType: 'otlp-http',
+      exporterTypes: ['otlp-http'],
     };
 
-    const traceExporter = exporterFactory(userOptions) as OTLPHttpTraceExporter;
+    const traceExporter = exporterFactory(
+      userOptions
+    )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
     assert.deepEqual(
       traceExporter.headers['X-Epsagon-Token'],
@@ -67,11 +71,10 @@ describe('Tracing test', () => {
       serviceName: 'my-app-name',
       FSOToken: 'fso-token',
       debug: false,
-      exporterType: 'undefined-exporter',
+      exporterTypes: ['undefined-exporter'],
     };
 
-    const traceExporter = exporterFactory(userOptions);
-    assert(!traceExporter);
-    console.log(traceExporter);
+    const traceExporters = exporterFactory(userOptions);
+    assert(traceExporters.length === 0);
   });
 });
