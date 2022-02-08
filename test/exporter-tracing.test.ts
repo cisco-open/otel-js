@@ -65,6 +65,35 @@ describe('Tracing test', () => {
     assert.strictEqual(traceExporter.url, userOptions.FSOEndpoint);
   });
 
+  it('setup both HTTP and grpc exporters', () => {
+    const userOptions: Options = {
+      FSOEndpoint: 'some-collector:4317',
+      serviceName: 'my-app-name',
+      FSOToken: 'fso-token',
+      debug: false,
+      exporterTypes: ['otlp-http', 'otlp-grpc'],
+    };
+
+    const httpExporter = exporterFactory(
+      userOptions
+    )[0] as OTLPHttpTraceExporter;
+    assert(httpExporter);
+    assert.deepEqual(
+      httpExporter.headers['X-Epsagon-Token'],
+      userOptions.FSOToken
+    );
+    assert.strictEqual(httpExporter.url, userOptions.FSOEndpoint);
+
+    const grpcExporter = exporterFactory(
+      userOptions
+    )[1] as OTLPGrpcTraceExporter;
+    assert(grpcExporter);
+    assert.deepEqual(grpcExporter.metadata?.get('x-fso-token'), [
+      userOptions.FSOToken,
+    ]);
+    assert.strictEqual(grpcExporter.url, userOptions.FSOEndpoint);
+  });
+
   it('setup undefined exporter', () => {
     const userOptions: Options = {
       FSOEndpoint: 'some-collector:4317',
