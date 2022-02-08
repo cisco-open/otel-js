@@ -23,6 +23,7 @@ import {
 } from '@opentelemetry/instrumentation-http';
 import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
+import { HttpBodyHandler } from '../utils/HttpBodyHandler';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -91,19 +92,22 @@ function createHttpRequestHook(
       );
     }
 
-    /* TODO: add body capture
+    const bodyHandler = new HttpBodyHandler(
+      options,
+      headers['content-encoding'] as string
+    );
     if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
-        console.log('Dataaa: ', chunk);
+        bodyHandler.addChunk(chunk);
       };
 
       request.on('data', listener);
       request.once('end', () => {
+        bodyHandler.setPayload(span, 'request');
         request.removeListener('data', listener);
       });
     }
-     */
   };
 }
 
@@ -134,18 +138,22 @@ function createHttpResponseHook(
       );
     }
 
+    const bodyHandler = new HttpBodyHandler(
+      options,
+      headers['content-encoding'] as string
+    );
+
     // request body capture
-    /* TODO: add body capture
     if (response instanceof IncomingMessage) {
       const listener = (chunk: any) => {
-        console.log('Dataaa: ', chunk);
+        bodyHandler.addChunk(chunk);
       };
 
       response.on('data', listener);
       response.once('end', () => {
+        bodyHandler.setPayload(span, 'response');
         response.removeListener('data', listener);
       });
     }
-    */
   };
 }
