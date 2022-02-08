@@ -21,7 +21,7 @@ import { diag, Span } from '@opentelemetry/api';
 export class HttpBodyHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
   private currentBodySize: number; // The size in bytes of the current stream capture size
-  // @ts-ignore
+  // TODO: maybe add content parsing in the future
   private contentEncoding: string; // The type of the Payload data
   private totalChunks: any[];
 
@@ -42,6 +42,7 @@ export class HttpBodyHandler {
     if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
       this.totalChunks.push(chunk);
     } else {
+      this.totalChunks.push(chunk.slice(0, this.maxPayloadSize - chunkSize));
     }
   }
 

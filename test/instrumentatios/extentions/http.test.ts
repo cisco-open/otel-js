@@ -258,7 +258,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       // this is an echo endpoint
-      assert.equal(spans[1].attributes['http.response.body'], POST_REQUEST_DATA);
+      assert.equal(
+        spans[1].attributes['http.response.body'],
+        POST_REQUEST_DATA
+      );
     });
   });
 
@@ -304,20 +307,16 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(spans.length, 4);
       assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
       assert.equal(
-          spans[1].attributes['http.response.body'],
-          SUCCESS_GET_MESSAGE
+        spans[1].attributes['http.response.body'],
+        SUCCESS_GET_MESSAGE
       );
       assertExpectedHeaders(spans[2], REQUEST_HEADERS, 'request');
-      assert.equal(
-          spans[2].attributes['http.request.body'],
-          ''
-      );
+      assert.equal(spans[2].attributes['http.request.body'], '');
       assertExpectedHeaders(spans[3], REQUEST_HEADERS, 'request');
       assert.equal(
-          spans[3].attributes['http.response.body'],
-          SUCCESS_GET_MESSAGE
+        spans[3].attributes['http.response.body'],
+        SUCCESS_GET_MESSAGE
       );
-
-    })
+    });
   });
 });
