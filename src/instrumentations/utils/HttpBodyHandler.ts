@@ -47,20 +47,10 @@ export class HttpBodyHandler {
 
   setPayload(span: Span, bodyType: string) {
     try {
-      const parsedBody = JSON.parse(Buffer.concat(this.totalChunks).toString());
-      console.log(parsedBody);
-      for (const bodyKey in parsedBody) {
-        const bodyValue = parsedBody[bodyKey];
-
-        if (bodyValue === undefined) {
-          continue;
-        }
-
-        span.setAttribute(
-          `http.${bodyType}.body.${bodyKey.toLocaleLowerCase()}`,
-          bodyValue
-        );
-      }
+      span.setAttribute(
+        `http.${bodyType}.body`,
+        Buffer.concat(this.totalChunks).toString()
+      );
     } catch (e) {
       diag.debug('Failed to parse the HTTP body data');
       return;

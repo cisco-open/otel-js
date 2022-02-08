@@ -99,7 +99,6 @@ function createHttpRequestHook(
     if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
-        console.log("FUCK here " + chunk.toString())
         bodyHandler.addChunk(chunk);
       };
 
