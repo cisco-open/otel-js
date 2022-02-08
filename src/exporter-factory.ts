@@ -56,12 +56,9 @@ const SupportedExportersMap: Record<string, SpanExporterFactory> = {
 
 export function exporterFactory(options: Options): SpanExporter[] {
   const exporters: SpanExporter[] = [];
-  if (!options.exporterTypes) {
-    return [];
-  }
-  for (let i = 0; i < options.exporterTypes.length; i++) {
+  for (const index in options.exporterTypes) {
     const factory =
-      SupportedExportersMap[options.exporterTypes[i] || 'undefined'];
+      SupportedExportersMap[options.exporterTypes[index] || 'undefined'];
 
     if (!factory) {
       diag.error(

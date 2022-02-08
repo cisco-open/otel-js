@@ -47,8 +47,8 @@ export function init(userOptions: Options) {
   if (exporters.length === 0) {
     return;
   }
-  for (let i = 0; i < exporters.length; i++) {
-    provider.addSpanProcessor(new BatchSpanProcessor(exporters[i]));
+  for (const index in exporters) {
+    provider.addSpanProcessor(new BatchSpanProcessor(exporters[index]));
     provider.register();
   }
 

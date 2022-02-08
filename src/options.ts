@@ -50,16 +50,16 @@ export function _configDefaultOptions(options: Options): Options | undefined {
     options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
 
   options.exporterTypes =
-    options.exporterTypes || getEnvStringArray('EXPORTER_TYPE', ['otlp-grpc']);
+    options.exporterTypes || getEnvStringArray('EXPORTER_TYPE', 'otlp-grpc');
 
   return options;
 }
 
-function getEnvStringArray(key: string, defaultValue: string[]) {
+function getEnvStringArray(key: string, defaultValue: string): string[] {
   const value = process.env[key];
 
   if (value === undefined) {
-    return defaultValue;
+    return [defaultValue];
   }
 
   return [value];
