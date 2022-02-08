@@ -22,7 +22,6 @@ export class HttpBodyHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
   private currentBodySize: number; // The size in bytes of the current stream capture size
   // TODO: maybe add content parsing in the future
-  private contentEncoding: string; // The type of the Payload data
   private totalChunks: any[];
 
   constructor(options: Options, contentEncoding: string) {
@@ -31,7 +30,6 @@ export class HttpBodyHandler {
       : 1024;
     this.currentBodySize = 0;
     this.totalChunks = [];
-    this.contentEncoding = contentEncoding;
   }
 
   addChunk(chunk: any) {
