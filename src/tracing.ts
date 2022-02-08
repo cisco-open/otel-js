@@ -43,13 +43,14 @@ export function init(userOptions: Options) {
 
   const provider = new NodeTracerProvider({ resource });
 
-  const exporter = exporterFactory(options);
-  if (!exporter) {
+  const exporters = exporterFactory(options);
+  if (exporters.length === 0) {
     return;
   }
-  provider.addSpanProcessor(new BatchSpanProcessor(exporter));
-
-  provider.register();
+  for (const index in exporters) {
+    provider.addSpanProcessor(new BatchSpanProcessor(exporters[index]));
+    provider.register();
+  }
 
   registerInstrumentations({
     tracerProvider: provider,
