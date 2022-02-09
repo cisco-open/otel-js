@@ -49,7 +49,8 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   options.maxPayloadSize =
     options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
 
-  options.exporters = options.exporters &&
+  options.exporters =
+    options.exporters &&
     options.exporters[0].FSOEndpoint &&
     options.exporters[0].type
       ? options.exporters
