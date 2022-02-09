@@ -75,7 +75,7 @@ describe('Tracing test', () => {
       ],
     };
     fso.init(userOptions);
-    assertTracingPipeline('localhost:4713', 'my-app-name', 'fso-token');
+    assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
   });
 
   it('setups tracing with defaults', () => {

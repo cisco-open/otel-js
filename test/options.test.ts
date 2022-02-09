@@ -58,7 +58,7 @@ describe('Options tests', () => {
         exporters: [
           <ExporterOptions>{
             type: 'otlp-grpc',
-            FSOEndpoint: 'http://localhost:4713',
+            FSOEndpoint: 'http://localhost:4317',
           },
         ],
       });
