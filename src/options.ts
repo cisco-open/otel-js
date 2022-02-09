@@ -56,7 +56,7 @@ export function _configDefaultOptions(options: Options): Options | undefined {
       : [
           <ExporterOptions>{
             type: process.env.EXPORTER_TYPE || 'otlp-grpc',
-            FSOEndpoint: process.env.FSO_ENDPOINT || 'http://localhost:4713',
+            FSOEndpoint: process.env.FSO_ENDPOINT || 'http://localhost:4317',
           },
         ];
 
