@@ -22,6 +22,8 @@
             --health-interval 10s
             --health-timeout 5s
             --health-retries 5
+      env:
+          RUN_REDIS_TEST: 0
       container:
         image: ${{ matrix.container }}
       steps:
