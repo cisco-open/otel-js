@@ -21,7 +21,7 @@ import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
-import { configureRedisnstrumentation as configureRedisInstrumentation } from './extentions/redis';
+import { configureRedisInstrumentation } from './extentions/redis';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();

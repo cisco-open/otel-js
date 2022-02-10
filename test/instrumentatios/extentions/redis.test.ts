@@ -16,12 +16,7 @@
 
 // IN ORDER TO RUN THIS UNIT_TEST, RUN 'npm run redis'
 
-import {
-  Span,
-  diag,
-  DiagConsoleLogger,
-  DiagLogLevel,
-} from '@opentelemetry/api';
+import { Span } from '@opentelemetry/api';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import {
   InMemorySpanExporter,
@@ -29,15 +24,12 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
-import { configureRedisnstrumentation } from '../../../src/instrumentations/extentions/redis';
+import { configureRedisInstrumentation } from '../../../src/instrumentations/extentions/redis';
 import { Options } from '../../../src';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
-
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
-instrumentation.disable();
 
 import * as redisTypes from 'redis';
 
@@ -49,17 +41,17 @@ const options = <Options>{
   serviceName: 'application',
 };
 
-describe('Test redis', () => {
-  const provider = new NodeTracerProvider();
-  const redis = require('redis');
-  provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
-  instrumentation.setTracerProvider(provider);
-  instrumentation.enable();
-  let client: redisTypes.RedisClient;
-  const key = 'key1';
-  const value = 'value1';
-  const hash = 'myhash';
+const provider = new NodeTracerProvider();
+const redis = require('redis');
+provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
+instrumentation.setTracerProvider(provider);
+instrumentation.enable();
+let client: redisTypes.RedisClient;
+const key = 'key1';
+const value = 'value1';
+const hash = 'myhash';
 
+describe('Test redis', () => {
   before(done => {
     client = redis.createClient();
     client.on('error', err => {
@@ -79,8 +71,8 @@ describe('Test redis', () => {
     });
   });
 
-  describe('Test redis commands', () => {
-    it('test 2 response hooks', done => {
+  describe('Test 2 response hooks', () => {
+    it('Should return attributes set by both hooks', done => {
       const responseHook: RedisResponseCustomAttributeFunction = (
         span: Span,
         _cmdName: string,
@@ -91,15 +83,15 @@ describe('Test redis', () => {
       };
       instrumentation.disable();
       instrumentation.setConfig({ responseHook });
-      configureRedisnstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, options);
       instrumentation.enable();
 
       client.hset(hash, key, value, () => {
         const spans = memoryExporter.getFinishedSpans();
-        assert.strictEqual(spans.length, 2);
-        const firstHookAtt = spans[1].attributes['someFieldName'];
+        assert.strictEqual(spans.length, 1);
+        const firstHookAtt = spans[0].attributes['someFieldName'];
         assert.strictEqual(firstHookAtt, 'someData');
-        const secondHookAtt = spans[1].attributes['db.command.response'];
+        const secondHookAtt = spans[0].attributes['db.command.response'];
         assert.strictEqual(secondHookAtt, '1');
         done();
       });
@@ -108,12 +100,8 @@ describe('Test redis', () => {
 
   describe('Test redis commands', () => {
     before(() => {
-      console.log('a place holder jut for testing');
-    });
-
-    before(() => {
       instrumentation.disable();
-      configureRedisnstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, options);
       instrumentation.enable();
     });
 
@@ -192,14 +180,14 @@ describe('Test redis', () => {
       });
     });
 
-    it(`multi & exec commands: should use multi eo execute the commandhset and return ${value}`, done => {
+    it(`multi & exec commands: should use multi eo execute the command hset and return ${value}`, done => {
       const multi = client.multi();
       multi.hset(hash, key, value);
       multi.exec(() => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 3);
         const multiRes = spans[0].attributes['db.command.response'];
-        assert.strictEqual(multiRes, 'OK');
+        assert.equal(multiRes, 'OK');
         const execRes = spans[2].attributes['db.command.response'];
         assert.strictEqual(execRes, '[1]');
         done();

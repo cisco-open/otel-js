@@ -24,7 +24,7 @@ import {
   RedisResponseCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-redis/build/src/types';
 
-export function configureRedisnstrumentation(
+export function configureRedisInstrumentation(
   instrumentation: Instrumentation,
   options: Options
 ) {
