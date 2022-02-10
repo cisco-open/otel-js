@@ -47,7 +47,7 @@ export function configureAmqplibInstrumentation(
   } else {
     const original = config.consumeHook;
     config.consumeHook = function (this: unknown, span, message) {
-      publishHook(span, message);
+      consumeHook(span, message);
       original.call(this, span, message);
     };
   }

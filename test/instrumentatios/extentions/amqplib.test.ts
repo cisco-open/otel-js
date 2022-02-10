@@ -96,6 +96,7 @@ describe('amqplib instrumentation callback model', () => {
     'Some message we send over the queue. Not too long but no too short';
 
   before(async () => {
+    configureAmqplibInstrumentation(instrumentation, options);
     conn = await amqp.connect(url);
   });
 
@@ -106,15 +107,13 @@ describe('amqplib instrumentation callback model', () => {
   describe('channel payload & headers capture test', () => {
     let channel: amqp.Channel;
     beforeEach(async () => {
-      memoryExporter.reset();
-      configureAmqplibInstrumentation(instrumentation, options);
-
       channel = await conn.createChannel();
       await channel.assertQueue(QUEUE_NAME, { durable: false });
       await channel.purgeQueue(QUEUE_NAME);
       // install an error handler, otherwise when we have tests that create error on the channel,
       // it throws and crash process
       channel.on('error', err => {});
+      memoryExporter.reset();
     });
 
     afterEach(async () => {
@@ -136,16 +135,7 @@ describe('amqplib instrumentation callback model', () => {
       );
       assert(hadSpaceInBuffer);
 
-      await asyncConsume(
-        channel,
-        QUEUE_NAME,
-        [
-          msg => {
-            console.log(msg.content.toString());
-          },
-        ],
-        { noAck: true }
-      );
+      await asyncConsume(channel, QUEUE_NAME, [msg => {}], { noAck: true });
 
       const [publishSpan, consumeSpan] = memoryExporter.getFinishedSpans();
 
@@ -179,55 +169,64 @@ describe('amqplib instrumentation callback model', () => {
       );
     });
 
-    it('publish and consume when message > maxPayloadSize', async () => {
-      const hadSpaceInBuffer = channel.sendToQueue(
-        QUEUE_NAME,
-        Buffer.from(MESSAGE_TO_SEND),
-        { headers: MESSAGE_HEADERS }
-      );
-      assert(hadSpaceInBuffer);
+    describe('when user configuration specified', () => {
+      afterEach(() => {
+        instrumentation.setConfig({});
+        configureAmqplibInstrumentation(instrumentation, options);
+      });
 
-      await asyncConsume(
-        channel,
-        QUEUE_NAME,
-        [
-          msg => {
-            console.log(msg.content.toString());
+      it('should see and not override user publishHook, consumeHook', async () => {
+        instrumentation.setConfig({
+          publishHook: (span, publishParams) => {
+            span.setAttribute('user.attribute', 'hey! publish! dont change me');
+            span.setAttribute(
+              'messaging.message.header.missed-header',
+              'header-u-missed'
+            );
           },
-        ],
-        { noAck: true }
-      );
+          consumeHook: (span, msg) => {
+            span.setAttribute(
+              'user.attribute',
+              'hey! consumer! dont change me'
+            );
+            span.setAttribute(
+              'messaging.message.header.missed-header',
+              'header-u-missed'
+            );
+          },
+        });
 
-      const [publishSpan, consumeSpan] = memoryExporter.getFinishedSpans();
+        configureAmqplibInstrumentation(instrumentation, options);
 
-      assertExpectedObj(
-        publishSpan,
-        MESSAGE_HEADERS,
-        'messaging.message.header'
-      );
-      assertExpectedObj(
-        consumeSpan,
-        MESSAGE_HEADERS,
-        'messaging.message.header'
-      );
+        const hadSpaceInBuffer = channel.sendToQueue(
+          QUEUE_NAME,
+          Buffer.from(MESSAGE_TO_SEND),
+          { headers: MESSAGE_HEADERS }
+        );
+        assert(hadSpaceInBuffer);
 
-      assert.strictEqual(
-        publishSpan.attributes['messaging.message.payload_size'],
-        MESSAGE_TO_SEND.length
-      );
-      assert.strictEqual(
-        consumeSpan.attributes['messaging.message.payload_size'],
-        MESSAGE_TO_SEND.length
-      );
+        await asyncConsume(channel, QUEUE_NAME, [msg => {}], { noAck: true });
 
-      assert.strictEqual(
-        publishSpan.attributes['messaging.message.payload'],
-        MESSAGE_TO_SEND
-      );
-      assert.strictEqual(
-        consumeSpan.attributes['messaging.message.payload'],
-        MESSAGE_TO_SEND
-      );
+        const [publishSpan, consumeSpan] = memoryExporter.getFinishedSpans();
+
+        assert.strictEqual(
+          publishSpan.attributes['user.attribute'],
+          'hey! publish! dont change me'
+        );
+        assert.strictEqual(
+          publishSpan.attributes['messaging.message.header.missed-header'],
+          'header-u-missed'
+        );
+
+        assert.strictEqual(
+          consumeSpan.attributes['user.attribute'],
+          'hey! consumer! dont change me'
+        );
+        assert.strictEqual(
+          consumeSpan.attributes['messaging.message.header.missed-header'],
+          'header-u-missed'
+        );
+      });
     });
   });
 });
