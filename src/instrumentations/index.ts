@@ -18,6 +18,7 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
+import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
@@ -26,6 +27,8 @@ import { configureRedisInstrumentation } from './extentions/redis';
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
   instrumentations.push(new AwsInstrumentation());
+  // TODO: update the package path after this was contributed to OTel
+  instrumentations.push(new AmqplibInstrumentation());
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
@@ -40,6 +43,7 @@ export function getInstrumentations(options: Options): Instrumentation[] {
       case '@opentelemetry/instrumentation-redis':
         diag.debug('Adding FSO redis patching');
         configureRedisInstrumentation(instrumentation, options);
+        break;
     }
   }
   return instrumentations;

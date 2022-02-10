@@ -54,19 +54,23 @@ const SupportedExportersMap: Record<string, SpanExporterFactory> = {
   'otlp-http': otlpHttpSpanFactory,
 };
 
-export function exporterFactory(options: Options): SpanExporter | undefined {
-  const factory = SupportedExportersMap[options.exporterType || 'undefined'];
+export function exporterFactory(options: Options): SpanExporter[] {
+  const exporters: SpanExporter[] = [];
+  for (const index in options.exporterTypes) {
+    const factory =
+      SupportedExportersMap[options.exporterTypes[index] || 'undefined'];
 
-  if (!factory) {
-    diag.error(
-      `Invalid value for options.exporterType: ${util.inspect(
-        options.exporterType
-      )}. Pick one of ${util.inspect(Object.keys(SupportedExportersMap), {
-        compact: true,
-      })} or leave undefined.`
-    );
-    return;
+    if (!factory) {
+      diag.error(
+        `Invalid value for options.exporterType: ${util.inspect(
+          options.exporterTypes
+        )}. Pick one of ${util.inspect(Object.keys(SupportedExportersMap), {
+          compact: true,
+        })} or leave undefined.`
+      );
+      return [];
+    }
+    exporters.push(factory(options));
   }
-
-  return factory(options);
+  return exporters;
 }

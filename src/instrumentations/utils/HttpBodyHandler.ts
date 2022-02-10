@@ -14,29 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
-import sizeof from 'object-sizeof';
 
 import { Options } from '../../options';
+import { diag, Span } from '@opentelemetry/api';
 
 export class HttpBodyHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
   private currentBodySize: number; // The size in bytes of the current stream capture size
-  private contentEncoding: string; // The type of the Payload data
+  // TODO: maybe add content parsing in the future
   private totalChunks: any[];
 
   constructor(options: Options, contentEncoding: string) {
-    this.maxPayloadSize = options.maxPayloadSize;
+    this.maxPayloadSize = options.maxPayloadSize
+      ? options.maxPayloadSize
+      : 1024;
     this.currentBodySize = 0;
-    this.contentEncoding = contentEncoding;
-    this.totalData = string;
+    this.totalChunks = [];
   }
 
   addChunk(chunk: any) {
     if (!chunk) {
       return;
     }
-    const chunkSize = sizeof(chunk);
+    const chunkSize = chunk.length;
+    if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
+      this.totalChunks.push(chunk);
+    } else {
+      this.totalChunks.push(chunk.slice(0, this.maxPayloadSize - chunkSize));
+    }
+  }
+
+  setPayload(span: Span, bodyType: string) {
+    try {
+      span.setAttribute(
+        `http.${bodyType}.body`,
+        Buffer.concat(this.totalChunks).toString()
+      );
+    } catch (e) {
+      diag.debug('Failed to parse the HTTP body data');
+      return;
+    }
   }
 }
- */
