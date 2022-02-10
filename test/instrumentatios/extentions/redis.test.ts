@@ -68,7 +68,9 @@ describe('Test redis', () => {
   });
 
   after(done => {
-    client.quit(done);
+    if (client) {
+      client.quit(done);
+    }
   });
 
   afterEach(done => {
