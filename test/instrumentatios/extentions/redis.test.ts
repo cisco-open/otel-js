@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+
+// IN ORDER TO RUN THIS UNIT_TEST, RUN 'npm run redis'
+
+import {
+  Span,
+  diag,
+  DiagConsoleLogger,
+  DiagLogLevel,
+} from '@opentelemetry/api';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import {
   InMemorySpanExporter,
@@ -23,6 +31,7 @@ import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { configureRedisnstrumentation } from '../../../src/instrumentations/extentions/redis';
 import { Options } from '../../../src';
+import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
 
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
 
@@ -47,6 +56,9 @@ describe('Test redis', () => {
   instrumentation.setTracerProvider(provider);
   instrumentation.enable();
   let client: redisTypes.RedisClient;
+  const key = 'key1';
+  const value = 'value1';
+  const hash = 'myhash';
 
   before(done => {
     client = redis.createClient();
@@ -68,9 +80,42 @@ describe('Test redis', () => {
   });
 
   describe('Test redis commands', () => {
-    const key = 'key1';
-    const value = 'value1';
-    const hash = 'myhash';
+    it('test 2 response hooks', done => {
+      const responseHook: RedisResponseCustomAttributeFunction = (
+        span: Span,
+        _cmdName: string,
+        _cmdArgs: string[],
+        response: unknown
+      ) => {
+        span.setAttribute('someFieldName', 'someData');
+      };
+      instrumentation.disable();
+      instrumentation.setConfig({ responseHook });
+      configureRedisnstrumentation(instrumentation, options);
+      instrumentation.enable();
+
+      client.hset(hash, key, value, () => {
+        const spans = memoryExporter.getFinishedSpans();
+        assert.strictEqual(spans.length, 2);
+        const firstHookAtt = spans[1].attributes['someFieldName'];
+        assert.strictEqual(firstHookAtt, 'someData');
+        const secondHookAtt = spans[1].attributes['db.command.response'];
+        assert.strictEqual(secondHookAtt, '1');
+        done();
+      });
+    });
+  });
+
+  describe('Test redis commands', () => {
+    before(() => {
+      console.log('a place holder jut for testing');
+    });
+
+    before(() => {
+      instrumentation.disable();
+      configureRedisnstrumentation(instrumentation, options);
+      instrumentation.enable();
+    });
 
     const REDIS_OPERATIONS: Array<{
       prepare: (cb) => unknown;
@@ -129,12 +174,6 @@ describe('Test redis', () => {
         method: cb => client.hincrby(hash, key, 1, cb),
       },
     ];
-
-    before(() => {
-      instrumentation.disable();
-      configureRedisnstrumentation(instrumentation, options);
-      instrumentation.enable();
-    });
 
     REDIS_OPERATIONS.forEach(operation => {
       it(operation.description, done => {

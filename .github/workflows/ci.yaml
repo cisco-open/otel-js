@@ -12,6 +12,11 @@
         matrix:
           container: [ "node:10", "node:12", "node:14" ]
       runs-on: ubuntu-latest
+      services:
+        redis:
+          image: redis
+          ports:
+          - 6379:6379
       container:
         image: ${{ matrix.container }}
       steps:
@@ -24,6 +29,8 @@
               node_modules
               package-lock.json
             key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
+        # - name: Start Redis
+        #   uses: supercharge/redis-github-action@1.4.0
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
         - name: build
