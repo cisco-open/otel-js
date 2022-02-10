@@ -52,12 +52,12 @@ const value = 'value1';
 const hash = 'myhash';
 
 describe('Test redis', () => {
-  const shouldTest = process.env.RUN_REDIS_TEST;
-  console.log('shoudTest: ', shouldTest);
-  if (!shouldTest) {
-    return;
-  }
   before(done => {
+    const shouldTest = process.env.RUN_REDIS_TEST;
+    console.log('shoudTest: ', shouldTest);
+    if (!shouldTest) {
+      return;
+    }
     client = redis.createClient();
     client.on('error', err => {
       done(err);
