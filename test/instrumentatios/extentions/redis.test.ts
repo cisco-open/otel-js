@@ -52,17 +52,17 @@ const value = 'value1';
 const hash = 'myhash';
 
 describe('Test redis', () => {
-  const shouldTest = process.env.RUN_REDIS_TEST;
+  const shouldTest = process.env.RUN_REDIS_TEST || '0';
   console.log('shoudTest: ', shouldTest);
 
-  before(done => {
+  before(function (done) {
     console.log('inside before');
-    if (!shouldTest) {
-      return;
+    if (shouldTest === '0') {
+      this.skip();
     }
     client = redis.createClient();
     client.on('error', err => {
-      done(err);
+      // done(err);
     });
     client.on('ready', done);
   });
@@ -70,6 +70,8 @@ describe('Test redis', () => {
   after(done => {
     if (client) {
       client.quit(done);
+    } else {
+      done();
     }
   });
 
