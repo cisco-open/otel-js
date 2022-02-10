@@ -22,7 +22,7 @@ import {
 } from 'opentelemetry-instrumentation-amqplib';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { addFlattenedObj } from '../utils/utils';
-import {PayloadHandler} from "../utils/PayloadHandler";
+import { PayloadHandler } from '../utils/PayloadHandler';
 
 export function configureAmqplibInstrumentation(
   instrumentation: Instrumentation,
@@ -74,10 +74,22 @@ function createPublishHook(
       return;
     }
 
-    addFlattenedObj(span, 'messaging.message.header', publishParams.options.headers);
-    span.setAttribute('messaging.message.payload_size_bytes', publishParams.content.length);
+    addFlattenedObj(
+      span,
+      'messaging.message.header',
+      publishParams.options.headers
+    );
+    span.setAttribute(
+      'messaging.message.payload_size',
+      publishParams.content.length
+    );
     // TODO: we need to separate the user Options from our using options
-    PayloadHandler.setPayload(span, 'messaging.message.payload', publishParams.content, options.maxPayloadSize ?? 1024)
+    PayloadHandler.setPayload(
+      span,
+      'messaging.message.payload',
+      publishParams.content,
+      options.maxPayloadSize ?? 1024
+    );
   };
 }
 
@@ -90,10 +102,19 @@ function createConsumeHook(
       return;
     }
 
-    addFlattenedObj(span, 'messaging.message.header', message.properties.headers);
-    span.setAttribute('messaging.message.payload_size_bytes', message.content.length);
+    addFlattenedObj(
+      span,
+      'messaging.message.header',
+      message.properties.headers
+    );
+    span.setAttribute('messaging.message.payload_size', message.content.length);
 
     // TODO: we need to separate the user Options from our using options
-    PayloadHandler.setPayload(span, 'messaging.message.payload', message.content, options.maxPayloadSize ?? 1024)
+    PayloadHandler.setPayload(
+      span,
+      'messaging.message.payload',
+      message.content,
+      options.maxPayloadSize ?? 1024
+    );
   };
 }

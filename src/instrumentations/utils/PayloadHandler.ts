@@ -46,24 +46,37 @@ export class PayloadHandler {
 
   setPayload(span: Span, attrPrefix: string) {
     try {
-      PayloadHandler.addPayloadToSpan(span, attrPrefix, Buffer.concat(this.totalChunks))
+      PayloadHandler.addPayloadToSpan(
+        span,
+        attrPrefix,
+        Buffer.concat(this.totalChunks)
+      );
     } catch (e) {
       diag.debug('Failed to parse the payload data');
       return;
     }
   }
 
-  static setPayload(span: Span, attrPrefix: string, payload: any, maxPayloadSize: number) {
+  static setPayload(
+    span: Span,
+    attrPrefix: string,
+    payload: any,
+    maxPayloadSize: number
+  ) {
     if (payload > maxPayloadSize) {
-      PayloadHandler.addPayloadToSpan(span, attrPrefix, payload.slice(0, maxPayloadSize - payload.length))
+      PayloadHandler.addPayloadToSpan(
+        span,
+        attrPrefix,
+        payload.slice(0, maxPayloadSize - payload.length)
+      );
     } else {
-      PayloadHandler.addPayloadToSpan(span, attrPrefix, payload)
+      PayloadHandler.addPayloadToSpan(span, attrPrefix, payload);
     }
   }
 
   private static addPayloadToSpan(span: Span, attrPrefix: string, chunk: any) {
     try {
-      span.setAttribute(attrPrefix,chunk.toString());
+      span.setAttribute(attrPrefix, chunk.toString());
     } catch (e) {
       diag.debug('Failed to parse the payload data');
       return;

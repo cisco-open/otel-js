@@ -28,7 +28,7 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
-import {assertExpectedObj} from "../../utils";
+import { assertExpectedObj } from '../../utils';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -145,7 +145,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(spans.length, 3);
       // make sure our request hook still triggered
       assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
-      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        'http.response.header'
+      );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
@@ -177,7 +181,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
       // make sure our response hook still triggered
       assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
-      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        'http.response.header'
+      );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
@@ -202,7 +210,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
       assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
-      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        'http.response.header'
+      );
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       assert.equal(
         spans[1].attributes['http.response.body'],
@@ -261,7 +273,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(spans.length, 2);
 
       assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
-      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        'http.response.header'
+      );
       assert.equal(
         spans[1].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE
@@ -289,7 +305,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       });
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 4);
-      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        'http.response.header'
+      );
       assert.equal(
         spans[1].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE

@@ -32,7 +32,7 @@ import * as amqp from 'amqplib';
 import type amqpCallback from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { Options } from '../../../src';
-import {assertExpectedObj} from "../../utils";
+import { assertExpectedObj } from '../../utils';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
@@ -90,9 +90,10 @@ describe('amqplib instrumentation callback model', () => {
 
   const MESSAGE_HEADERS = {
     'some-request-header': 'some-request-value',
-    'andd-another-one': 'yoyoyo'
-  }
-  const MESSAGE_TO_SEND = 'Some message we send over the queue. Not too long but no too short';
+    'andd-another-one': 'yoyoyo',
+  };
+  const MESSAGE_TO_SEND =
+    'Some message we send over the queue. Not too long but no too short';
 
   before(async () => {
     conn = await amqp.connect(url);
@@ -102,7 +103,7 @@ describe('amqplib instrumentation callback model', () => {
     await conn.close();
   });
 
-  describe('channel', () => {
+  describe('channel payload & headers capture test', () => {
     let channel: amqp.Channel;
     beforeEach(async () => {
       memoryExporter.reset();
@@ -131,7 +132,7 @@ describe('amqplib instrumentation callback model', () => {
       const hadSpaceInBuffer = channel.sendToQueue(
         QUEUE_NAME,
         Buffer.from(MESSAGE_TO_SEND),
-          {headers: MESSAGE_HEADERS}
+        { headers: MESSAGE_HEADERS }
       );
       assert(hadSpaceInBuffer);
 
@@ -146,12 +147,87 @@ describe('amqplib instrumentation callback model', () => {
         { noAck: true }
       );
 
-      const [publishSpan, consumeSpan]  = memoryExporter.getFinishedSpans();
+      const [publishSpan, consumeSpan] = memoryExporter.getFinishedSpans();
 
-      assertExpectedObj(publishSpan, MESSAGE_HEADERS, 'messaging.message.header')
-      assertExpectedObj(consumeSpan, MESSAGE_HEADERS, 'messaging.message.header')
+      assertExpectedObj(
+        publishSpan,
+        MESSAGE_HEADERS,
+        'messaging.message.header'
+      );
+      assertExpectedObj(
+        consumeSpan,
+        MESSAGE_HEADERS,
+        'messaging.message.header'
+      );
 
-      console.log(consumeSpan);
+      assert.strictEqual(
+        publishSpan.attributes['messaging.message.payload_size'],
+        MESSAGE_TO_SEND.length
+      );
+      assert.strictEqual(
+        consumeSpan.attributes['messaging.message.payload_size'],
+        MESSAGE_TO_SEND.length
+      );
+
+      assert.strictEqual(
+        publishSpan.attributes['messaging.message.payload'],
+        MESSAGE_TO_SEND
+      );
+      assert.strictEqual(
+        consumeSpan.attributes['messaging.message.payload'],
+        MESSAGE_TO_SEND
+      );
+    });
+
+    it('publish and consume when message > maxPayloadSize', async () => {
+      const hadSpaceInBuffer = channel.sendToQueue(
+        QUEUE_NAME,
+        Buffer.from(MESSAGE_TO_SEND),
+        { headers: MESSAGE_HEADERS }
+      );
+      assert(hadSpaceInBuffer);
+
+      await asyncConsume(
+        channel,
+        QUEUE_NAME,
+        [
+          msg => {
+            console.log(msg.content.toString());
+          },
+        ],
+        { noAck: true }
+      );
+
+      const [publishSpan, consumeSpan] = memoryExporter.getFinishedSpans();
+
+      assertExpectedObj(
+        publishSpan,
+        MESSAGE_HEADERS,
+        'messaging.message.header'
+      );
+      assertExpectedObj(
+        consumeSpan,
+        MESSAGE_HEADERS,
+        'messaging.message.header'
+      );
+
+      assert.strictEqual(
+        publishSpan.attributes['messaging.message.payload_size'],
+        MESSAGE_TO_SEND.length
+      );
+      assert.strictEqual(
+        consumeSpan.attributes['messaging.message.payload_size'],
+        MESSAGE_TO_SEND.length
+      );
+
+      assert.strictEqual(
+        publishSpan.attributes['messaging.message.payload'],
+        MESSAGE_TO_SEND
+      );
+      assert.strictEqual(
+        consumeSpan.attributes['messaging.message.payload'],
+        MESSAGE_TO_SEND
+      );
     });
   });
 });

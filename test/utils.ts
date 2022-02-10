@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as http from 'http';
-import * as assert from "assert";
+import * as assert from 'assert';
 
-import { ReadableSpan } from "@opentelemetry/sdk-trace-base";
+import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 
 export const cleanEnvironmentVariables = () => {
   Object.keys(process.env).forEach(key => {
@@ -25,17 +25,15 @@ export const cleanEnvironmentVariables = () => {
 };
 
 export function assertExpectedObj(
-    span: ReadableSpan,
-    obj: Object,
-    attrPrefix: string
+  span: ReadableSpan,
+  obj: Object,
+  attrPrefix: string
 ) {
   for (const key in obj) {
     const value = obj[key];
-    assert.equal(
-        span.attributes[
-            `${attrPrefix}.${key.toLocaleLowerCase()}`
-            ],
-        value
+    assert.strictEqual(
+      span.attributes[`${attrPrefix}.${key.toLocaleLowerCase()}`],
+      value
     );
   }
 }
