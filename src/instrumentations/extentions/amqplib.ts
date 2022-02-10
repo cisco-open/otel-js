@@ -22,6 +22,7 @@ import {
 } from 'opentelemetry-instrumentation-amqplib';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { addFlattenedObj } from '../utils/utils';
+import {PayloadHandler} from "../utils/PayloadHandler";
 
 export function configureAmqplibInstrumentation(
   instrumentation: Instrumentation,
@@ -74,7 +75,8 @@ function createPublishHook(
     }
 
     addFlattenedObj(span, 'messaging.header', publishParams.options.headers);
-    span.setAttribute('message', publishParams.content.toString());
+    // TODO: we need to separate the user Options from our using options
+    PayloadHandler.setPayload(span, 'messaging.message', publishParams.content, options.maxPayloadSize ?? 1024)
   };
 }
 
@@ -86,9 +88,11 @@ function createConsumeHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    console.log(message.properties);
 
     addFlattenedObj(span, 'messaging.header', message.properties.headers);
-    span.setAttribute('message', message.content.toString());
+    span.setAttribute('messaging.message_payload_size_bytes', message.content.length);
+
+    // TODO: we need to separate the user Options from our using options
+    PayloadHandler.setPayload(span, 'messaging.message', message.content, options.maxPayloadSize ?? 1024)
   };
 }

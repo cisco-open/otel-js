@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpBodyHandler } from '../../../src/instrumentations/utils/HttpBodyHandler';
+import { PayloadHandler } from '../../../src/instrumentations/utils/PayloadHandler';
 import * as sinon from 'sinon';
 import * as api from '@opentelemetry/api';
 import {
@@ -31,7 +31,7 @@ const memoryExporter = new InMemorySpanExporter();
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('HttpBodyHandler tests', () => {
-  const BODY_TYPE = 'body';
+  const ATTR_PREFIX = 'http.request.body';
   const defaultOptions = <Options>{
     FSOToken: 'some-token',
     FSOEndpoint: 'http://localhost:4713',
@@ -55,15 +55,15 @@ describe('HttpBodyHandler tests', () => {
     const span = tracer.startSpan('HTTP GET - TEST');
     const testBody = JSON.stringify({ sup: 'this is da chunk' });
 
-    const bodyHandler = new HttpBodyHandler(defaultOptions, 'someEncoding');
+    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
     bodyHandler.addChunk(Buffer.from(testBody));
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[`http.body.${BODY_TYPE}`], testBody);
+    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
     sinon.assert.neverCalledWith(logger.debug);
     done();
   });
@@ -71,15 +71,15 @@ describe('HttpBodyHandler tests', () => {
   it('should do nothing when chunk is undefined', done => {
     const span = tracer.startSpan('HTTP GET - TEST');
 
-    const bodyHandler = new HttpBodyHandler(defaultOptions, 'someEncoding');
+    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
     bodyHandler.addChunk(undefined);
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
-    assert(!spans[0].attributes[`http.body.${BODY_TYPE}`]);
+    assert(!spans[0].attributes[ATTR_PREFIX]);
     sinon.assert.neverCalledWith(logger.debug);
     done();
   });
@@ -88,17 +88,17 @@ describe('HttpBodyHandler tests', () => {
     const span = tracer.startSpan('HTTP GET - TEST');
     const testBody = JSON.stringify({ sup: 'this is da chunk' });
 
-    const bodyHandler = new HttpBodyHandler(defaultOptions, 'someEncoding');
+    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
     const bodyBuffer = Buffer.from(testBody);
     bodyHandler.addChunk(bodyBuffer.slice(0, 4));
     bodyHandler.addChunk(bodyBuffer.slice(4, bodyBuffer.length));
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[`http.body.${BODY_TYPE}`], testBody);
+    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
     sinon.assert.neverCalledWith(logger.debug);
     done();
   });
@@ -107,16 +107,16 @@ describe('HttpBodyHandler tests', () => {
     const span = tracer.startSpan('HTTP GET - TEST');
     const testBody = 'This is definitely noy a json';
 
-    const bodyHandler = new HttpBodyHandler(defaultOptions, 'someEncoding');
+    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
     const bodyBuffer = Buffer.from(testBody);
     bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[`http.body.${BODY_TYPE}`], testBody);
+    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
     sinon.assert.neverCalledWith(logger.debug);
     done();
   });
@@ -125,16 +125,16 @@ describe('HttpBodyHandler tests', () => {
     const span = tracer.startSpan('HTTP GET - TEST');
     const testBody = 'זה לא ג׳ייסון';
 
-    const bodyHandler = new HttpBodyHandler(defaultOptions, 'someEncoding');
+    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
     const bodyBuffer = Buffer.from(testBody);
     bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[`http.body.${BODY_TYPE}`], testBody);
+    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
     sinon.assert.neverCalledWith(logger.debug);
     done();
   });
@@ -149,17 +149,17 @@ describe('HttpBodyHandler tests', () => {
     const span = tracer.startSpan('HTTP GET - TEST');
     const testBody = 'too long bodyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
 
-    const bodyHandler = new HttpBodyHandler(options, 'someEncoding');
+    const bodyHandler = new PayloadHandler(options, 'someEncoding');
     const bodyBuffer = Buffer.from(testBody);
     bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, BODY_TYPE);
+    bodyHandler.setPayload(span, ATTR_PREFIX);
     span.end();
 
     const spans = memoryExporter.getFinishedSpans();
 
     assert.equal(spans.length, 1);
     assert.equal(
-      spans[0].attributes[`http.body.${BODY_TYPE}`],
+      spans[0].attributes[ATTR_PREFIX],
       testBody.slice(0, options.maxPayloadSize)
     );
     sinon.assert.neverCalledWith(logger.debug);

@@ -23,7 +23,7 @@ import {
 } from '@opentelemetry/instrumentation-http';
 import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
-import { HttpBodyHandler } from '../utils/HttpBodyHandler';
+import { PayloadHandler } from '../utils/PayloadHandler';
 import { addFlattenedObj } from '../utils/utils';
 
 export function configureHttpInstrumentation(
@@ -84,7 +84,7 @@ function createHttpRequestHook(
 
     addFlattenedObj(span, 'http.request.header', headers);
 
-    const bodyHandler = new HttpBodyHandler(
+    const bodyHandler = new PayloadHandler(
       options,
       headers['content-encoding'] as string
     );
@@ -96,7 +96,7 @@ function createHttpRequestHook(
 
       request.on('data', listener);
       request.once('end', () => {
-        bodyHandler.setPayload(span, 'request');
+        bodyHandler.setPayload(span, 'http.request.body');
         request.removeListener('data', listener);
       });
     }
@@ -120,7 +120,7 @@ function createHttpResponseHook(
 
     addFlattenedObj(span, 'http.response.header', headers);
 
-    const bodyHandler = new HttpBodyHandler(
+    const bodyHandler = new PayloadHandler(
       options,
       headers['content-encoding'] as string
     );
@@ -133,7 +133,7 @@ function createHttpResponseHook(
 
       response.on('data', listener);
       response.once('end', () => {
-        bodyHandler.setPayload(span, 'response');
+        bodyHandler.setPayload(span, 'http.response.body');
         response.removeListener('data', listener);
       });
     }
