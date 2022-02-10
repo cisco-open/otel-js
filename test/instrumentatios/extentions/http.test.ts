@@ -20,7 +20,6 @@ import { Options } from '../../../src';
 import {
   BasicTracerProvider,
   InMemorySpanExporter,
-  ReadableSpan,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
 
@@ -29,6 +28,7 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
+import {assertExpectedObj} from "../../utils";
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -36,22 +36,6 @@ const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('Capturing HTTP Headers/Bodies', () => {
-  function assertExpectedHeaders(
-    span: ReadableSpan,
-    headers: any,
-    command: string
-  ) {
-    for (const headerKey in headers) {
-      const headerValue = headers[headerKey];
-      assert.equal(
-        span.attributes[
-          `http.${command}.header.${headerKey.toLocaleLowerCase()}`
-        ],
-        headerValue
-      );
-    }
-  }
-
   const options = <Options>{
     FSOToken: 'some-token',
     FSOEndpoint: 'http://localhost:4713',
@@ -160,8 +144,8 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 3);
       // make sure our request hook still triggered
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
-      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
@@ -192,8 +176,8 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(spans.length, 2);
 
       // make sure our response hook still triggered
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
-      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
@@ -217,8 +201,8 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
-      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       assert.equal(
         spans[1].attributes['http.response.body'],
@@ -238,7 +222,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
     });
 
@@ -255,7 +239,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       // this is an echo endpoint
       assert.equal(
@@ -266,7 +250,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
   });
 
   describe('test capture extra data - get requests', () => {
-    it('test capture request headers - sanity', async () => {
+    it('should capture request headers - sanity', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
         port: 8000,
@@ -276,15 +260,15 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
 
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
-      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
       assert.equal(
         spans[1].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE
       );
     });
 
-    it('test capture request headers - non existing endpoint', async () => {
+    it('should capture request headers - non existing endpoint', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
         port: 8000,
@@ -293,10 +277,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
       });
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedHeaders(spans[1], REQUEST_HEADERS, 'request');
+      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
     });
 
-    it('test circular request', async () => {
+    it('should circular request', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
         port: 8000,
@@ -305,14 +289,14 @@ describe('Capturing HTTP Headers/Bodies', () => {
       });
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 4);
-      assertExpectedHeaders(spans[1], EXTRA_RESPONSE_HEADERS, 'response');
+      assertExpectedObj(spans[1], EXTRA_RESPONSE_HEADERS, 'http.response.header');
       assert.equal(
         spans[1].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE
       );
-      assertExpectedHeaders(spans[2], REQUEST_HEADERS, 'request');
+      assertExpectedObj(spans[2], REQUEST_HEADERS, 'http.request.header');
       assert.equal(spans[2].attributes['http.request.body'], '');
-      assertExpectedHeaders(spans[3], REQUEST_HEADERS, 'request');
+      assertExpectedObj(spans[3], REQUEST_HEADERS, 'http.request.header');
       assert.equal(
         spans[3].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE

@@ -32,6 +32,7 @@ import * as amqp from 'amqplib';
 import type amqpCallback from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { Options } from '../../../src';
+import {assertExpectedObj} from "../../utils";
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
@@ -87,6 +88,12 @@ describe('amqplib instrumentation callback model', () => {
     serviceName: 'application',
   };
 
+  const MESSAGE_HEADERS = {
+    'some-request-header': 'some-request-value',
+    'andd-another-one': 'yoyoyo'
+  }
+  const MESSAGE_TO_SEND = 'Some message we send over the queue. Not too long but no too short';
+
   before(async () => {
     conn = await amqp.connect(url);
   });
@@ -123,8 +130,8 @@ describe('amqplib instrumentation callback model', () => {
     it('simple publish and consume from queue', async () => {
       const hadSpaceInBuffer = channel.sendToQueue(
         QUEUE_NAME,
-        Buffer.from('osher'),
-        { headers: { someshit: 'fuck' } }
+        Buffer.from(MESSAGE_TO_SEND),
+          {headers: MESSAGE_HEADERS}
       );
       assert(hadSpaceInBuffer);
 
@@ -139,8 +146,12 @@ describe('amqplib instrumentation callback model', () => {
         { noAck: true }
       );
 
-      const spans = memoryExporter.getFinishedSpans();
-      console.log(spans);
+      const [publishSpan, consumeSpan]  = memoryExporter.getFinishedSpans();
+
+      assertExpectedObj(publishSpan, MESSAGE_HEADERS, 'messaging.message.header')
+      assertExpectedObj(consumeSpan, MESSAGE_HEADERS, 'messaging.message.header')
+
+      console.log(consumeSpan);
     });
   });
 });

@@ -74,9 +74,10 @@ function createPublishHook(
       return;
     }
 
-    addFlattenedObj(span, 'messaging.header', publishParams.options.headers);
+    addFlattenedObj(span, 'messaging.message.header', publishParams.options.headers);
+    span.setAttribute('messaging.message.payload_size_bytes', publishParams.content.length);
     // TODO: we need to separate the user Options from our using options
-    PayloadHandler.setPayload(span, 'messaging.message', publishParams.content, options.maxPayloadSize ?? 1024)
+    PayloadHandler.setPayload(span, 'messaging.message.payload', publishParams.content, options.maxPayloadSize ?? 1024)
   };
 }
 
@@ -89,10 +90,10 @@ function createConsumeHook(
       return;
     }
 
-    addFlattenedObj(span, 'messaging.header', message.properties.headers);
-    span.setAttribute('messaging.message_payload_size_bytes', message.content.length);
+    addFlattenedObj(span, 'messaging.message.header', message.properties.headers);
+    span.setAttribute('messaging.message.payload_size_bytes', message.content.length);
 
     // TODO: we need to separate the user Options from our using options
-    PayloadHandler.setPayload(span, 'messaging.message', message.content, options.maxPayloadSize ?? 1024)
+    PayloadHandler.setPayload(span, 'messaging.message.payload', message.content, options.maxPayloadSize ?? 1024)
   };
 }
