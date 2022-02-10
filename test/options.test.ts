@@ -51,6 +51,8 @@ describe('Options tests', () => {
         FSOEndpoint: 'http://localhost:4713',
         serviceName: 'application',
         debug: false,
+        maxPayloadSize: 1024,
+        exporterType: 'otlp-grpc',
       });
       sinon.assert.neverCalledWith(logger.error);
     });
@@ -69,6 +71,8 @@ describe('Options tests', () => {
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
+        maxPayloadSize: 10000,
+        exporterType: 'otlp-http',
       };
       const options = _configDefaultOptions(userOptions);
       assert.ok(options);
@@ -84,12 +88,16 @@ describe('Options tests', () => {
         FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
+        maxPayloadSize: 10000,
+        exporterType: 'otlp-http',
       };
 
       process.env.FSO_TOKEN = userOptions.FSOToken;
       process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
       process.env.SERVICE_NAME = userOptions.serviceName;
       process.env.FSO_DEBUG = String(userOptions.debug);
+      process.env.MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
+      process.env.EXPORTER_TYPE = String(userOptions.exporterType);
 
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
