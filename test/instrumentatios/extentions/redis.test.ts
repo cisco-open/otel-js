@@ -52,9 +52,11 @@ const value = 'value1';
 const hash = 'myhash';
 
 describe('Test redis', () => {
+  const shouldTest = process.env.RUN_REDIS_TEST;
+  console.log('shoudTest: ', shouldTest);
+
   before(done => {
-    const shouldTest = process.env.RUN_REDIS_TEST;
-    console.log('shoudTest: ', shouldTest);
+    console.log('inside before');
     if (!shouldTest) {
       return;
     }
