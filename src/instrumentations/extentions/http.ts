@@ -24,6 +24,7 @@ import {
 import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { HttpBodyHandler } from '../utils/HttpBodyHandler';
+import { addFlattenedObj } from '../utils/utils';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -80,17 +81,8 @@ function createHttpRequestHook(
       request instanceof IncomingMessage
         ? request.headers
         : request.getHeaders();
-    for (const headerKey in headers) {
-      const headerValue = headers[headerKey];
 
-      if (headerValue === undefined) {
-        continue;
-      }
-      span.setAttribute(
-        `http.request.header.${headerKey.toLocaleLowerCase()}`,
-        headerValue
-      );
-    }
+    addFlattenedObj(span, 'http.request.header', headers);
 
     const bodyHandler = new HttpBodyHandler(
       options,
@@ -125,18 +117,8 @@ function createHttpResponseHook(
       response instanceof IncomingMessage
         ? response.headers
         : response.getHeaders();
-    for (const headerKey in headers) {
-      const headerValue = headers[headerKey];
 
-      if (headerValue === undefined) {
-        continue;
-      }
-
-      span.setAttribute(
-        `http.response.header.${headerKey.toLocaleLowerCase()}`,
-        headerValue
-      );
-    }
+    addFlattenedObj(span, 'http.response.header', headers);
 
     const bodyHandler = new HttpBodyHandler(
       options,
