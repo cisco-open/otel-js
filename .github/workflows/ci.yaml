@@ -23,6 +23,9 @@
             --health-interval 10s
             --health-timeout 5s
             --health-retries 5
+          ports:
+            # Maps port 6379 on service container to the host
+            - 6379:6379
       env:
           RUN_REDIS_TEST: 1
       # container:
@@ -45,6 +48,12 @@
         #   run: npm run build
         - name: Unit tests
           run: npm run test
+          env:
+            # The hostname used to communicate with the Redis service container
+            REDIS_HOST: localhost
+            # The default Redis port
+            REDIS_PORT: 6379
+            RUN_REDIS_TEST: 1
         # - name: Coverage
         #   if: matrix.container == 'node:14'
         #   run: npm run codecov
