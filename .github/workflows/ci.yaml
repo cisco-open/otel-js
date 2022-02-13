@@ -10,7 +10,7 @@
       strategy:
         fail-fast: false
         matrix:
-          container: [ "node:12" ]
+          container: [ "node:10" ]
       runs-on: ubuntu-latest
       services:
         redis:
