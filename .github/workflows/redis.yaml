@@ -25,7 +25,8 @@
             --health-interval 10s
             --health-timeout 5s
             --health-retries 5
-
+      env:
+          RUN_REDIS_TEST: 1
       steps:
         # Downloads a copy of the code in your repository before running CI tests
         - name: Check out repository code

@@ -62,7 +62,7 @@ describe('Test redis', () => {
     }
     client = redis.createClient();
     client.on('error', err => {
-      // done(err);
+      done(err);
     });
     client.on('ready', done);
   });

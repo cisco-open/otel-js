@@ -12,6 +12,7 @@
       #   matrix:
       #     container: [ "node:10", "node:12", "node:14" ]
       runs-on: ubuntu-latest
+      container: node:10.18-jessie
       services:
         redis:
           image: redis
@@ -24,27 +25,26 @@
             --health-retries 5
       env:
           RUN_REDIS_TEST: 1
-      container: node:10.18-jessie
       # container:
       #   image: ${{ matrix.container }}
       steps:
         - name: Checkout
           uses: actions/checkout@v2
-        - name: Cache Dependencies
-          uses: actions/cache@v2
-          with:
-            path: |
-              node_modules
-              package-lock.json
-            key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
+        # - name: Cache Dependencies
+        #   uses: actions/cache@v2
+        #   with:
+        #     path: |
+        #       node_modules
+        #       package-lock.json
+        #     key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
         - name: Install dependencies
           run: npm ci
-        - name: build
-          run: npm run build
+        # - name: build
+        #   run: npm run build
         - name: Unit tests
           run: npm run test
-        - name: Coverage
-          if: matrix.container == 'node:14'
-          run: npm run codecov
+        # - name: Coverage
+        #   if: matrix.container == 'node:14'
+        #   run: npm run codecov
