@@ -7,16 +7,16 @@
   permissions: read-all
   jobs:
     unit-test:
-      strategy:
-        fail-fast: false
-        matrix:
-          container: [ "node:10", "node:12", "node:14" ]
+      # strategy:
+      #   fail-fast: false
+      #   matrix:
+      #     container: [ "node:10", "node:12", "node:14" ]
       runs-on: ubuntu-latest
       services:
         redis:
           image: redis
-          ports:
-          - 6379:6379
+          # ports:
+          # - 6379:6379
           options: >-
             --health-cmd "redis-cli ping"
             --health-interval 10s
@@ -24,11 +24,12 @@
             --health-retries 5
       env:
           RUN_REDIS_TEST: 1
-      container:
-        image: ${{ matrix.container }}
+      container: node:10.18-jessie
+      # container:
+      #   image: ${{ matrix.container }}
       steps:
         - name: Checkout
-          uses: actions/checkout@v1
+          uses: actions/checkout@v2
         - name: Cache Dependencies
           uses: actions/cache@v2
           with:
