@@ -55,15 +55,7 @@ const port = process.env.REDIS_PORT || '6379';
 const URL = `redis://${host}:${port}`;
 
 describe('Test redis', () => {
-  const shouldTest = process.env.RUN_REDIS_TEST || '0';
-  console.log('shoudTest: ', shouldTest);
-
-  before(function (done) {
-    console.log('inside before');
-    if (shouldTest === '0') {
-      this.skip();
-    }
-    console.log('url: ', URL);
+  before(done => {
     client = redis.createClient(URL);
     client.on('error', err => {
       done(err);
