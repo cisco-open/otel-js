@@ -22,7 +22,7 @@ const app = express();
 // app.get('/', (req, res) => {
 async function residFUnc () {
     const client = createClient();
-    client.flushdb();
+    // client.flushdb();
     client.on('error', err => console.log('Redis Client Error', err));
     await client.hset('myhash', 'key1', 'value1', () => {
       console.log('the redis set callback for key1');
@@ -30,9 +30,9 @@ async function residFUnc () {
     await client.hset('myhash', 'key2', 'value2', () => {
       console.log('the redis set callback for key2');
     });
-    const data = await client.hgetall('myhash', (data) => {
-      console.log(data);
-    });
+    // client.hgetall('myhash', (data) => {
+    //   console.log(data);
+    // });
     client.quit();
     // res.status(200).send('ok');
   };
