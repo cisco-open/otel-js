@@ -36,7 +36,7 @@ jobs:
       - name: Connect to Redis
         # Runs a script that creates a Redis client, populates
         # the client with data, and retrieves data
-        run: node test/instrumentatios/extentions/redisclient.js
+        run: npm run test
         # Environment variable used by the `client.js` script to create
         # a new Redis client.
         env:
@@ -44,3 +44,4 @@ jobs:
           REDIS_HOST: localhost
           # The default Redis port
           REDIS_PORT: 6379
+          RUN_REDIS_TEST: 1
