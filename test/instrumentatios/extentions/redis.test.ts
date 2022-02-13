@@ -50,6 +50,9 @@ let client: redisTypes.RedisClient;
 const key = 'key1';
 const value = 'value1';
 const hash = 'myhash';
+const host = process.env.REDIS_HOST || 'localhost';
+const port = process.env.REDIS_PORT || '6379';
+const URL = `redis://${host}:${port}`;
 
 describe('Test redis', () => {
   const shouldTest = process.env.RUN_REDIS_TEST || '0';
@@ -60,7 +63,8 @@ describe('Test redis', () => {
     if (shouldTest === '0') {
       this.skip();
     }
-    client = redis.createClient();
+    console.log('url: ', URL);
+    client = redis.createClient(URL);
     client.on('error', err => {
       done(err);
     });
