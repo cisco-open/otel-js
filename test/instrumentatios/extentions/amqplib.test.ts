@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// in order to these tests locally, run: docker run `npm run rabbitmq`
+// in order to these tests locally, run: docker run `export RUN_RABBITMQ_TESTS=1'; npm run rabbitmq`
 import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
 import {
   BasicTracerProvider,
@@ -81,6 +81,16 @@ export const asyncConsume = (
 };
 
 describe('amqplib instrumentation callback model', () => {
+
+  // For these tests, rabbitmq must be running. Add RUN_MONGODB_TESTS to run
+  // these tests.
+  const RUN_RABBITMQ_TESTS = process.env.RUN_RABBITMQ_TESTS as string;
+  let shouldTest = true;
+  if (!RUN_RABBITMQ_TESTS) {
+    console.log('Skipping test-rabbitmq. Run RabbitMQ to test');
+    shouldTest = false;
+  }
+
   const url = `amqp://${TEST_RABBITMQ_USER}:${TEST_RABBITMQ_PASS}@${TEST_RABBITMQ_HOST}:${TEST_RABBITMQ_PORT}`;
   let conn: amqp.Connection;
 
@@ -98,12 +108,21 @@ describe('amqplib instrumentation callback model', () => {
     'Some message we send over the queue. Not too long but no too short';
 
   before(async () => {
-    configureAmqplibInstrumentation(instrumentation, options);
-    conn = await amqp.connect(url);
+    if(shouldTest) {
+      configureAmqplibInstrumentation(instrumentation, options);
+      conn = await amqp.connect(url);
+    }
   });
 
+  beforeEach(function shouldSkip(this: any, done){
+    if (!shouldTest) {
+      this.skip();
+    }
+    done();
+  })
+
   after(async () => {
-    await conn.close();
+    if(shouldTest) await conn.close();
   });
 
   describe('channel payload & headers capture test', () => {
