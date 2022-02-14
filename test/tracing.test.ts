@@ -22,6 +22,7 @@ import { OTLPTraceExporter as OTLPGrpcTraceExporter } from '@opentelemetry/expor
 import { diag } from '@opentelemetry/api';
 import { fso, Options } from '../src';
 import * as utils from './utils';
+import { ExporterOptions } from '../src/options';
 
 describe('Tracing test', () => {
   let addSpanProcessorMock;
@@ -64,22 +65,29 @@ describe('Tracing test', () => {
 
   it('setups tracing with custom options', () => {
     const userOptions: Options = {
-      FSOEndpoint: 'http://localhost:4317',
       serviceName: 'my-app-name',
       FSOToken: 'fso-token',
       debug: false,
+      exporters: [
+        <ExporterOptions>{
+          FSOEndpoint: 'http://localhost:4317',
+        },
+      ],
     };
     fso.init(userOptions);
     assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
   });
 
   it('setups tracing with defaults', () => {
-    const userOptions: Options = {
+    const exporterOptions: ExporterOptions = {
       FSOEndpoint: '',
+    };
+    const userOptions: Options = {
       serviceName: '',
       FSOToken: '',
+      exporters: [exporterOptions],
     };
-    process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
+    process.env.FSO_ENDPOINT = exporterOptions.FSOEndpoint;
     process.env.SERVICE_NAME = userOptions.serviceName;
     process.env.FSO_TOKEN = userOptions.FSOToken;
 
