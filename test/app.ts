@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 import { fso, Options } from '../src';
+import { ExporterOptions } from '../src/options';
+
+const exporterOptions: ExporterOptions = {
+  FSOEndpoint: 'http://localhost:4317',
+};
 
 const userOptions: Options = {
-  FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
+  exporters: [exporterOptions],
 };
 
 fso.init(userOptions);
