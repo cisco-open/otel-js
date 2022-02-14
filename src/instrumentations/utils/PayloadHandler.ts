@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright The Cisco Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,16 +44,11 @@ export class PayloadHandler {
   }
 
   setPayload(span: Span, attrPrefix: string) {
-    try {
-      PayloadHandler.addPayloadToSpan(
-        span,
-        attrPrefix,
-        Buffer.concat(this.totalChunks)
-      );
-    } catch (e) {
-      diag.debug('Failed to parse the payload data');
-      return;
-    }
+    PayloadHandler.addPayloadToSpan(
+      span,
+      attrPrefix,
+      Buffer.concat(this.totalChunks)
+    );
   }
 
   static setPayload(
@@ -63,7 +57,7 @@ export class PayloadHandler {
     payload: any,
     maxPayloadSize: number
   ) {
-    if (payload > maxPayloadSize) {
+    if (payload.length > maxPayloadSize) {
       PayloadHandler.addPayloadToSpan(
         span,
         attrPrefix,

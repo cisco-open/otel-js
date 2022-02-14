@@ -26,11 +26,11 @@ import { Options } from '../../../src';
 import * as assert from 'assert';
 
 const provider = new BasicTracerProvider();
-const tracer = provider.getTracer('test-http-body-handler');
+const tracer = provider.getTracer('test-payload-handler');
 const memoryExporter = new InMemorySpanExporter();
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
-describe('HttpBodyHandler tests', () => {
+describe('PayloadHandler tests', () => {
   const ATTR_PREFIX = 'http.request.body';
   const defaultOptions = <Options>{
     FSOToken: 'some-token',
@@ -51,118 +51,171 @@ describe('HttpBodyHandler tests', () => {
     logger.debug.resetHistory();
   });
 
-  it('should capture data and set relevant span attr - single chunk', done => {
-    const span = tracer.startSpan('HTTP GET - TEST');
-    const testBody = JSON.stringify({ sup: 'this is da chunk' });
+  describe('PayloadHandler instance tests', () => {
+    it('should capture data and set relevant span attr - single chunk', done => {
+      const span = tracer.startSpan('HTTP GET - TEST');
+      const testBody = JSON.stringify({ sup: 'this is da chunk' });
 
-    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
-    bodyHandler.addChunk(Buffer.from(testBody));
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
+      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      payloadHandler.addChunk(Buffer.from(testBody));
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
 
-    const spans = memoryExporter.getFinishedSpans();
+      const spans = memoryExporter.getFinishedSpans();
 
-    assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
+      assert.equal(spans.length, 1);
+      assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
+    it('should do nothing when chunk is undefined', done => {
+      const span = tracer.startSpan('HTTP GET - TEST');
+
+      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      payloadHandler.addChunk(undefined);
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
+
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert(!spans[0].attributes[ATTR_PREFIX]);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
+    it('should capture data and set relevant span attr - multiple chunks', done => {
+      const span = tracer.startSpan('HTTP GET - TEST');
+      const testBody = JSON.stringify({ sup: 'this is da chunk' });
+
+      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadBuffer = Buffer.from(testBody);
+      payloadHandler.addChunk(payloadBuffer.slice(0, 4));
+      payloadHandler.addChunk(payloadBuffer.slice(4, payloadBuffer.length));
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
+
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
+    it('should capture data and set relevant span attr - not JSON data', done => {
+      const span = tracer.startSpan('HTTP GET - TEST');
+      const testBody = 'This is definitely noy a json';
+
+      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadBuffer = Buffer.from(testBody);
+      payloadHandler.addChunk(payloadBuffer);
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
+
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
+    it('should capture data and set relevant span attr - utf-16', done => {
+      const span = tracer.startSpan('HTTP GET - TEST');
+      const testBody = 'זה לא ג׳ייסון';
+
+      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadBuffer = Buffer.from(testBody);
+      payloadHandler.addChunk(payloadBuffer);
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
+
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
+    it('should capture data and set relevant span attr < maxPayloadSize', done => {
+      const options = <Options>{
+        FSOToken: 'some-token',
+        FSOEndpoint: 'http://localhost:4317',
+        serviceName: 'application',
+        maxPayloadSize: 10,
+      };
+      const span = tracer.startSpan('HTTP GET - TEST');
+      const testBody = 'too long payloadyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
+
+      const payloadHandler = new PayloadHandler(options, 'someEncoding');
+      const payloadBuffer = Buffer.from(testBody);
+      payloadHandler.addChunk(payloadBuffer);
+      payloadHandler.setPayload(span, ATTR_PREFIX);
+      span.end();
+
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert.equal(
+        spans[0].attributes[ATTR_PREFIX],
+        testBody.slice(0, options.maxPayloadSize)
+      );
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
   });
+  describe('PayloadHandler classmethod tests', () => {
+    it('should capture data and set relevant span attr', done => {
+      const span = tracer.startSpan('TEST');
+      const testBody = 'too long payloadyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
+      const maxPayloadSize = 10000;
 
-  it('should do nothing when chunk is undefined', done => {
-    const span = tracer.startSpan('HTTP GET - TEST');
+      const payloadBuffer = Buffer.from(testBody);
+      PayloadHandler.setPayload(
+        span,
+        ATTR_PREFIX,
+        payloadBuffer,
+        maxPayloadSize
+      );
+      span.end();
 
-    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
-    bodyHandler.addChunk(undefined);
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
+      const spans = memoryExporter.getFinishedSpans();
 
-    const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 1);
+      assert.equal(
+        spans[0].attributes[ATTR_PREFIX],
+        testBody.slice(0, maxPayloadSize)
+      );
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
 
-    assert.equal(spans.length, 1);
-    assert(!spans[0].attributes[ATTR_PREFIX]);
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
-  });
+    it('should capture data and set relevant span attr < maxPayloadSize', done => {
+      const span = tracer.startSpan('TEST');
+      const testBody = 'too long payloadyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
+      const maxPayloadSize = 10;
 
-  it('should capture data and set relevant span attr - multiple chunks', done => {
-    const span = tracer.startSpan('HTTP GET - TEST');
-    const testBody = JSON.stringify({ sup: 'this is da chunk' });
+      const payloadBuffer = Buffer.from(testBody);
+      PayloadHandler.setPayload(
+        span,
+        ATTR_PREFIX,
+        payloadBuffer,
+        maxPayloadSize
+      );
+      span.end();
 
-    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
-    const bodyBuffer = Buffer.from(testBody);
-    bodyHandler.addChunk(bodyBuffer.slice(0, 4));
-    bodyHandler.addChunk(bodyBuffer.slice(4, bodyBuffer.length));
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
+      const spans = memoryExporter.getFinishedSpans();
 
-    const spans = memoryExporter.getFinishedSpans();
-
-    assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
-  });
-
-  it('should capture data and set relevant span attr - not JSON data', done => {
-    const span = tracer.startSpan('HTTP GET - TEST');
-    const testBody = 'This is definitely noy a json';
-
-    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
-    const bodyBuffer = Buffer.from(testBody);
-    bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
-
-    const spans = memoryExporter.getFinishedSpans();
-
-    assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
-  });
-
-  it('should capture data and set relevant span attr - utf-16', done => {
-    const span = tracer.startSpan('HTTP GET - TEST');
-    const testBody = 'זה לא ג׳ייסון';
-
-    const bodyHandler = new PayloadHandler(defaultOptions, 'someEncoding');
-    const bodyBuffer = Buffer.from(testBody);
-    bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
-
-    const spans = memoryExporter.getFinishedSpans();
-
-    assert.equal(spans.length, 1);
-    assert.equal(spans[0].attributes[ATTR_PREFIX], testBody);
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
-  });
-
-  it('should capture data and set relevant span attr < maxPayloadSize', done => {
-    const options = <Options>{
-      FSOToken: 'some-token',
-      FSOEndpoint: 'http://localhost:4317',
-      serviceName: 'application',
-      maxPayloadSize: 10,
-    };
-    const span = tracer.startSpan('HTTP GET - TEST');
-    const testBody = 'too long bodyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
-
-    const bodyHandler = new PayloadHandler(options, 'someEncoding');
-    const bodyBuffer = Buffer.from(testBody);
-    bodyHandler.addChunk(bodyBuffer);
-    bodyHandler.setPayload(span, ATTR_PREFIX);
-    span.end();
-
-    const spans = memoryExporter.getFinishedSpans();
-
-    assert.equal(spans.length, 1);
-    assert.equal(
-      spans[0].attributes[ATTR_PREFIX],
-      testBody.slice(0, options.maxPayloadSize)
-    );
-    sinon.assert.neverCalledWith(logger.debug);
-    done();
+      assert.equal(spans.length, 1);
+      assert.equal(
+        spans[0].attributes[ATTR_PREFIX],
+        testBody.slice(0, maxPayloadSize)
+      );
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
   });
 });

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// in order to these tests locally, run: docker run `npm run rabbitmq`
 import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
 import {
   BasicTracerProvider,
