@@ -38,8 +38,8 @@ import { assertExpectedObj } from '../../utils';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
-const TEST_RABBITMQ_PORT = process.env.TEST_RABBITMQ_PASS || '5672';
-const TEST_RABBITMQ_USER = process.env.TEST_RABBITMQ_PASS || 'username';
+const TEST_RABBITMQ_PORT = process.env.TEST_RABBITMQ_PORT || '5672';
+const TEST_RABBITMQ_USER = process.env.TEST_RABBITMQ_USER || 'username';
 
 const QUEUE_NAME = 'test-rabbitmq-queue';
 

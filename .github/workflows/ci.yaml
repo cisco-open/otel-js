@@ -24,6 +24,8 @@
             RABBITMQ_DEFAULT_PASS: password
       env:
         RUN_RABBITMQ_TESTS: 1
+        TEST_RABBITMQ_HOST: "rabbitmq"
+        TEST_RABBITMQ_PORT: 5672
       steps:
         - name: Checkout
           uses: actions/checkout@v1
