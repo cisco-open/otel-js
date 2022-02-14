@@ -34,7 +34,7 @@ describe('HttpBodyHandler tests', () => {
   const ATTR_PREFIX = 'http.request.body';
   const defaultOptions = <Options>{
     FSOToken: 'some-token',
-    FSOEndpoint: 'http://localhost:4713',
+    FSOEndpoint: 'http://localhost:4317',
     serviceName: 'application',
   };
 
@@ -142,7 +142,7 @@ describe('HttpBodyHandler tests', () => {
   it('should capture data and set relevant span attr < maxPayloadSize', done => {
     const options = <Options>{
       FSOToken: 'some-token',
-      FSOEndpoint: 'http://localhost:4713',
+      FSOEndpoint: 'http://localhost:4317',
       serviceName: 'application',
       maxPayloadSize: 10,
     };

@@ -22,9 +22,11 @@ npm install cisco-opentelemetry-node
 const { fso } = require('cisco-opentelemetry-node');
 
 const userOptions = {
-  FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'fso-token',
+  exporters: [{
+      FSOEndpoint: 'http://localhost:4317'
+  }]
 }
 
 fso.init(userOptions);
@@ -36,9 +38,11 @@ fso.init(userOptions);
 import { fso, Options } from 'cisco-opentelemetry-node';
 
 const userOptions: Options = {
-  FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
+  exporters: [{
+      FSOEndpoint: 'http://localhost:4317'
+  }]
 };
 fso.init(userOptions);
 ```
@@ -47,14 +51,19 @@ fso.init(userOptions);
 
 Advanced options can be configured as a parameter to the init() method:
 
-|Parameter          |Env          |Type   |Default                  |Description          |
-|-------------------|-------------|-------|-------------------------|---------------------|
+|Parameter          |Env               |Type   |Default                  |Description          |
+|-------------------|------------------|-------|-------------------------|---------------------|
 |FSOToken           |FSO_TOKEN         |string | -                       | Cisco account token                                |
-|FSOEndpoint        |FSO_ENDPOINT      |string | `http://localhost:4713` | The address of the trace collector to send traces to |
 |serviceName        |SERVICE_NAME      |string | `application`           | Application name that will be set for traces         |
 |debug              |FSO_DEBUG         |string | `false`                 | Debug logs                                |
 |maxPayloadSize     |MAX_PAYLOAD_SIZE  |number | `1024`                  | The number in bytes of the maximum payload to capture for request  |
-|exporterTypes      |EXPORTER_TYPE    |string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below  |
+
+Exporter options
+
+|Parameter          |Env               |Type   |Default                  |Description          |
+|-------------------|------------------|-------|-------------------------|---------------------|
+|FSOEndpoint        |FSO_ENDPOINT      |string | `http://localhost:4317` | The address of the trace collector to send traces to |
+|type.              |EXPORTER_TYPE     |string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below  |
 
 Multiple exporter can be initialize using fso init function with the following options:
 
@@ -63,7 +72,14 @@ const userOptions: Options = {
   FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
-  exporterTypes: ['otlp-http', 'otlp-grpc'],
+  exporters: [{
+      FSOEndpoint: 'http://localhost:4317',
+      type: 'otlp-grpc'
+  },
+  {
+      FSOEndpoint: 'http://localhost:4317',
+      type: 'otlp-http'
+  }]
 };
 fso.init(userOptions);
 ```

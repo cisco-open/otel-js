@@ -38,7 +38,7 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 describe('Capturing HTTP Headers/Bodies', () => {
   const options = <Options>{
     FSOToken: 'some-token',
-    FSOEndpoint: 'http://localhost:4713',
+    FSOEndpoint: 'http://localhost:4317',
     serviceName: 'application',
   };
 
