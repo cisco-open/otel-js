@@ -31,7 +31,7 @@ instrumentation.setTracerProvider(provider);
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 import * as amqp from 'amqplib';
-import * as amqpCallback from 'amqplib/callback_api';
+import { Channel, ConfirmChannel} from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { Options } from '../../../src';
 import { assertExpectedObj } from '../../utils';
@@ -52,9 +52,9 @@ const CHANNEL_CLOSED_IN_TEST = Symbol(
 export const asyncConsume = (
   channel:
     | amqp.Channel
-    | amqpCallback.Channel
+    | Channel
     | amqp.ConfirmChannel
-    | amqpCallback.ConfirmChannel,
+    | ConfirmChannel,
   queueName: string,
   callback: ((msg: amqp.Message) => unknown)[],
   options?: amqp.Options.Consume
