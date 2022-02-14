@@ -81,7 +81,6 @@ export const asyncConsume = (
 };
 
 describe('amqplib instrumentation callback model', () => {
-
   // For these tests, rabbitmq must be running. Add RUN_MONGODB_TESTS to run
   // these tests.
   const RUN_RABBITMQ_TESTS = process.env.RUN_RABBITMQ_TESTS as string;
@@ -108,21 +107,21 @@ describe('amqplib instrumentation callback model', () => {
     'Some message we send over the queue. Not too long but no too short';
 
   before(async () => {
-    if(shouldTest) {
+    if (shouldTest) {
       configureAmqplibInstrumentation(instrumentation, options);
       conn = await amqp.connect(url);
     }
   });
 
-  beforeEach(function shouldSkip(this: any, done){
+  beforeEach(function shouldSkip(this: any, done) {
     if (!shouldTest) {
       this.skip();
     }
     done();
-  })
+  });
 
   after(async () => {
-    if(shouldTest) await conn.close();
+    if (shouldTest) await conn.close();
   });
 
   describe('channel payload & headers capture test', () => {
