@@ -29,7 +29,7 @@ instrumentation.setTracerProvider(provider);
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 import * as amqp from 'amqplib';
-import type amqpCallback from 'amqplib/callback_api';
+import * as amqpCallback from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { Options } from '../../../src';
 import { assertExpectedObj } from '../../utils';
@@ -62,9 +62,9 @@ export const asyncConsume = (
     channel.consume(
       queueName,
       msg => {
-        msgs.push(msg);
+        msgs.push(<amqp.Message>msg);
         try {
-          callback[msgs.length - 1]?.(msg);
+          callback[msgs.length - 1]?.(<amqp.Message>msg);
           if (msgs.length >= callback.length) {
             setImmediate(() => resolve(msgs));
           }
