@@ -72,19 +72,7 @@ function createRedisResponseHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    switch (cmdName) {
-      case 'hkeys':
-      case 'hset':
-      case 'hget':
-      case 'del':
-      case 'hgetall':
-      case 'hincrby':
-      case 'exec':
-        span.setAttribute('db.command.arguments', JSON.stringify(cmdArgs));
-        span.setAttribute('db.command.response', JSON.stringify(responseInfo));
-        break;
-      case 'multi':
-        span.setAttribute('db.command.response', responseInfo as string);
-    }
+    span.setAttribute('db.command.arguments', JSON.stringify(cmdArgs));
+    span.setAttribute('db.command.response', JSON.stringify(responseInfo));
   };
 }

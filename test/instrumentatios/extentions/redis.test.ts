@@ -193,8 +193,8 @@ describe('Test redis', () => {
       multi.exec(() => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 3);
-        const multiRes = spans[0].attributes['db.command.response'];
-        assert.equal(multiRes, 'OK');
+        const multiRes = spans[0].attributes['db.command.response'] as string;
+        assert.equal(JSON.parse(multiRes), 'OK');
         const execRes = spans[2].attributes['db.command.response'];
         assert.strictEqual(execRes, '[1]');
         done();

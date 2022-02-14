@@ -50,13 +50,13 @@
     "@opentelemetry/sdk-node": "^0.27.0",
     "@opentelemetry/sdk-trace-base": "~1.0.1",
     "@opentelemetry/sdk-trace-node": "~1.0.1",
-    "assert": "^2.0.0",
-    "redis": "^3.0.0",
     "express": "^4.17.2",
     "@grpc/grpc-js": "^1.5.0",
     "nyc": "^15.1.0"
   },
   "devDependencies": {
+    "assert": "^2.0.0",
+    "redis": "^3.0.0",
     "@commitlint/cli": "13.1.0",
     "@commitlint/config-conventional": "13.1.0",
     "@opentelemetry/resources": "^1.0.1",
