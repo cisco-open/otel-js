@@ -1,6 +1,8 @@
 # otel-js
+
 [![NPM Published Version][npm-img]][npm-url]
 [![Apache License][license-image]][license-image]
+![CI](https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg)
 
 An Aplha version
 
@@ -83,7 +85,6 @@ const userOptions: Options = {
 };
 fso.init(userOptions);
 ```
-
 
 To test the launcher:
 
