@@ -69,8 +69,9 @@ describe('Test redis', () => {
         done(err);
       });
       client.on('ready', done);
+    } else {
+      done();
     }
-    done();
   });
 
   beforeEach(function shouldSkip(this: any, done) {
