@@ -53,9 +53,10 @@
           run: npm run build
         - name: Unit tests
           run: npm run test
+        - name: Generate code coverage
+          run: npm run codecov
         - name: Upload coverage to Codecov
           uses: codecov/codecov-action@v2
-          run: npm run codecov
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
             directory: ./coverage
