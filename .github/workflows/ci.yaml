@@ -15,6 +15,13 @@
       container:
         image: ${{ matrix.container }}
       services:
+        rabbitmq:
+          image: rabbitmq:3
+          ports:
+            - 5672:5672
+          env:
+            RABBITMQ_DEFAULT_USER: username
+            RABBITMQ_DEFAULT_PASS: password
         redis:
           image: redis
           options: >-
@@ -22,6 +29,14 @@
             --health-interval 10s
             --health-timeout 5s
             --health-retries 5
+      env:
+        RUN_RABBITMQ_TESTS: 1
+        TEST_RABBITMQ_HOST: "rabbitmq"
+        TEST_RABBITMQ_PORT: 5672
+
+        RUN_REDIS_TESTS: 1
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
       steps:
         - name: Checkout
           uses: actions/checkout@v1
@@ -38,9 +53,6 @@
           run: npm run build
         - name: Unit tests
           run: npm run test
-          env:
-            REDIS_HOST: redis
-            REDIS_PORT: 6379
         - name: Coverage
           if: matrix.container == 'node:14'
           run: npm run codecov

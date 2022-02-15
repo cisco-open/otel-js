@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright The Cisco Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +17,13 @@
 import { Options } from '../../options';
 import { diag, Span } from '@opentelemetry/api';
 
-export class HttpBodyHandler {
+export class PayloadHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
   private currentBodySize: number; // The size in bytes of the current stream capture size
-  // TODO: maybe add content parsing in the future
+  // TODO: maybe add content encoding parsing in the future
   private totalChunks: any[];
 
-  constructor(options: Options, contentEncoding: string) {
+  constructor(options: Options, contentEncoding?: string) {
     this.maxPayloadSize = options.maxPayloadSize
       ? options.maxPayloadSize
       : 1024;
@@ -44,14 +43,36 @@ export class HttpBodyHandler {
     }
   }
 
-  setPayload(span: Span, bodyType: string) {
-    try {
-      span.setAttribute(
-        `http.${bodyType}.body`,
-        Buffer.concat(this.totalChunks).toString()
+  setPayload(span: Span, attrPrefix: string) {
+    PayloadHandler.addPayloadToSpan(
+      span,
+      attrPrefix,
+      Buffer.concat(this.totalChunks)
+    );
+  }
+
+  static setPayload(
+    span: Span,
+    attrPrefix: string,
+    payload: any,
+    maxPayloadSize: number
+  ) {
+    if (payload.length > maxPayloadSize) {
+      PayloadHandler.addPayloadToSpan(
+        span,
+        attrPrefix,
+        payload.slice(0, maxPayloadSize - payload.length)
       );
+    } else {
+      PayloadHandler.addPayloadToSpan(span, attrPrefix, payload);
+    }
+  }
+
+  private static addPayloadToSpan(span: Span, attrPrefix: string, chunk: any) {
+    try {
+      span.setAttribute(attrPrefix, chunk.toString());
     } catch (e) {
-      diag.debug('Failed to parse the HTTP body data');
+      diag.debug('Failed to parse the payload data');
       return;
     }
   }

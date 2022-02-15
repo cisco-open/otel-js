@@ -55,27 +55,53 @@ const port = process.env.REDIS_PORT || '6379';
 const URL = `redis://${host}:${port}`;
 
 describe('Test redis', () => {
+  const RUN_REDIS_TESTS = process.env.RUN_REDIS_TESTS as string;
+  let shouldTest = true;
+  if (!RUN_REDIS_TESTS) {
+    console.log('Skipping test-redis. Run Redis to test');
+    shouldTest = false;
+  }
+
   before(done => {
-    client = redis.createClient(URL);
-    client.on('error', err => {
-      done(err);
-    });
-    client.on('ready', done);
+    if (shouldTest) {
+      client = redis.createClient(URL);
+      client.on('error', err => {
+        done(err);
+      });
+      client.on('ready', done);
+    } else {
+      done();
+    }
+  });
+
+  beforeEach(function shouldSkip(this: any, done) {
+    if (!shouldTest) {
+      this.skip();
+    }
+    done();
   });
 
   after(done => {
-    if (client) {
-      client.quit(done);
+    if (shouldTest) {
+      if (client) {
+        client.quit(done);
+      } else {
+        done();
+      }
     } else {
       done();
     }
   });
 
   afterEach(done => {
-    client.del('myhash', () => {
-      memoryExporter.reset();
+    if (!shouldTest) {
       done();
-    });
+    } else {
+      client.del('myhash', () => {
+        memoryExporter.reset();
+        done();
+      });
+    }
   });
 
   describe('Test 2 response hooks', () => {
