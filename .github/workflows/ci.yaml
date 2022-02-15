@@ -53,6 +53,8 @@
           run: npm run build
         - name: Unit tests
           run: npm run test
-        - name: Coverage
-          if: matrix.container == 'node:14'
-          run: npm run codecov
+        - name: Upload coverage to Codecov
+          uses: codecov/codecov-action@v2
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+
