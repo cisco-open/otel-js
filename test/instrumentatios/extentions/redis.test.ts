@@ -92,7 +92,7 @@ describe('Test redis', () => {
   });
 
   afterEach(done => {
-    if(!shouldTest) done();
+    if (!shouldTest) done();
     client.del('myhash', () => {
       memoryExporter.reset();
       done();
