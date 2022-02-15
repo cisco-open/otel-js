@@ -18,10 +18,10 @@ import {
   AwsSdkRequestHookInformation,
   AwsSdkResponseHookInformation,
 } from '@opentelemetry/instrumentation-aws-sdk';
-import { AWSEventCreator } from './event-creator-interface';
+import { AwsEventCreator } from './event-creator-interface';
 
 // TODO: follow spec and fix the attribute names accordingly.
-export class DynamoDBEventCreator implements AWSEventCreator {
+export class DynamoDBEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     switch (requestInfo.request.commandName) {
       case 'PutItem':

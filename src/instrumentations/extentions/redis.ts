@@ -24,7 +24,7 @@ import {
   RedisResponseCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-redis/build/src/types';
 
-export function configureRedisnstrumentation(
+export function configureRedisInstrumentation(
   instrumentation: Instrumentation,
   options: Options
 ) {
@@ -66,21 +66,13 @@ function createRedisResponseHook(
     span: Span,
     cmdName: RedisCommand['command'],
     cmdArgs: RedisCommand['args'],
-    responseInfo
+    responseInfo: unknown
   ) => {
     const spanContext = span.spanContext();
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    switch (cmdName) {
-      case 'hkeys': {
-        span.setAttribute('db.command_arguments', JSON.stringify(cmdArgs));
-        span.setAttribute(
-          'db.command.response',
-          JSON.stringify(responseInfo as Array<String>)
-        );
-        break;
-      }
-    }
+    span.setAttribute('db.command.arguments', JSON.stringify(cmdArgs));
+    span.setAttribute('db.command.response', JSON.stringify(responseInfo));
   };
 }

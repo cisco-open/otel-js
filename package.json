@@ -19,7 +19,8 @@
     "build": "tsc -p .",
     "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "redis": "docker run -p 6379:6379 redis"
   },
   "release": {
     "branches": [
@@ -38,7 +39,7 @@
   ],
   "dependencies": {
     "@opentelemetry/api": "^1.0.4",
-    "@opentelemetry/auto-instrumentations-node": "^0.27.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.27.2",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.27.0",
     "@opentelemetry/instrumentation": "^0.27.0",
@@ -54,6 +55,8 @@
     "nyc": "^15.1.0"
   },
   "devDependencies": {
+    "assert": "^2.0.0",
+    "redis": "^3.0.0",
     "@commitlint/cli": "13.1.0",
     "@commitlint/config-conventional": "13.1.0",
     "@opentelemetry/resources": "^1.0.1",

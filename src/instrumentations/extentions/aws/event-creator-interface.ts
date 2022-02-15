@@ -19,7 +19,7 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { Span } from '@opentelemetry/api';
 
-export interface AWSEventCreator {
+export interface AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void;
 
   responseHandler(

@@ -18,9 +18,9 @@ import {
   AwsSdkRequestHookInformation,
   AwsSdkResponseHookInformation,
 } from '@opentelemetry/instrumentation-aws-sdk';
-import { AWSEventCreator } from './event-creator-interface';
+import { AwsEventCreator } from './event-creator-interface';
 
-export class SQSEventCreator implements AWSEventCreator {
+export class SQSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     const cmdInput = requestInfo.request.commandInput;
     if (!cmdInput || !cmdInput.QueueUrl) {

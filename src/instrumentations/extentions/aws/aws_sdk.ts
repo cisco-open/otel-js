@@ -25,12 +25,12 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { Span } from '@opentelemetry/api';
-import { AWSEventCreator } from './event-creator-interface';
+import { AwsEventCreator } from './event-creator-interface';
 import { SNSEventCreator } from './SNSEventCreator';
 import { SQSEventCreator } from './SQSEventCreator';
 import { DynamoDBEventCreator } from './DynamoDBEventCreator';
 
-export function configureAWSInstrumentation(
+export function configureAwsInstrumentation(
   instrumentation: Instrumentation,
   options: Options
 ) {
@@ -46,7 +46,7 @@ export function configureAWSInstrumentation(
     config = {};
   }
 
-  const requestHook = createAWSsdkRequestHook(options);
+  const requestHook = createAwsSdkRequestHook(options);
   if (config.preRequestHook === undefined) {
     config.preRequestHook = requestHook;
   } else {
@@ -57,7 +57,7 @@ export function configureAWSInstrumentation(
     };
   }
 
-  const responseHook = createAWSsdkResponseHook(options);
+  const responseHook = createAwsSdkResponseHook(options);
   if (config.responseHook === undefined) {
     config.responseHook = responseHook;
   } else {
@@ -71,7 +71,7 @@ export function configureAWSInstrumentation(
   instrumentation.setConfig(config);
 }
 
-function createAWSsdkRequestHook(
+function createAwsSdkRequestHook(
   options: Options
 ): AwsSdkRequestCustomAttributeFunction {
   return (span: Span, requestInfo: AwsSdkRequestHookInformation) => {
@@ -89,7 +89,7 @@ function createAWSsdkRequestHook(
   };
 }
 
-function createAWSsdkResponseHook(
+function createAwsSdkResponseHook(
   options: Options
 ): AwsSdkResponseCustomAttributeFunction {
   return (span: Span, responseInfo: AwsSdkResponseHookInformation) => {
@@ -109,7 +109,7 @@ function createAWSsdkResponseHook(
 /**
  * a map between AWS resource names and their appropriate creator object.
  */
-const specificEventCreators = new Map<string, AWSEventCreator>([
+const specificEventCreators = new Map<string, AwsEventCreator>([
   ['SNS', new SNSEventCreator()],
   ['SQS', new SQSEventCreator()],
   ['DynamoDB', new DynamoDBEventCreator()],
