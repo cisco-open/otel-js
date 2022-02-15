@@ -18,19 +18,36 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { configureHttpInstrumentation } from './extentions/http';
+import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
 import { diag } from '@opentelemetry/api';
+import { configureHttpInstrumentation } from './extentions/http';
+import { configureAmqplibInstrumentation } from './extentions/amqplib';
+import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
+import { configureRedisInstrumentation } from './extentions/redis';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations();
   instrumentations.push(new AwsInstrumentation());
+  // TODO: update the package path after this was contributed to OTel
+  instrumentations.push(new AmqplibInstrumentation());
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
-      // TODO: remove the 'skip' the moment this supported
-      case '@opentelemetry/instrumentation-http-skip':
+      case '@opentelemetry/instrumentation-http':
         diag.debug('Adding FSO http patching');
         configureHttpInstrumentation(instrumentation, options);
+        break;
+      case '@opentelemetry/instrumentation-aws-sdk':
+        diag.debug('Adding FSO aws-sdk patching');
+        configureAwsInstrumentation(instrumentation, options);
+        break;
+      case '@opentelemetry/instrumentation-redis':
+        diag.debug('Adding FSO redis patching');
+        configureRedisInstrumentation(instrumentation, options);
+        break;
+      case 'opentelemetry-instrumentation-amqplib':
+        diag.debug('Adding FSO amqplib patching');
+        configureAmqplibInstrumentation(instrumentation, options);
     }
   }
   return instrumentations;

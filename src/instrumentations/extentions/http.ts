@@ -21,8 +21,10 @@ import {
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
+import { PayloadHandler } from '../utils/PayloadHandler';
+import { addFlattenedObj } from '../utils/utils';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -75,8 +77,28 @@ function createHttpRequestHook(
       return;
     }
 
+    const headers =
+      request instanceof IncomingMessage
+        ? request.headers
+        : request.getHeaders();
+
+    addFlattenedObj(span, 'http.request.header', headers);
+
+    const bodyHandler = new PayloadHandler(
+      options,
+      headers['content-encoding'] as string
+    );
     if (request instanceof IncomingMessage) {
-      // TODO: add attributes here
+      // request body capture
+      const listener = (chunk: any) => {
+        bodyHandler.addChunk(chunk);
+      };
+
+      request.on('data', listener);
+      request.once('end', () => {
+        bodyHandler.setPayload(span, 'http.request.body');
+        request.removeListener('data', listener);
+      });
     }
   };
 }
@@ -85,15 +107,35 @@ function createHttpResponseHook(
   options: Options
 ): HttpResponseCustomAttributeFunction {
   return (span, response) => {
-    if (!(response instanceof ServerResponse)) {
-      return;
-    }
-
     const spanContext = span.spanContext();
 
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    // TODO: add attributes here
+
+    const headers =
+      response instanceof IncomingMessage
+        ? response.headers
+        : response.getHeaders();
+
+    addFlattenedObj(span, 'http.response.header', headers);
+
+    const bodyHandler = new PayloadHandler(
+      options,
+      headers['content-encoding'] as string
+    );
+
+    // request body capture
+    if (response instanceof IncomingMessage) {
+      const listener = (chunk: any) => {
+        bodyHandler.addChunk(chunk);
+      };
+
+      response.on('data', listener);
+      response.once('end', () => {
+        bodyHandler.setPayload(span, 'http.response.body');
+        response.removeListener('data', listener);
+      });
+    }
   };
 }

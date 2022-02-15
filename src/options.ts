@@ -16,13 +16,17 @@
 import { diag } from '@opentelemetry/api';
 
 export interface Options {
-  FSOEndpoint: string;
   serviceName: string;
   FSOToken: string;
   debug?: boolean;
-  exporterType?: string;
+  maxPayloadSize?: number;
+  exporters?: ExporterOptions[];
 }
 
+export interface ExporterOptions {
+  type?: string;
+  FSOEndpoint: string;
+}
 /**
  * Config all OTel & FSO default values.
  * First, take from userOptions/Env variables and at last, set default options if
@@ -37,16 +41,25 @@ export function _configDefaultOptions(options: Options): Options | undefined {
     return undefined;
   }
 
-  options.FSOEndpoint =
-    options.FSOEndpoint || process.env.FSO_ENDPOINT || 'http://localhost:4713';
-
-  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
-
   options.serviceName =
     options.serviceName || process.env.SERVICE_NAME || 'application';
 
-  options.exporterType =
-    options.exporterType || process.env.EXPORTER_TYPE || 'otlp-grpc';
+  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
+
+  options.maxPayloadSize =
+    options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
+
+  options.exporters =
+    options.exporters &&
+    options.exporters[0].FSOEndpoint &&
+    options.exporters[0].type
+      ? options.exporters
+      : [
+          <ExporterOptions>{
+            type: process.env.EXPORTER_TYPE || 'otlp-grpc',
+            FSOEndpoint: process.env.FSO_ENDPOINT || 'http://localhost:4317',
+          },
+        ];
 
   return options;
 }
@@ -59,4 +72,20 @@ function getEnvBoolean(key: string, defaultValue = true) {
   }
 
   return ['false'].indexOf(value.trim().toLowerCase()) < 0;
+}
+
+export function getEnvNumber(key: string, defaultValue: number): number {
+  const value = process.env[key];
+
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  const numberValue = parseInt(value);
+
+  if (isNaN(numberValue)) {
+    return defaultValue;
+  }
+
+  return numberValue;
 }

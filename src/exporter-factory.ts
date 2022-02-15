@@ -13,33 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as util from 'util';
+import { inspect } from 'util';
 
 import { SpanExporter } from '@opentelemetry/sdk-trace-base';
-import { Options } from './options';
+import { ExporterOptions, Options } from './options';
 import { Metadata } from '@grpc/grpc-js';
 
 import { OTLPTraceExporter as GRPCTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { OTLPTraceExporter as HTTPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { diag } from '@opentelemetry/api';
 
-type SpanExporterFactory = (options: Options) => SpanExporter;
+type SpanExporterFactory = (
+  options: Options,
+  exporterOptions: ExporterOptions
+) => SpanExporter;
 
-function otlpGrpcSpanFactory(options: Options): SpanExporter {
+function otlpGrpcSpanFactory(
+  options: Options,
+  exporterOptions: ExporterOptions
+): SpanExporter {
   const metadata = new Metadata();
   metadata.set('X-FSO-Token', options.FSOToken);
 
   const collectorOptions = {
-    url: options.FSOEndpoint,
+    url: exporterOptions.FSOEndpoint,
     metadata,
   };
 
   return new GRPCTraceExporter(collectorOptions);
 }
 
-function otlpHttpSpanFactory(options: Options): SpanExporter {
+function otlpHttpSpanFactory(
+  options: Options,
+  exporterOptions: ExporterOptions
+): SpanExporter {
   const collectorOptions = {
-    url: options.FSOEndpoint,
+    url: exporterOptions.FSOEndpoint,
     headers: {
       // TODO: Change this to FSO header after FSO alpha is out
       'X-Epsagon-Token': options.FSOToken,
@@ -54,19 +63,23 @@ const SupportedExportersMap: Record<string, SpanExporterFactory> = {
   'otlp-http': otlpHttpSpanFactory,
 };
 
-export function exporterFactory(options: Options): SpanExporter | undefined {
-  const factory = SupportedExportersMap[options.exporterType || 'undefined'];
+export function exporterFactory(options: Options): SpanExporter[] {
+  const exporters: SpanExporter[] = [];
+  for (const index in options.exporters) {
+    const factory =
+      SupportedExportersMap[options.exporters[index].type || 'undefined'];
 
-  if (!factory) {
-    diag.error(
-      `Invalid value for options.exporterType: ${util.inspect(
-        options.exporterType
-      )}. Pick one of ${util.inspect(Object.keys(SupportedExportersMap), {
-        compact: true,
-      })} or leave undefined.`
-    );
-    return;
+    if (!factory) {
+      diag.error(
+        `Invalid value for options.exporterType: ${inspect(
+          options.exporters[index].type
+        )}. Pick one of ${inspect(Object.keys(SupportedExportersMap), {
+          compact: true,
+        })} or leave undefined.`
+      );
+      return [];
+    }
+    exporters.push(factory(options, options.exporters[index]));
   }
-
-  return factory(options);
+  return exporters;
 }

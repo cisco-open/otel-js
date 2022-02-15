@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Options, _configDefaultOptions } from '../src/options';
+import {
+  ExporterOptions,
+  Options,
+  _configDefaultOptions,
+} from '../src/options';
 import * as utils from './utils';
 import * as assert from 'assert';
 import * as sinon from 'sinon';
@@ -47,11 +51,16 @@ describe('Options tests', () => {
       });
       assert.ok(options);
       assert.deepStrictEqual(options, <Options>{
-        FSOToken: defaultToken,
-        FSOEndpoint: 'http://localhost:4713',
-        serviceName: 'application',
         debug: false,
-        exporterType: 'otlp-grpc',
+        FSOToken: defaultToken,
+        serviceName: 'application',
+        maxPayloadSize: 1024,
+        exporters: [
+          <ExporterOptions>{
+            type: 'otlp-grpc',
+            FSOEndpoint: 'http://localhost:4317',
+          },
+        ],
       });
       sinon.assert.neverCalledWith(logger.error);
     });
@@ -67,10 +76,15 @@ describe('Options tests', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
         FSOToken: 'SomeToken',
-        FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
-        exporterType: 'otlp-http',
+        maxPayloadSize: 10000,
+        exporters: [
+          <ExporterOptions>{
+            type: 'otlp-http',
+            FSOEndpoint: 'Not the default Endpoint',
+          },
+        ],
       };
       const options = _configDefaultOptions(userOptions);
       assert.ok(options);
@@ -83,17 +97,25 @@ describe('Options tests', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
         FSOToken: 'SomeToken',
-        FSOEndpoint: 'Not the default Endpoint',
         serviceName: 'Not the default service name',
         debug: true,
-        exporterType: 'otlp-http',
+        maxPayloadSize: 10000,
+        exporters: [
+          <ExporterOptions>{
+            type: 'otlp-http',
+            FSOEndpoint: 'Not the default Endpoint',
+          },
+        ],
       };
 
       process.env.FSO_TOKEN = userOptions.FSOToken;
-      process.env.FSO_ENDPOINT = userOptions.FSOEndpoint;
+      process.env.FSO_ENDPOINT =
+        userOptions.exporters && userOptions.exporters[0].FSOEndpoint;
       process.env.SERVICE_NAME = userOptions.serviceName;
       process.env.FSO_DEBUG = String(userOptions.debug);
-      process.env.EXPORTER_TYPE = String(userOptions.exporterType);
+      process.env.MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
+      process.env.EXPORTER_TYPE =
+        userOptions.exporters && String(userOptions.exporters[0].type);
 
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
