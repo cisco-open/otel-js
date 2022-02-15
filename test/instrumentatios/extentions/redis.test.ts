@@ -92,11 +92,14 @@ describe('Test redis', () => {
   });
 
   afterEach(done => {
-    if (!shouldTest) done();
-    client.del('myhash', () => {
-      memoryExporter.reset();
+    if (!shouldTest) {
       done();
-    });
+    } else {
+      client.del('myhash', () => {
+        memoryExporter.reset();
+        done();
+      });
+    }
   });
 
   describe('Test 2 response hooks', () => {
