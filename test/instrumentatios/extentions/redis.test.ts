@@ -88,8 +88,9 @@ describe('Test redis', () => {
       } else {
         done();
       }
+    } else {
+      done();
     }
-    done();
   });
 
   afterEach(done => {
