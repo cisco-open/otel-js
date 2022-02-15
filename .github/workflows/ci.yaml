@@ -22,10 +22,21 @@
           env:
             RABBITMQ_DEFAULT_USER: username
             RABBITMQ_DEFAULT_PASS: password
+        redis:
+          image: redis
+          options: >-
+            --health-cmd "redis-cli ping"
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
       env:
         RUN_RABBITMQ_TESTS: 1
         TEST_RABBITMQ_HOST: "rabbitmq"
         TEST_RABBITMQ_PORT: 5672
+
+        RUN_REDIS_TESTS: 1
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
       steps:
         - name: Checkout
           uses: actions/checkout@v1
