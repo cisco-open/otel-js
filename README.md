@@ -3,6 +3,7 @@
 [![NPM Published Version][npm-image]][npm-url]
 [![Apache License][license-image]][license-image]
 [![Coverage][coverage-image]][coverage-url]
+
 <p align="center">
  <a href="">
    <img src=https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge">
