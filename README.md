@@ -2,9 +2,7 @@
 
 [![NPM Published Version][npm-img]][npm-url]
 [![Apache License][license-image]][license-image]
-<a href="https://codecov.io/gh/epsagon/otel-js/branch/main/">
-<img alt="Codecov Status" src="https://img.shields.io/codecov/c/github/epsagon/otel-js?style=for-the-badge">
-</a>
+[![Coverage][coverage-image]][coverage-url]
 
 An Aplha version
 
@@ -126,3 +124,6 @@ To test the launcher:
 [npm-img]: https://img.shields.io/github/v/release/epsagon/otel-js?include_prereleases&style=for-the-badge
 [license-url]: https://github.com/https://github.com/epsagon/otel-js/blob/main/LICENSE
 [license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=for-the-badge
+
+[coverage-url]: https://codecov.io/gh/epsagon/otel-js/branch/main/
+[coverage-image]: https://img.shields.io/codecov/c/github/epsagon/otel-js?style=for-the-badge
