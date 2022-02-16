@@ -26,10 +26,12 @@ const { fso } = require('cisco-opentelemetry-node');
 const userOptions = {
   serviceName: 'my-app-name',
   FSOToken: 'fso-token',
-  exporters: [{
-      FSOEndpoint: 'http://localhost:4317'
-  }]
-}
+  exporters: [
+    {
+      FSOEndpoint: 'http://localhost:4317',
+    },
+  ],
+};
 
 fso.init(userOptions);
 ```
@@ -42,9 +44,11 @@ import { fso, Options } from 'cisco-opentelemetry-node';
 const userOptions: Options = {
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
-  exporters: [{
-      FSOEndpoint: 'http://localhost:4317'
-  }]
+  exporters: [
+    {
+      FSOEndpoint: 'http://localhost:4317',
+    },
+  ],
 };
 fso.init(userOptions);
 ```
@@ -53,19 +57,19 @@ fso.init(userOptions);
 
 Advanced options can be configured as a parameter to the init() method:
 
-|Parameter          |Env               |Type   |Default                  |Description          |
-|-------------------|------------------|-------|-------------------------|---------------------|
-|FSOToken           |FSO_TOKEN         |string | -                       | Cisco account token                                |
-|serviceName        |SERVICE_NAME      |string | `application`           | Application name that will be set for traces         |
-|debug              |FSO_DEBUG         |string | `false`                 | Debug logs                                |
-|maxPayloadSize     |MAX_PAYLOAD_SIZE  |number | `1024`                  | The number in bytes of the maximum payload to capture for request  |
+| Parameter      | Env              | Type   | Default       | Description                                                       |
+| -------------- | ---------------- | ------ | ------------- | ----------------------------------------------------------------- |
+| FSOToken       | FSO_TOKEN        | string | -             | Cisco account token                                               |
+| serviceName    | SERVICE_NAME     | string | `application` | Application name that will be set for traces                      |
+| debug          | FSO_DEBUG        | string | `false`       | Debug logs                                                        |
+| maxPayloadSize | MAX_PAYLOAD_SIZE | number | `1024`        | The number in bytes of the maximum payload to capture for request |
 
 Exporter options
 
-|Parameter          |Env               |Type   |Default                  |Description          |
-|-------------------|------------------|-------|-------------------------|---------------------|
-|FSOEndpoint        |FSO_ENDPOINT      |string | `http://localhost:4317` | The address of the trace collector to send traces to |
-|type.              |EXPORTER_TYPE     |string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below  |
+| Parameter   | Env           | Type   | Default                 | Description                                                                                                                                         |
+| ----------- | ------------- | ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FSOEndpoint | FSO_ENDPOINT  | string | `http://localhost:4317` | The address of the trace collector to send traces to                                                                                                |
+| type.       | EXPORTER_TYPE | string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below |
 
 Multiple exporter can be initialize using fso init function with the following options:
 
@@ -74,14 +78,16 @@ const userOptions: Options = {
   FSOEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   FSOToken: 'sometoken',
-  exporters: [{
+  exporters: [
+    {
       FSOEndpoint: 'http://localhost:4317',
-      type: 'otlp-grpc'
-  },
-  {
+      type: 'otlp-grpc',
+    },
+    {
       FSOEndpoint: 'http://localhost:4317',
-      type: 'otlp-http'
-  }]
+      type: 'otlp-http',
+    },
+  ],
 };
 fso.init(userOptions);
 ```
@@ -89,27 +95,27 @@ fso.init(userOptions);
 To test the launcher:
 
 1. verify you have docker installed and use the config.yaml in this repository to run the collector:
-      Note: you should supply full path in -v argument:
+   Note: you should supply full path in -v argument:
 
-      ```javascript
-      docker run --rm -p 13133:13133 -p 14250:14250 -p 14268:14268 \
-            -p 55678-55679:55678-55679 -p 4317:4317 -p 8888:8888 -p 9411:9411 \
-                  -v "${HOME}/YOUR_PATH/otel-js/test/config.yaml":/otel-local-config.yaml \
-            --name otelcol otel/opentelemetry-collector \
-            --config otel-local-config.yaml;
-      ```
+   ```javascript
+   docker run --rm -p 13133:13133 -p 14250:14250 -p 14268:14268 \
+         -p 55678-55679:55678-55679 -p 4317:4317 -p 8888:8888 -p 9411:9411 \
+               -v "${HOME}/YOUR_PATH/otel-js/test/config.yaml":/otel-local-config.yaml \
+         --name otelcol otel/opentelemetry-collector \
+         --config otel-local-config.yaml;
+   ```
 
 2. Build from the root:
 
-      ```sh
-      npm run build
-      ```
+   ```sh
+   npm run build
+   ```
 
 3. Run from the root:
 
-      ```sh
-      node lib/test/app.js
-      ```
+   ```sh
+   node lib/test/app.js
+   ```
 
 4. Go to <http://localhost:8081/> and verify you see "Hello World"
 5. Check the collector, you should see a trace there.
