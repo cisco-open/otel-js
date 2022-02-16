@@ -1,8 +1,9 @@
 # otel-js
 
-[![NPM Published Version][npm-img]][npm-url]
+[![NPM Published Version][npm-image]][npm-url]
 [![Apache License][license-image]][license-image]
 ![CI](https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg)
+[![Coverage][coverage-image]][coverage-url]
 
 An Aplha version
 
@@ -121,6 +122,8 @@ To test the launcher:
 5. Check the collector, you should see a trace there.
 
 [npm-url]: https://www.npmjs.com/package/cisco-opentelemetry-node
-[npm-img]: https://badge.fury.io/js/cisco-opentelemetry-node.svg
+[npm-image]: https://img.shields.io/github/v/release/epsagon/otel-js?include_prereleases&style=for-the-badge
 [license-url]: https://github.com/https://github.com/epsagon/otel-js/blob/main/LICENSE
-[license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=flat
+[license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=for-the-badge
+[coverage-url]: https://codecov.io/gh/epsagon/otel-js/branch/main/
+[coverage-image]: https://img.shields.io/codecov/c/github/epsagon/otel-js?style=for-the-badge
