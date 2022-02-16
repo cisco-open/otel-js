@@ -3,18 +3,18 @@ extends:
 rules:
   header-max-length: [1, 'always', 72]
   type-enum:
-  - 2
-  - always
-  - - ci
-    - feat
-    - fix
-    - docs
-    - style
-    - refactor
-    - perf
-    - test
-    - revert
-    - chore
+    - 2
+    - always
+    - - ci
+      - feat
+      - fix
+      - docs
+      - style
+      - refactor
+      - perf
+      - test
+      - revert
+      - chore
 help: |
   **Possible types**:
   `ci`:       Changes to our CI configuration files and scripts (example scopes: Travis, Circle CI, BrowserStack, SauceLabs)
