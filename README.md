@@ -5,6 +5,7 @@
 [![Coverage][coverage-image]][coverage-url]
 
 An Alpha version
+
 <p><a>
    <img src=https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
 </a></p>
