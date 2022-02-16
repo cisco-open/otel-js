@@ -2,6 +2,7 @@
 
 [![NPM Published Version][npm-image]][npm-url]
 [![Apache License][license-image]][license-image]
+![CI](https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg)
 [![Coverage][coverage-image]][coverage-url]
 
 An Aplha version
