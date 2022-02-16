@@ -4,11 +4,11 @@
 [![Apache License][license-image]][license-image]
 [![Coverage][coverage-image]][coverage-url]
 
-An Alpha version
-
 <p><a>
    <img src=https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
 </a></p>
+
+An Alpha version
 
 This package provides a Cisco Launcher for OpenTelemetry Node.js
 
