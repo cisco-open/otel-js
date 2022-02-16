@@ -60,4 +60,3 @@
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
             directory: ./coverage
-
