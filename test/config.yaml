@@ -1,7 +1,7 @@
 exporters:
   logging:
     logLevel: debug
-  
+
 receivers:
   otlp:
     protocols:
@@ -12,12 +12,12 @@ processors:
   resource:
     attributes:
       - key: application
-        value: "Application Name"
+        value: 'Application Name'
         action: insert
 
 service:
   pipelines:
     traces:
-      receivers: [otlp] 
+      receivers: [otlp]
       processors: [batch, resource]
       exporters: [logging]
