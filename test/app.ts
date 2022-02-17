@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fso, Options } from '../src';
+import { ciscoTracing, Options } from '../src';
 import { ExporterOptions } from '../src/options';
 
 const exporterOptions: ExporterOptions = {
-  FSOEndpoint: 'http://localhost:4317',
+  collectorEndpoint: 'http://localhost:4317',
 };
 
-const userOptions: Options = {
+const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
-  FSOToken: 'sometoken',
+  ciscoToken: 'sometoken',
   exporters: [exporterOptions],
 };
 
-fso.init(userOptions);
+ciscoTracing.init(userOptions);
 
 const express = require('express');
 

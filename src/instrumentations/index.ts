@@ -34,19 +34,19 @@ export function getInstrumentations(options: Options): Instrumentation[] {
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
       case '@opentelemetry/instrumentation-http':
-        diag.debug('Adding FSO http patching');
+        diag.debug('Adding Cisco http patching');
         configureHttpInstrumentation(instrumentation, options);
         break;
       case '@opentelemetry/instrumentation-aws-sdk':
-        diag.debug('Adding FSO aws-sdk patching');
+        diag.debug('Adding Cisco aws-sdk patching');
         configureAwsInstrumentation(instrumentation, options);
         break;
       case '@opentelemetry/instrumentation-redis':
-        diag.debug('Adding FSO redis patching');
+        diag.debug('Adding Cisco redis patching');
         configureRedisInstrumentation(instrumentation, options);
         break;
       case 'opentelemetry-instrumentation-amqplib':
-        diag.debug('Adding FSO amqplib patching');
+        diag.debug('Adding Cisco amqplib patching');
         configureAmqplibInstrumentation(instrumentation, options);
     }
   }

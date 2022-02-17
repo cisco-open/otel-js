@@ -16,7 +16,6 @@
 
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { configureHttpInstrumentation } from '../../../src/instrumentations/extentions/http';
-import { Options } from '../../../src';
 import {
   BasicTracerProvider,
   InMemorySpanExporter,
@@ -28,7 +27,8 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
-import { assertExpectedObj } from '../../utils';
+import { assertExpectedObj, testOptions } from '../../utils';
+import { _configDefaultOptions } from '../../../src/options';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -36,12 +36,6 @@ const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('Capturing HTTP Headers/Bodies', () => {
-  const options = <Options>{
-    FSOToken: 'some-token',
-    FSOEndpoint: 'http://localhost:4317',
-    serviceName: 'application',
-  };
-
   const REQUEST_HEADERS = {
     'content-type': 'application/json',
     'extra-spam-header-request': 'spam-value from the request',
@@ -107,7 +101,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
   beforeEach(() => {
     memoryExporter.reset();
-    configureHttpInstrumentation(instrumentation, options);
+    configureHttpInstrumentation(instrumentation, testOptions);
     utils.cleanEnvironmentVariables();
   });
 
@@ -118,7 +112,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
   describe('when user configuration specified', () => {
     afterEach(() => {
       instrumentation.setConfig({});
-      configureHttpInstrumentation(instrumentation, options);
+      configureHttpInstrumentation(instrumentation, testOptions);
     });
 
     it('should see user request hook tags', async () => {
@@ -131,7 +125,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
           );
         },
       });
-      configureHttpInstrumentation(instrumentation, options);
+      configureHttpInstrumentation(instrumentation, testOptions);
 
       const span = tracer.startSpan('updateRootSpan');
       await utils.httpRequest.get({
@@ -168,7 +162,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
           );
         },
       });
-      configureHttpInstrumentation(instrumentation, options);
+      configureHttpInstrumentation(instrumentation, testOptions);
 
       await utils.httpRequest.get({
         host: 'localhost',

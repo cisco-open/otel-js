@@ -30,97 +30,97 @@ describe('Tracing test', () => {
   it('setup gRPC exporter', () => {
     const exporterOptions: ExporterOptions = {
       type: 'otlp-grpc',
-      FSOEndpoint: 'some-collector:4317',
+      collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      FSOToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
     const traceExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.metadata?.get('x-fso-token'), [
-      userOptions.FSOToken,
+    assert.deepEqual(traceExporter.metadata?.get('x-cisco-token'), [
+      userOptions.ciscoToken,
     ]);
-    assert.strictEqual(traceExporter.url, exporterOptions.FSOEndpoint);
+    assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
   it('setup HTTP exporter', () => {
     const exporterOptions: ExporterOptions = {
       type: 'otlp-http',
-      FSOEndpoint: 'some-collector:4317',
+      collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      FSOToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
     const traceExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
     assert.deepEqual(
       traceExporter.headers['X-Epsagon-Token'],
-      userOptions.FSOToken
+      userOptions.ciscoToken
     );
-    assert.strictEqual(traceExporter.url, exporterOptions.FSOEndpoint);
+    assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
   it('setup both HTTP and grpc exporters', () => {
     const httpExporterOptions: ExporterOptions = {
       type: 'otlp-http',
-      FSOEndpoint: 'some-collector:4317',
+      collectorEndpoint: 'some-collector:4317',
     };
     const grpcExporterOptions: ExporterOptions = {
       type: 'otlp-grpc',
-      FSOEndpoint: 'some-collector:4317',
+      collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      FSOToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [httpExporterOptions, grpcExporterOptions],
     };
 
     const httpExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
     assert.deepEqual(
       httpExporter.headers['X-Epsagon-Token'],
-      userOptions.FSOToken
+      userOptions.ciscoToken
     );
-    assert.strictEqual(httpExporter.url, httpExporterOptions.FSOEndpoint);
+    assert.strictEqual(httpExporter.url, httpExporterOptions.collectorEndpoint);
 
     const grpcExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('x-fso-token'), [
-      userOptions.FSOToken,
+    assert.deepEqual(grpcExporter.metadata?.get('x-cisco-token'), [
+      userOptions.ciscoToken,
     ]);
-    assert.strictEqual(grpcExporter.url, grpcExporterOptions.FSOEndpoint);
+    assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);
   });
 
   it('setup undefined exporter', () => {
     const exporterOptions: ExporterOptions = {
       type: 'undefined-exporter',
-      FSOEndpoint: 'some-collector:4317',
+      collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      FSOToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
-    const traceExporters = exporterFactory(userOptions);
+    const traceExporters = exporterFactory(<Options>userOptions);
     assert(traceExporters.length === 0);
   });
 });
