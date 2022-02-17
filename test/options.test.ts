@@ -47,18 +47,19 @@ describe('Options tests', () => {
     it('should config all default variables properly (except token)', () => {
       const defaultToken = 'Some Token';
       const options = _configDefaultOptions(<Options>{
-        FSOToken: defaultToken,
+        ciscoToken: defaultToken,
       });
       assert.ok(options);
       assert.deepStrictEqual(options, <Options>{
         debug: false,
-        FSOToken: defaultToken,
+        ciscoToken: defaultToken,
         serviceName: 'application',
         maxPayloadSize: 1024,
+        payloadsEnabled: false,
         exporters: [
           <ExporterOptions>{
             type: 'otlp-grpc',
-            FSOEndpoint: 'http://localhost:4317',
+            collectorEndpoint: 'grpc://localhost:4317',
           },
         ],
       });
@@ -75,14 +76,15 @@ describe('Options tests', () => {
   describe('user Options configuration', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
-        FSOToken: 'SomeToken',
+        ciscoToken: 'SomeToken',
         serviceName: 'Not the default service name',
         debug: true,
         maxPayloadSize: 10000,
+        payloadsEnabled: true,
         exporters: [
           <ExporterOptions>{
             type: 'otlp-http',
-            FSOEndpoint: 'Not the default Endpoint',
+            collectorEndpoint: 'Not the default Endpoint',
           },
         ],
       };
@@ -96,23 +98,25 @@ describe('Options tests', () => {
   describe('user Options Env vars configuration', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
-        FSOToken: 'SomeToken',
+        ciscoToken: 'SomeToken',
         serviceName: 'Not the default service name',
         debug: true,
+        payloadsEnabled: true,
         maxPayloadSize: 10000,
         exporters: [
           <ExporterOptions>{
             type: 'otlp-http',
-            FSOEndpoint: 'Not the default Endpoint',
+            collectorEndpoint: 'Not the default Endpoint',
           },
         ],
       };
 
-      process.env.FSO_TOKEN = userOptions.FSOToken;
-      process.env.FSO_ENDPOINT =
-        userOptions.exporters && userOptions.exporters[0].FSOEndpoint;
+      process.env.CISCO_TOKEN = userOptions.ciscoToken;
+      process.env.CISCO_ENDPOINT =
+        userOptions.exporters && userOptions.exporters[0].collectorEndpoint;
       process.env.SERVICE_NAME = userOptions.serviceName;
-      process.env.FSO_DEBUG = String(userOptions.debug);
+      process.env.CISCO_DEBUG = String(userOptions.debug);
+      process.env.CISCO_PAYLOADS_ENABLED = String(userOptions.payloadsEnabled);
       process.env.MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
       process.env.EXPORTER_TYPE =
         userOptions.exporters && String(userOptions.exporters[0].type);

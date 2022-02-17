@@ -33,10 +33,10 @@ function otlpGrpcSpanFactory(
   exporterOptions: ExporterOptions
 ): SpanExporter {
   const metadata = new Metadata();
-  metadata.set('X-FSO-Token', options.FSOToken);
+  metadata.set('X-FSO-Token', options.ciscoToken);
 
   const collectorOptions = {
-    url: exporterOptions.FSOEndpoint,
+    url: exporterOptions.collectorEndpoint,
     metadata,
   };
 
@@ -48,10 +48,10 @@ function otlpHttpSpanFactory(
   exporterOptions: ExporterOptions
 ): SpanExporter {
   const collectorOptions = {
-    url: exporterOptions.FSOEndpoint,
+    url: exporterOptions.collectorEndpoint,
     headers: {
       // TODO: Change this to FSO header after FSO alpha is out
-      'X-Epsagon-Token': options.FSOToken,
+      'X-Epsagon-Token': options.ciscoToken,
     },
   };
   return new HTTPTraceExporter(collectorOptions);

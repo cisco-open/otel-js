@@ -36,8 +36,8 @@ import * as redisTypes from 'redis';
 const memoryExporter = new InMemorySpanExporter();
 
 const options = <Options>{
-  FSOToken: 'some-token',
-  FSOEndpoint: 'http://localhost:4713',
+  ciscoToken: 'some-token',
+  collectorEndpoint: 'http://localhost:4713',
   serviceName: 'application',
 };
 

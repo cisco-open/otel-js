@@ -17,47 +17,51 @@ import { diag } from '@opentelemetry/api';
 
 export interface Options {
   serviceName: string;
-  FSOToken: string;
+  ciscoToken: string;
   debug?: boolean;
   maxPayloadSize?: number;
+  payloadsEnabled?: boolean;
   exporters?: ExporterOptions[];
 }
 
 export interface ExporterOptions {
   type?: string;
-  FSOEndpoint: string;
+  collectorEndpoint: string;
 }
 /**
- * Config all OTel & FSO default values.
+ * Config all OTel & Cisco sdk default values.
  * First, take from userOptions/Env variables and at last, set default options if
  * the user didn't specified any.
  * @param options Option received from the User
  */
 export function _configDefaultOptions(options: Options): Options | undefined {
-  options.FSOToken = options.FSOToken || process.env.FSO_TOKEN || '';
+  options.ciscoToken = options.ciscoToken || process.env.CISCO_TOKEN || '';
 
-  if (!options.FSOToken) {
-    diag.error('FSO token must be passed into initialization');
+  if (!options.ciscoToken) {
+    diag.error('Cisco token must be passed into initialization');
     return undefined;
   }
 
   options.serviceName =
     options.serviceName || process.env.SERVICE_NAME || 'application';
 
-  options.debug = options.debug || getEnvBoolean('FSO_DEBUG', false);
+  options.debug = options.debug || getEnvBoolean('CISCO_DEBUG', false);
 
   options.maxPayloadSize =
     options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
 
+  options.payloadsEnabled =
+      options.payloadsEnabled || getEnvBoolean('CISCO_PAYLOADS_ENABLED', false);
+
   options.exporters =
     options.exporters &&
-    options.exporters[0].FSOEndpoint &&
+    options.exporters[0].collectorEndpoint &&
     options.exporters[0].type
       ? options.exporters
       : [
           <ExporterOptions>{
-            type: process.env.EXPORTER_TYPE || 'otlp-grpc',
-            FSOEndpoint: process.env.FSO_ENDPOINT || 'http://localhost:4317',
+            type: process.env.OTEL_EXPORTER_TYPE || 'otlp-grpc',
+            collectorEndpoint: process.env.OTEL_COLLECTOR_ENDPOINT || 'grpc://localhost:4317',
           },
         ];
 

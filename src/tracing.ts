@@ -27,7 +27,7 @@ export function init(userOptions: Options) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
-    diag.error('FSO default options are not properly configured.');
+    diag.error('Cisco default options are not properly configured.');
     return;
   }
 

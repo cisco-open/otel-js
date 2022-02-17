@@ -33,8 +33,8 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 describe('PayloadHandler tests', () => {
   const ATTR_PREFIX = 'http.request.body';
   const defaultOptions = <Options>{
-    FSOToken: 'some-token',
-    FSOEndpoint: 'http://localhost:4317',
+    ciscoToken: 'some-token',
+    collectorEndpoint: 'http://localhost:4317',
     serviceName: 'application',
   };
 
@@ -142,8 +142,8 @@ describe('PayloadHandler tests', () => {
 
     it('should capture data and set relevant span attr < maxPayloadSize', done => {
       const options = <Options>{
-        FSOToken: 'some-token',
-        FSOEndpoint: 'http://localhost:4317',
+        ciscoToken: 'some-token',
+        collectorEndpoint: 'http://localhost:4317',
         serviceName: 'application',
         maxPayloadSize: 10,
       };

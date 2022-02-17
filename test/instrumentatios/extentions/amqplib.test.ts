@@ -90,8 +90,8 @@ describe('amqplib instrumentation callback model', () => {
   let conn: amqp.Connection;
 
   const options = <Options>{
-    FSOToken: 'some-token',
-    FSOEndpoint: 'http://localhost:4713',
+    ciscoToken: 'some-token',
+    collectorEndpoint: 'http://localhost:4713',
     serviceName: 'application',
   };
 

@@ -20,7 +20,7 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { OTLPTraceExporter as OTLPGrpcTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { diag } from '@opentelemetry/api';
-import { fso, Options } from '../src';
+import { ciscoTracing, Options } from '../src';
 import * as utils from './utils';
 import { ExporterOptions } from '../src/options';
 
@@ -66,32 +66,32 @@ describe('Tracing test', () => {
   it('setups tracing with custom options', () => {
     const userOptions: Options = {
       serviceName: 'my-app-name',
-      FSOToken: 'fso-token',
+      ciscoToken: 'fso-token',
       debug: false,
       exporters: [
         <ExporterOptions>{
-          FSOEndpoint: 'http://localhost:4317',
+          collectorEndpoint: 'http://localhost:4317',
         },
       ],
     };
-    fso.init(userOptions);
+    ciscoTracing.init(userOptions);
     assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
   });
 
   it('setups tracing with defaults', () => {
     const exporterOptions: ExporterOptions = {
-      FSOEndpoint: '',
+      collectorEndpoint: '',
     };
     const userOptions: Options = {
       serviceName: '',
-      FSOToken: '',
+      ciscoToken: '',
       exporters: [exporterOptions],
     };
-    process.env.FSO_ENDPOINT = exporterOptions.FSOEndpoint;
+    process.env.FSO_ENDPOINT = exporterOptions.collectorEndpoint;
     process.env.SERVICE_NAME = userOptions.serviceName;
-    process.env.FSO_TOKEN = userOptions.FSOToken;
+    process.env.FSO_TOKEN = userOptions.ciscoToken;
 
-    fso.init(userOptions);
+    ciscoTracing.init(userOptions);
     sinon.assert.notCalled(addSpanProcessorMock);
   });
 });
