@@ -17,12 +17,17 @@ import * as http from 'http';
 import * as assert from 'assert';
 
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
+import { Options, _configDefaultOptions } from '../src/options';
 
 export const cleanEnvironmentVariables = () => {
   Object.keys(process.env).forEach(key => {
     delete process.env[key];
   });
 };
+
+export const testOptions = <Options>(
+  _configDefaultOptions({ ciscoToken: 'some_token' })
+);
 
 export function assertExpectedObj(
   span: ReadableSpan,

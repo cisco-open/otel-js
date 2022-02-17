@@ -25,6 +25,7 @@ import {
 import { Options } from '../../../src';
 import * as assert from 'assert';
 import { _configDefaultOptions } from '../../../src/options';
+import { testOptions } from '../../utils';
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');
@@ -33,14 +34,6 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('PayloadHandler tests', () => {
   const ATTR_PREFIX = 'http.request.body';
-  const options = {
-    ciscoToken: 'some-token',
-    collectorEndpoint: 'grpc://localhost:4317',
-    serviceName: 'application',
-  };
-
-  const defaultOptions = <Options>_configDefaultOptions(options);
-
   let logger;
 
   beforeEach(() => {
@@ -59,7 +52,7 @@ describe('PayloadHandler tests', () => {
       const span = tracer.startSpan('HTTP GET - TEST');
       const testBody = JSON.stringify({ sup: 'this is da chunk' });
 
-      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadHandler = new PayloadHandler(testOptions, 'someEncoding');
       payloadHandler.addChunk(Buffer.from(testBody));
       payloadHandler.setPayload(span, ATTR_PREFIX);
       span.end();
@@ -75,7 +68,7 @@ describe('PayloadHandler tests', () => {
     it('should do nothing when chunk is undefined', done => {
       const span = tracer.startSpan('HTTP GET - TEST');
 
-      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadHandler = new PayloadHandler(testOptions, 'someEncoding');
       payloadHandler.addChunk(undefined);
       payloadHandler.setPayload(span, ATTR_PREFIX);
       span.end();
@@ -92,7 +85,7 @@ describe('PayloadHandler tests', () => {
       const span = tracer.startSpan('HTTP GET - TEST');
       const testBody = JSON.stringify({ sup: 'this is da chunk' });
 
-      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadHandler = new PayloadHandler(testOptions, 'someEncoding');
       const payloadBuffer = Buffer.from(testBody);
       payloadHandler.addChunk(payloadBuffer.slice(0, 4));
       payloadHandler.addChunk(payloadBuffer.slice(4, payloadBuffer.length));
@@ -111,7 +104,7 @@ describe('PayloadHandler tests', () => {
       const span = tracer.startSpan('HTTP GET - TEST');
       const testBody = 'This is definitely noy a json';
 
-      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadHandler = new PayloadHandler(testOptions, 'someEncoding');
       const payloadBuffer = Buffer.from(testBody);
       payloadHandler.addChunk(payloadBuffer);
       payloadHandler.setPayload(span, ATTR_PREFIX);
@@ -129,7 +122,7 @@ describe('PayloadHandler tests', () => {
       const span = tracer.startSpan('HTTP GET - TEST');
       const testBody = 'זה לא ג׳ייסון';
 
-      const payloadHandler = new PayloadHandler(defaultOptions, 'someEncoding');
+      const payloadHandler = new PayloadHandler(testOptions, 'someEncoding');
       const payloadBuffer = Buffer.from(testBody);
       payloadHandler.addChunk(payloadBuffer);
       payloadHandler.setPayload(span, ATTR_PREFIX);

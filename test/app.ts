@@ -20,7 +20,7 @@ const exporterOptions: ExporterOptions = {
   collectorEndpoint: 'http://localhost:4317',
 };
 
-const userOptions: Options = {
+const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
   ciscoToken: 'sometoken',
   exporters: [exporterOptions],

@@ -45,7 +45,7 @@ ciscoTracing.init(userOptions);
 ```javascript
 import { ciscoTracing, Options } from 'cisco-opentelemetry-node';
 
-const userOptions: Options = {
+const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
   ciscoToken: 'sometoken',
   exporters: [
@@ -79,7 +79,7 @@ Exporter options
 Multiple exporter can be initialize using ciscoTracing init function with the following options:
 
 ```javascript
-const userOptions: Options = {
+const userOptions: Partial<Options> = {
   collectorEndpoint: 'http://localhost:4317',
   serviceName: 'my-app-name',
   ciscoToken: 'sometoken',

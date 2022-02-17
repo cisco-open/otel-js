@@ -33,8 +33,7 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 import * as amqp from 'amqplib';
 import { Channel, ConfirmChannel } from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
-import { Options } from '../../../src';
-import { assertExpectedObj } from '../../utils';
+import { assertExpectedObj, testOptions } from '../../utils';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
@@ -89,12 +88,6 @@ describe('amqplib instrumentation callback model', () => {
   const url = `amqp://${TEST_RABBITMQ_USER}:${TEST_RABBITMQ_PASS}@${TEST_RABBITMQ_HOST}:${TEST_RABBITMQ_PORT}`;
   let conn: amqp.Connection;
 
-  const options = <Options>{
-    ciscoToken: 'some-token',
-    collectorEndpoint: 'http://localhost:4713',
-    serviceName: 'application',
-  };
-
   const MESSAGE_HEADERS = {
     'some-request-header': 'some-request-value',
     'andd-another-one': 'yoyoyo',
@@ -104,7 +97,7 @@ describe('amqplib instrumentation callback model', () => {
 
   before(async () => {
     if (shouldTest) {
-      configureAmqplibInstrumentation(instrumentation, options);
+      configureAmqplibInstrumentation(instrumentation, testOptions);
       conn = await amqp.connect(url);
     }
   });
@@ -188,7 +181,7 @@ describe('amqplib instrumentation callback model', () => {
     describe('when user configuration specified', () => {
       afterEach(() => {
         instrumentation.setConfig({});
-        configureAmqplibInstrumentation(instrumentation, options);
+        configureAmqplibInstrumentation(instrumentation, testOptions);
       });
 
       it('should see and not override user publishHook, consumeHook', async () => {
@@ -212,7 +205,7 @@ describe('amqplib instrumentation callback model', () => {
           },
         });
 
-        configureAmqplibInstrumentation(instrumentation, options);
+        configureAmqplibInstrumentation(instrumentation, testOptions);
 
         const hadSpaceInBuffer = channel.sendToQueue(
           QUEUE_NAME,

@@ -25,21 +25,15 @@ import {
 import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { configureRedisInstrumentation } from '../../../src/instrumentations/extentions/redis';
-import { Options } from '../../../src';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
 
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
 
 import * as redisTypes from 'redis';
+import { testOptions } from '../../utils';
 
 const memoryExporter = new InMemorySpanExporter();
-
-const options = <Options>{
-  ciscoToken: 'some-token',
-  collectorEndpoint: 'http://localhost:4713',
-  serviceName: 'application',
-};
 
 const provider = new NodeTracerProvider();
 const redis = require('redis');
@@ -116,7 +110,7 @@ describe('Test redis', () => {
       };
       instrumentation.disable();
       instrumentation.setConfig({ responseHook });
-      configureRedisInstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, testOptions);
       instrumentation.enable();
 
       client.hset(hash, key, value, () => {
@@ -134,7 +128,7 @@ describe('Test redis', () => {
   describe('Test redis commands', () => {
     before(() => {
       instrumentation.disable();
-      configureRedisInstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, testOptions);
       instrumentation.enable();
     });
 
