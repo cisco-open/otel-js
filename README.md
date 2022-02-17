@@ -63,10 +63,11 @@ Advanced options can be configured as a parameter to the init() method:
 
 | Parameter      | Env              | Type   | Default       | Description                                                       |
 | -------------- | ---------------- | ------ | ------------- | ----------------------------------------------------------------- |
-| FSOToken       | FSO_TOKEN        | string | -             | Cisco account token                                               |
-| serviceName    | SERVICE_NAME     | string | `application` | Application name that will be set for traces                      |
-| debug          | FSO_DEBUG        | string | `false`       | Debug logs                                                        |
-| maxPayloadSize | MAX_PAYLOAD_SIZE | number | `1024`        | The number in bytes of the maximum payload to capture for request |
+| token          | CISCO_TOKEN      | string | -             | Cisco account token                                               |
+| serviceName    | OTEL_SERVICE_NAME| string | `application` | Application name that will be set for traces                      |
+| debug          | CISCO_DEBUG      | string | `false`       | Debug logs                                                        |
+| payloadsEnabled| CISCO_PAYLOADS_ENABLED | boolean | `false`   | The number in bytes of the maximum payload to capture for request |
+| maxPayloadSize | CISCO_MAX_PAYLOAD_SIZE | number | `1024`        | The number in bytes of the maximum payload to capture for request |
 
 Exporter options
 
