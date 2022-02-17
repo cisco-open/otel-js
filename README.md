@@ -32,7 +32,7 @@ const userOptions = {
   ciscoToken: 'cisco-token',
   exporters: [
     {
-      collectorEndpoint: 'http://localhost:4317',
+      collectorEndpoint: 'grpc://localhost:4317',
     },
   ],
 };

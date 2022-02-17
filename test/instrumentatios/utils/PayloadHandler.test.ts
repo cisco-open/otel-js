@@ -24,6 +24,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { Options } from '../../../src';
 import * as assert from 'assert';
+import {_configDefaultOptions} from "../../../src/options";
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');
@@ -32,11 +33,14 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('PayloadHandler tests', () => {
   const ATTR_PREFIX = 'http.request.body';
-  const defaultOptions = <Options>{
+  const options = {
     ciscoToken: 'some-token',
-    collectorEndpoint: 'http://localhost:4317',
+    collectorEndpoint: 'grpc://localhost:4317',
     serviceName: 'application',
   };
+
+  const defaultOptions = <Options>_configDefaultOptions(options);
+
 
   let logger;
 
@@ -141,12 +145,14 @@ describe('PayloadHandler tests', () => {
     });
 
     it('should capture data and set relevant span attr < maxPayloadSize', done => {
-      const options = <Options>{
+      const userOptions = {
         ciscoToken: 'some-token',
         collectorEndpoint: 'http://localhost:4317',
         serviceName: 'application',
         maxPayloadSize: 10,
       };
+
+      const options = <Options>_configDefaultOptions(userOptions);
       const span = tracer.startSpan('HTTP GET - TEST');
       const testBody = 'too long payloadyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
 

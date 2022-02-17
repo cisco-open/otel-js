@@ -29,6 +29,7 @@ import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
 import { assertExpectedObj } from '../../utils';
+import {_configDefaultOptions} from "../../../src/options";
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -36,11 +37,13 @@ const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('Capturing HTTP Headers/Bodies', () => {
-  const options = <Options>{
+  const userOptions = {
     ciscoToken: 'some-token',
-    collectorEndpoint: 'http://localhost:4317',
+    collectorEndpoint: 'grpc://localhost:4317',
     serviceName: 'application',
   };
+
+  const options = <Options>_configDefaultOptions(userOptions);
 
   const REQUEST_HEADERS = {
     'content-type': 'application/json',

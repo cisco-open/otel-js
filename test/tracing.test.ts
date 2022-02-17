@@ -87,8 +87,8 @@ describe('Tracing test', () => {
       ciscoToken: '',
       exporters: [exporterOptions],
     };
-    process.env.CISCO_ENDPOINT = exporterOptions.collectorEndpoint;
-    process.env.SERVICE_NAME = userOptions.serviceName;
+    process.env.OTEL_COLLECTOR_ENDPOINT = exporterOptions.collectorEndpoint;
+    process.env.OTEL_SERVICE_NAME = userOptions.serviceName;
     process.env.CISCO_TOKEN = userOptions.ciscoToken;
 
     ciscoTracing.init(userOptions);
