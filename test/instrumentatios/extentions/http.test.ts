@@ -29,7 +29,7 @@ import * as http from 'http';
 import * as utils from '../../utils';
 import * as assert from 'assert';
 import { assertExpectedObj } from '../../utils';
-import {_configDefaultOptions} from "../../../src/options";
+import { _configDefaultOptions } from '../../../src/options';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);

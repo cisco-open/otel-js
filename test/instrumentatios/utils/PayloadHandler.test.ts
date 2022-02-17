@@ -24,7 +24,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { Options } from '../../../src';
 import * as assert from 'assert';
-import {_configDefaultOptions} from "../../../src/options";
+import { _configDefaultOptions } from '../../../src/options';
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');
@@ -40,7 +40,6 @@ describe('PayloadHandler tests', () => {
   };
 
   const defaultOptions = <Options>_configDefaultOptions(options);
-
 
   let logger;
 
