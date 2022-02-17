@@ -81,7 +81,7 @@ describe('Tracing test', () => {
       type: 'otlp-grpc',
       collectorEndpoint: 'some-collector:4317',
     };
-    const  userOptions = {
+    const userOptions = {
       serviceName: 'my-app-name',
       ciscoToken: 'cisco-token',
       debug: false,

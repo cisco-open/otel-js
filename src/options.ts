@@ -34,7 +34,9 @@ export interface ExporterOptions {
  * the user didn't specified any.
  * @param options Option received from the User
  */
-export function _configDefaultOptions(options: Partial<Options>): Options | undefined {
+export function _configDefaultOptions(
+  options: Partial<Options>
+): Options | undefined {
   options.ciscoToken = options.ciscoToken || process.env.CISCO_TOKEN || '';
 
   if (!options.ciscoToken) {
@@ -51,7 +53,7 @@ export function _configDefaultOptions(options: Partial<Options>): Options | unde
     options.maxPayloadSize || getEnvNumber('CISCO_MAX_PAYLOAD_SIZE', 1024);
 
   options.payloadsEnabled =
-      options.payloadsEnabled || getEnvBoolean('CISCO_PAYLOADS_ENABLED', false);
+    options.payloadsEnabled || getEnvBoolean('CISCO_PAYLOADS_ENABLED', false);
 
   options.exporters =
     options.exporters &&
@@ -61,7 +63,8 @@ export function _configDefaultOptions(options: Partial<Options>): Options | unde
       : [
           <ExporterOptions>{
             type: process.env.OTEL_EXPORTER_TYPE || 'otlp-grpc',
-            collectorEndpoint: process.env.OTEL_COLLECTOR_ENDPOINT || 'grpc://localhost:4317',
+            collectorEndpoint:
+              process.env.OTEL_COLLECTOR_ENDPOINT || 'grpc://localhost:4317',
           },
         ];
 
