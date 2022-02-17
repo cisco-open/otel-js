@@ -32,18 +32,18 @@ describe('Tracing test', () => {
       type: 'otlp-grpc',
       collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      ciscoToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
     const traceExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.metadata?.get('x-fso-token'), [
+    assert.deepEqual(traceExporter.metadata?.get('x-cisco-token'), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
@@ -54,15 +54,15 @@ describe('Tracing test', () => {
       type: 'otlp-http',
       collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      ciscoToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
     const traceExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
     assert.deepEqual(
@@ -81,15 +81,15 @@ describe('Tracing test', () => {
       type: 'otlp-grpc',
       collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const  userOptions = {
       serviceName: 'my-app-name',
-      ciscoToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [httpExporterOptions, grpcExporterOptions],
     };
 
     const httpExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
     assert.deepEqual(
@@ -99,10 +99,10 @@ describe('Tracing test', () => {
     assert.strictEqual(httpExporter.url, httpExporterOptions.collectorEndpoint);
 
     const grpcExporter = exporterFactory(
-      userOptions
+      <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('x-fso-token'), [
+    assert.deepEqual(grpcExporter.metadata?.get('x-cisco-token'), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);
@@ -113,14 +113,14 @@ describe('Tracing test', () => {
       type: 'undefined-exporter',
       collectorEndpoint: 'some-collector:4317',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: 'my-app-name',
-      ciscoToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [exporterOptions],
     };
 
-    const traceExporters = exporterFactory(userOptions);
+    const traceExporters = exporterFactory(<Options>userOptions);
     assert(traceExporters.length === 0);
   });
 });

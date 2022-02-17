@@ -18,10 +18,10 @@ import { diag } from '@opentelemetry/api';
 export interface Options {
   serviceName: string;
   ciscoToken: string;
-  debug?: boolean;
-  maxPayloadSize?: number;
-  payloadsEnabled?: boolean;
-  exporters?: ExporterOptions[];
+  debug: boolean;
+  maxPayloadSize: number;
+  payloadsEnabled: boolean;
+  exporters: ExporterOptions[];
 }
 
 export interface ExporterOptions {
@@ -34,7 +34,7 @@ export interface ExporterOptions {
  * the user didn't specified any.
  * @param options Option received from the User
  */
-export function _configDefaultOptions(options: Options): Options | undefined {
+export function _configDefaultOptions(options: Partial<Options>): Options | undefined {
   options.ciscoToken = options.ciscoToken || process.env.CISCO_TOKEN || '';
 
   if (!options.ciscoToken) {
@@ -65,7 +65,7 @@ export function _configDefaultOptions(options: Options): Options | undefined {
           },
         ];
 
-  return options;
+  return <Options>options;
 }
 
 function getEnvBoolean(key: string, defaultValue = true) {

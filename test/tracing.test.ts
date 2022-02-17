@@ -59,14 +59,14 @@ describe('Tracing test', () => {
 
     if (accessToken) {
       // gRPC not yet supported in ingest
-      assert.equal(exporter?.metadata?.get('X-FSO-Token'), accessToken);
+      assert.equal(exporter?.metadata?.get('X-Cisco-Token'), accessToken);
     }
   }
 
   it('setups tracing with custom options', () => {
-    const userOptions: Options = {
+    const userOptions: Partial<Options> = {
       serviceName: 'my-app-name',
-      ciscoToken: 'fso-token',
+      ciscoToken: 'cisco-token',
       debug: false,
       exporters: [
         <ExporterOptions>{
@@ -75,21 +75,21 @@ describe('Tracing test', () => {
       ],
     };
     ciscoTracing.init(userOptions);
-    assertTracingPipeline('localhost:4317', 'my-app-name', 'fso-token');
+    assertTracingPipeline('localhost:4317', 'my-app-name', 'cisco-token');
   });
 
   it('setups tracing with defaults', () => {
     const exporterOptions: ExporterOptions = {
       collectorEndpoint: '',
     };
-    const userOptions: Options = {
+    const userOptions = {
       serviceName: '',
       ciscoToken: '',
       exporters: [exporterOptions],
     };
-    process.env.FSO_ENDPOINT = exporterOptions.collectorEndpoint;
+    process.env.CISCO_ENDPOINT = exporterOptions.collectorEndpoint;
     process.env.SERVICE_NAME = userOptions.serviceName;
-    process.env.FSO_TOKEN = userOptions.ciscoToken;
+    process.env.CISCO_TOKEN = userOptions.ciscoToken;
 
     ciscoTracing.init(userOptions);
     sinon.assert.notCalled(addSpanProcessorMock);

@@ -23,7 +23,7 @@ import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 
-export function init(userOptions: Options) {
+export function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
