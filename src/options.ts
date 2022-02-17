@@ -43,12 +43,12 @@ export function _configDefaultOptions(options: Options): Options | undefined {
   }
 
   options.serviceName =
-    options.serviceName || process.env.SERVICE_NAME || 'application';
+    options.serviceName || process.env.OTEL_SERVICE_NAME || 'application';
 
   options.debug = options.debug || getEnvBoolean('CISCO_DEBUG', false);
 
   options.maxPayloadSize =
-    options.maxPayloadSize || getEnvNumber('MAX_PAYLOAD_SIZE', 1024);
+    options.maxPayloadSize || getEnvNumber('CISCO_MAX_PAYLOAD_SIZE', 1024);
 
   options.payloadsEnabled =
       options.payloadsEnabled || getEnvBoolean('CISCO_PAYLOADS_ENABLED', false);

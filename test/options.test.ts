@@ -101,8 +101,8 @@ describe('Options tests', () => {
         ciscoToken: 'SomeToken',
         serviceName: 'Not the default service name',
         debug: true,
-        payloadsEnabled: true,
         maxPayloadSize: 10000,
+        payloadsEnabled: true,
         exporters: [
           <ExporterOptions>{
             type: 'otlp-http',
@@ -112,18 +112,17 @@ describe('Options tests', () => {
       };
 
       process.env.CISCO_TOKEN = userOptions.ciscoToken;
-      process.env.CISCO_ENDPOINT =
+      process.env.OTEL_COLLECTOR_ENDPOINT =
         userOptions.exporters && userOptions.exporters[0].collectorEndpoint;
-      process.env.SERVICE_NAME = userOptions.serviceName;
+      process.env.OTEL_SERVICE_NAME = userOptions.serviceName;
       process.env.CISCO_DEBUG = String(userOptions.debug);
       process.env.CISCO_PAYLOADS_ENABLED = String(userOptions.payloadsEnabled);
-      process.env.MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
-      process.env.EXPORTER_TYPE =
+      process.env.CISCO_MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
+      process.env.OTEL_EXPORTER_TYPE =
         userOptions.exporters && String(userOptions.exporters[0].type);
 
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
-
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
     });
