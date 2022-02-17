@@ -36,7 +36,7 @@ export function init(userOptions: Options) {
   }
 
   const resource = new Resource({
-    // TODO: temporarily this is 'application' duo to BC. rename after FSO is ready
+    // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
     //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
     ['application']: options.serviceName,
   });

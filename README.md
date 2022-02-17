@@ -76,7 +76,7 @@ Exporter options
 | collectorEndpoint | OTEL_COLLECTOR_ENDPOINT  | string | `http://localhost:4317` | The address of the trace collector to send traces to                                                                                                |
 | type.       | OTEL_EXPORTER_TYPE | string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below |
 
-Multiple exporter can be initialize using fso init function with the following options:
+Multiple exporter can be initialize using ciscoTracing init function with the following options:
 
 ```javascript
 const userOptions: Options = {
