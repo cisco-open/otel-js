@@ -6,7 +6,20 @@
         - main
   permissions: read-all
   jobs:
+    system-tests:
+      runs-on: ubuntu-18.04
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get versions
+        run: |
+            docker-compose --version;
+            docker --version;
+      - name: Test basic example
+        working-directory: system-tests/
+        run: docker-compose -f docker-compose.yaml up --exit-code-from test
     unit-test:
+      if: ${{false}}
       strategy:
         fail-fast: false
         matrix:

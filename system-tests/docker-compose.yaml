@@ -7,20 +7,6 @@ services:
     ports:
       - "27017:27017"
 
-  # Jaeger
-  jaeger-all-in-one:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "16686:16686"
-      - "14268"
-      - "14250"
-
-  # Zipkin
-  zipkin-all-in-one:
-    image: openzipkin/zipkin:latest
-    ports:
-      - "9411:9411"
-
   # Collector
   otel-collector:
     image: ${OTELCOL_IMG}
@@ -34,19 +20,6 @@ services:
       - "13133:13133" # health_check extension
       - "4317"        # OTLP gRPC receiver
       - "55670:55679" # zpages extension
-    depends_on:
-      - jaeger-all-in-one
-      - zipkin-all-in-one
-
-  demo-client:
-    build:
-      dockerfile: Dockerfile
-      context: ./client
-    environment:
-      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
-      - DEMO_SERVER_ENDPOINT=http://demo-server:7080/
-    depends_on:
-      - demo-server
 
   demo-server:
     build:
@@ -60,11 +33,3 @@ services:
     depends_on:
       - otel-collector
       - mongodb
-
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
