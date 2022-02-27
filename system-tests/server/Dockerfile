@@ -9,8 +9,8 @@ RUN npm install
 
 RUN npm run
 
-RUN mv `npm pack` /tmp/cisco-otel-distro.tgz
+RUN `npm pack`
 
-RUN cd system-tests/server && npm install && npm install /tmp/cisco-otel-distro.tgz
+RUN cd system-tests/server && npm install && npm install ../../cisco-opentelemetry-node-0.0.0-development.tgz
 
 RUN cd system-tests/server && node server.js
