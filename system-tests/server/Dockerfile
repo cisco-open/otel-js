@@ -9,7 +9,7 @@ RUN npm install
 
 RUN npm run
 
-RUN `npm pack`
+RUN npm pack
 
 RUN cd system-tests/server && npm install && npm install ../../cisco-opentelemetry-node-0.0.0-development.tgz
 
