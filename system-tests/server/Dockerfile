@@ -4,7 +4,6 @@ RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
 COPY --chown=node:node ["package*.json", "*.lock", "./"]
-COPY --chown=node:node ["./src/native_ext", "./src/native_ext"]
 COPY --chown=node:node ./ .
 RUN npm install
 
