@@ -13,4 +13,4 @@ RUN mv `npm pack` /tmp/cisco-otel-distro.tgz
 
 RUN cd system-tests/server && npm install && npm install /tmp/cisco-otel-distro.tgz
 
-RUN node run system-tests/server/server.js
+RUN node system-tests/server/server.js

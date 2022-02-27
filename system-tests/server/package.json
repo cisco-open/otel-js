@@ -11,8 +11,6 @@
     "@types/mongodb": "^3.5.27",
     "@opentelemetry/api": "^1.0.4",
     "cisco-opentelemetry-node": "^1.8.6",
-    "express": "^4.17.1",
-    "mongodb": "3.6.8",
-    "mongoose": "5.12.11"
+    "express": "^4.17.1"
   }
 }
