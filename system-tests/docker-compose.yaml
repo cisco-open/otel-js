@@ -2,8 +2,8 @@ version: '2'
 services:
   test-server:
     build:
-      dockerfile: Dockerfile
-      context: ./server
+      context:  ../../
+      dockerfile: system-tests/server/Dockerfile
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
       - MONGO_URL=mongodb://mongo_server:27017

@@ -1,16 +1,12 @@
 FROM node:14-slim
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN mkdir /home/node/app
+WORKDIR /home/node/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
-
+COPY --chown=node:node ["binding.gyp", "package*.json", "*.lock", "./"]
+COPY --chown=node:node ["./src/native_ext", "./src/native_ext"]
+COPY --chown=node:node ./ .
 RUN npm install
 
-# Bundle app source
-COPY . .
-
-CMD [ "node", "server.js" ]
+RUN pwd
+RUN ls -lR
