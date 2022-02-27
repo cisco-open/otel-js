@@ -1,11 +1,5 @@
 version: '2'
 services:
-  mongodb:
-    image: mongo
-    container_name: 'mongo_server'
-    ports:
-      - '27017:27017'
-
   # Collector
   otel-collector:
     image: ${OTELCOL_IMG}
@@ -31,4 +25,3 @@ services:
       - '7080:7080'
     depends_on:
       - otel-collector
-      - mongodb
