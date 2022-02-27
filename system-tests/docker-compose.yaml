@@ -2,7 +2,7 @@ version: '2'
 services:
   test-server:
     build:
-      context:  ../../
+      context:  ../
       dockerfile: system-tests/server/Dockerfile
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
