@@ -16,8 +16,8 @@ services:
     image: ${OTELCOL_IMG}
     command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
     volumes:
-      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
-      - ./test_spans.json:/test_spans.json
+      - system-tests/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - system-tests/test_spans.json:/test_spans.json
     ports:
       - "1888:1888"   # pprof extension
       - "8888:8888"   # Prometheus metrics exposed by the collector
