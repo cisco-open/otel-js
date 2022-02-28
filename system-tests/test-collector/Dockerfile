@@ -9,4 +9,4 @@ COPY --chown=node:node ./ .
 
 RUN cd system-tests/test-collector && npm install
 
-RUN cd system-tests/test-collector && node server.js
+RUN cd system-tests/test-collector && node test-collector.js
