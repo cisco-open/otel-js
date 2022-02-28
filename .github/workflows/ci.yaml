@@ -11,7 +11,6 @@
         fail-fast: false
         matrix:
           container: [ "node:10", "node:12", "node:14" ]
-      runs-on: ubuntu-latest
       container:
         image: ${{ matrix.container }}
       services:
@@ -40,8 +39,6 @@
       steps:
         - name: Checkout
           uses: actions/checkout@v2
-          with:
-            fetch-depth: 0
         - name: Cache Dependencies
           uses: actions/cache@v2
           with:
