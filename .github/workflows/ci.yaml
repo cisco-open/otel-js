@@ -17,7 +17,7 @@
             docker --version;
       - name: Test basic example
         working-directory: system-tests/
-        run: docker-compose -f docker-compose.yaml up --exit-code-from test-server
+        run: docker-compose -f docker-compose.yaml up --exit-code-from test-collector
     unit-test:
       if: ${{false}}
       strategy:
