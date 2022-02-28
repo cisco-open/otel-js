@@ -4,8 +4,7 @@ receivers:
       grpc:
 
 exporters:
-  file:
-    ./test_spans.json
+  file: ./test_spans.json
   logging:
 
 processors:
