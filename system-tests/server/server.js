@@ -9,11 +9,8 @@ const userOptions = {
   ciscoToken: 'fso-token',
   exporters: [
     {
-      // collectorEndpoint: "grpc://a6287cf737f184354bc16f6dc3597d36-702985657.us-east-1.elb.amazonaws.com",
-      //collectorEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-      collectorEndpoint:
-        'grpc://temp-LoadB-3CZV4U1QU75S-508041e47c972a61.elb.us-east-1.amazonaws.com:8080',
-      type: 'otlp-grpc',
+      collectorEndpoint: 'http://test-collector:11337',
+      type: 'otlp-http',
     },
   ],
 };
