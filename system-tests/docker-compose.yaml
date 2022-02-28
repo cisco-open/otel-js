@@ -8,7 +8,8 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
     ports:
       - '7080:7080'
-    depends_on: test-collector
+    depends_on:
+    - test-collector
 
   test-collector:
     build:
