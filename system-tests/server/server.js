@@ -9,7 +9,7 @@ const userOptions = {
   ciscoToken: 'fso-token',
   exporters: [
     {
-      collectorEndpoint: 'http://0.0.0.0:4317',
+      collectorEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
       type: 'otlp-grpc',
     },
   ],
@@ -30,5 +30,5 @@ app.get('/', (req, res) => {
   res.status(200).send('Hallo Worldz');
 });
 
-app.listen(PORT, HOST);
+//app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
