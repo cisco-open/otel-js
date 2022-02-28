@@ -13,7 +13,7 @@ services:
 
   test-collector:
     build:
-      context: ../
+      context: ./test-collector
       dockerfile: system-tests/test-collector/Dockerfile
     ports:
       - '11337:11337'
