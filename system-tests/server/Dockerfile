@@ -7,7 +7,7 @@ COPY --chown=node:node ["package*.json", "*.lock", "./"]
 COPY --chown=node:node ./ .
 RUN npm install
 
-RUN npm run
+RUN npm run build
 
 RUN npm pack
 
