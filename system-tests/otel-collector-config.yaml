@@ -4,6 +4,8 @@ receivers:
       grpc:
 
 exporters:
+  file:
+    ./test_spans.json
   logging:
 
 processors:
@@ -14,4 +16,4 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging]
+      exporters: [logging, file]

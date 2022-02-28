@@ -8,6 +8,8 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cisco-opentelemetry-node": "^1.8.7",
+    "@types/mongodb": "^3.5.27",
     "express": "^4.17.1"
   }
 }

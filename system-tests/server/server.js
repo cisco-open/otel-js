@@ -9,8 +9,8 @@ const userOptions = {
   ciscoToken: 'fso-token',
   exporters: [
     {
-      collectorEndpoint: 'http://test-collector:11337',
-      type: 'otlp-http',
+      collectorEndpoint: 'http://0.0.0.0:4317',
+      type: 'otlp-grpc',
     },
   ],
 };

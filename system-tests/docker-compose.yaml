@@ -9,11 +9,19 @@ services:
     ports:
       - '7080:7080'
     depends_on:
-    - test-collector
+      - otel-collector
 
-  test-collector:
-    build:
-      context: ../
-      dockerfile: system-tests/test-collector/Dockerfile
+  # Collector
+  otel-collector:
+    image: ${OTELCOL_IMG}
+    command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ./test_spans.json:/test_spans.json
     ports:
-      - '11337:11337'
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317"        # OTLP gRPC receiver
+      - "55670:55679" # zpages extension
