@@ -15,6 +15,7 @@
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../../options';
+// TODO: we need to separate the user Options from our using options
 import {
   AmqplibConsumerCustomAttributeFunction,
   AmqplibInstrumentationConfig,
@@ -88,7 +89,7 @@ function createPublishHook(
       span,
       'messaging.message.payload',
       publishParams.content,
-      options.maxPayloadSize ?? 1024
+      options.maxPayloadSize
     );
   };
 }
@@ -109,12 +110,11 @@ function createConsumeHook(
     );
     span.setAttribute('messaging.message.payload_size', message.content.length);
 
-    // TODO: we need to separate the user Options from our using options
     PayloadHandler.setPayload(
       span,
       'messaging.message.payload',
       message.content,
-      options.maxPayloadSize ?? 1024
+      options.maxPayloadSize
     );
   };
 }

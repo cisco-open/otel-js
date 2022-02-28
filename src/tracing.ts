@@ -23,11 +23,11 @@ import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 
-export function init(userOptions: Options) {
+export function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
-    diag.error('FSO default options are not properly configured.');
+    diag.error('Cisco default options are not properly configured.');
     return;
   }
 
@@ -36,7 +36,7 @@ export function init(userOptions: Options) {
   }
 
   const resource = new Resource({
-    // TODO: temporarily this is 'application' duo to BC. rename after FSO is ready
+    // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
     //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
     ['application']: options.serviceName,
   });

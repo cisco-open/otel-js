@@ -25,21 +25,15 @@ import {
 import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { configureRedisInstrumentation } from '../../../src/instrumentations/extentions/redis';
-import { Options } from '../../../src';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
 
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
 
 import * as redisTypes from 'redis';
+import { testOptions } from '../../utils';
 
 const memoryExporter = new InMemorySpanExporter();
-
-const options = <Options>{
-  FSOToken: 'some-token',
-  FSOEndpoint: 'http://localhost:4713',
-  serviceName: 'application',
-};
 
 const provider = new NodeTracerProvider();
 const redis = require('redis');
@@ -116,7 +110,7 @@ describe('Test redis', () => {
       };
       instrumentation.disable();
       instrumentation.setConfig({ responseHook });
-      configureRedisInstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, testOptions);
       instrumentation.enable();
 
       client.hset(hash, key, value, () => {
@@ -124,7 +118,7 @@ describe('Test redis', () => {
         assert.strictEqual(spans.length, 1);
         const firstHookAtt = spans[0].attributes['someFieldName'];
         assert.strictEqual(firstHookAtt, 'someData');
-        const secondHookAtt = spans[0].attributes['db.command.response'];
+        const secondHookAtt = spans[0].attributes['db.redis.response'];
         assert.strictEqual(secondHookAtt, '1');
         done();
       });
@@ -134,7 +128,7 @@ describe('Test redis', () => {
   describe('Test redis commands', () => {
     before(() => {
       instrumentation.disable();
-      configureRedisInstrumentation(instrumentation, options);
+      configureRedisInstrumentation(instrumentation, testOptions);
       instrumentation.enable();
     });
 
@@ -204,9 +198,9 @@ describe('Test redis', () => {
         operation.method(() => {
           const spans = memoryExporter.getFinishedSpans();
           assert.strictEqual(spans.length, 1);
-          const res = spans[0].attributes['db.command.response'];
+          const res = spans[0].attributes['db.redis.response'];
           assert.strictEqual(res, operation.responseShouldBe);
-          const arg = spans[0].attributes['db.command.arguments'] as string;
+          const arg = spans[0].attributes['db.redis.arguments'] as string;
           assert.deepEqual(JSON.parse(arg), operation.args);
           done();
         });
@@ -219,9 +213,9 @@ describe('Test redis', () => {
       multi.exec(() => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 3);
-        const multiRes = spans[0].attributes['db.command.response'] as string;
+        const multiRes = spans[0].attributes['db.redis.response'] as string;
         assert.equal(JSON.parse(multiRes), 'OK');
-        const execRes = spans[2].attributes['db.command.response'];
+        const execRes = spans[2].attributes['db.redis.response'];
         assert.strictEqual(execRes, '[1]');
         done();
       });

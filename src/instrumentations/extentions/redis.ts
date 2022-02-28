@@ -72,7 +72,7 @@ function createRedisResponseHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    span.setAttribute('db.command.arguments', JSON.stringify(cmdArgs));
-    span.setAttribute('db.command.response', JSON.stringify(responseInfo));
+    span.setAttribute('db.redis.arguments', JSON.stringify(cmdArgs));
+    span.setAttribute('db.redis.response', JSON.stringify(responseInfo));
   };
 }

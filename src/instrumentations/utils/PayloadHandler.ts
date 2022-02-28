@@ -24,9 +24,7 @@ export class PayloadHandler {
   private totalChunks: any[];
 
   constructor(options: Options, contentEncoding?: string) {
-    this.maxPayloadSize = options.maxPayloadSize
-      ? options.maxPayloadSize
-      : 1024;
+    this.maxPayloadSize = options.maxPayloadSize;
     this.currentBodySize = 0;
     this.totalChunks = [];
   }
