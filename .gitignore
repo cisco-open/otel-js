@@ -4,3 +4,4 @@ lib/
 .idea/
 .nyc_output/
 coverage/
+src/sami_tests/
