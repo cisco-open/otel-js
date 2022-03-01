@@ -30,5 +30,6 @@ app.get('/', (req, res) => {
   res.status(200).send('Hallo Worldz');
 });
 
-//app.listen(PORT, HOST);
+// Skip the actual server setup. Just make sure that our agent don't throw an exception
+// app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
