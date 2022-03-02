@@ -1,7 +1,6 @@
 FROM node:14-slim
 
 RUN npm install -g npm
-RUN npm config set unsafe-perm true
 
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
