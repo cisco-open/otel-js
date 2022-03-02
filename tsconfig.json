@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
     "allowUnreachableCode": false,
@@ -19,8 +20,7 @@
     "target": "es2017",
     "incremental": true,
     "rootDir": ".",
-    "outDir": "lib",
-    "resolveJsonModule": true
+    "outDir": "lib"
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "test/**/*.ts"]
