@@ -30,11 +30,15 @@ export class SNSEventCreator implements AwsEventCreator {
           'aws.sns.MessageStructure',
           cmdInput.MessageStructure
         );
-        for (const [key, value] of Object.entries(cmdInput.MessageAttributes)) {
-          span.setAttribute(
-            `aws.sns.message_attribute.${key}`,
-            JSON.stringify(value)
-          );
+        if (cmdInput.MessageAttributes) {
+          for (const [key, value] of Object.entries(
+            cmdInput.MessageAttributes
+          )) {
+            span.setAttribute(
+              `aws.sns.message_attribute.${key}`,
+              JSON.stringify(value)
+            );
+          }
         }
         span.setAttribute('aws.sns.PhoneNumber', cmdInput.PhoneNumber);
         span.setAttribute('aws.sns.TargetArn', cmdInput.TargetArn);
