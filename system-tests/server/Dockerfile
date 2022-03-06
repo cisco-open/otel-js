@@ -1,5 +1,7 @@
 FROM node:14-slim
 
+RUN npm install -g npm
+
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
@@ -13,4 +15,4 @@ RUN npm pack
 
 RUN cd system-tests/server && npm install && npm install ../../cisco-opentelemetry-node-0.0.0-development.tgz
 
-RUN cd system-tests/server && node server.js
+RUN cd system-tests/server && ls -lR && node server.js

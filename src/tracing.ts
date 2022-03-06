@@ -22,6 +22,7 @@ import { _configDefaultOptions, Options } from './options';
 import { Resource } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
+import getVersion from './version';
 
 export function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
@@ -39,6 +40,7 @@ export function init(userOptions: Partial<Options>) {
     // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
     //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
     ['application']: options.serviceName,
+    ['cisco.sdk.version']: getVersion(),
   });
 
   const provider = new NodeTracerProvider({ resource });

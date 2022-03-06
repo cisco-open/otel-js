@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
     "allowUnreachableCode": false,
