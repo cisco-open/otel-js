@@ -22,7 +22,11 @@ import {
 import * as assert from 'assert';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
-import { testOptions } from '../../utils';
+import { configureHttpInstrumentation } from '../../../src/instrumentations/extentions/http';
+import * as utils from '../../utils';
+import { assertExpectedObj, testOptions } from '../../utils';
+
+// import { testOptions } from '../../utils';
 const chai = require('chai');
 const expect = chai.expect;
 const should = chai.should();
@@ -41,7 +45,7 @@ describe('Test AWS V3', () => {
   const RUN_AWS_TESTS = process.env.RUN_AWS_TESTS as string;
   let shouldTest = true;
   if (!RUN_AWS_TESTS) {
-    console.log('Skipping test-aws v3');
+    console.log('Skipping test-aws v3. do: export RUN_AWS_TESTS=1 to run them');
     shouldTest = false;
   }
   const ACCOUNT_ID = '0000000';
@@ -51,17 +55,14 @@ describe('Test AWS V3', () => {
       this.skip();
     }
     done();
-    console.log('call done in beforeEadh');
   });
 
-  afterEach(done => {
+  afterEach(() => {
     if (!shouldTest) {
-      done();
-      console.log('call done in afterEach in case we shoule NOT test');
+      // done();
     } else {
       memoryExporter.reset();
-      done();
-      console.log('call done in afterEach in case we shoule test');
+      // done();
     }
   });
 
@@ -75,24 +76,12 @@ describe('Test AWS V3', () => {
       instrumentation.enable();
     });
 
-    it('Test SNS publish', done => {
-      const params = {
-        Message: MSG,
-        TopicArn: TOPIC,
-        Subject: SUBJECT,
-        PhoneNumber: '+972000000000',
-        MessageAttributes: {
-          myKey: {
-            DataType: 'String',
-            StringValue: 'somestringvalue',
-          },
-        },
-      };
+    async function innerTestPublish(params) {
       const snsClient = new SNS({ region: 'us-east-1' });
       const promise = snsClient.publish(params);
       promise
         .then(data => {
-          console.log('success sns publish - should not happen!');
+          assert.equal(1, 0);
         })
         .catch(err => {
           const spans = memoryExporter.getFinishedSpans();
@@ -108,7 +97,27 @@ describe('Test AWS V3', () => {
           assert.strictEqual(spans[0].attributes['aws.sns.TopicArn'], TOPIC);
           assert.strictEqual(spans[0].attributes['aws.sns.subject'], SUBJECT);
         });
-      promise.should.be.rejected.and.notify(done());
+    }
+
+    it('Test SNS publish', async () => {
+      const params = {
+        Message: MSG,
+        TopicArn: TOPIC,
+        Subject: SUBJECT,
+        PhoneNumber: '+972000000000',
+        MessageAttributes: {
+          myKey: {
+            DataType: 'String',
+            StringValue: 'somestringvalue',
+          },
+        },
+      };
+      setTimeout(async () => {
+        const snsClient = new SNS({ region: 'us-east-1' });
+        const data = await snsClient.publish(params);
+        const spans = memoryExporter.getFinishedSpans();
+        assert.strictEqual(spans.length, 7);
+      }, 5000);
     });
   });
 
@@ -116,92 +125,12 @@ describe('Test AWS V3', () => {
     const QUEUE_NAME = 'non-existing-queue';
     const QUEUE_URL = `https://sqs.us-east-1.amazonaws.com/${ACCOUNT_ID}}/${QUEUE_NAME}}`;
 
-    async function test(params) {
-      const sqsClient = new SQS({ region: 'us-east-1' });
-      sqsClient.receiveMessage(params, (err, data) => {
-        if (err) {
-          console.log('inside error');
-          const spans = memoryExporter.getFinishedSpans();
-          assert.strictEqual(spans.length, 1);
-        } else {
-          console.log('inside success');
-        }
-      });
-    }
-
-    async function testReceiveMessage(params) {
-      const sqsClient = new SQS({ region: 'us-east-1' });
-      const promise = sqsClient.receiveMessage(params);
-      promise
-        .then(data => {
-          assert.equal(1, 0);
-        })
-        .catch(err => {
-          const spans = memoryExporter.getFinishedSpans();
-          assert.strictEqual(spans.length, 1);
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.queue_name'],
-            QUEUE_NAME
-          );
-          assert.strictEqual(spans[0].attributes['aws.account_id'], ACCOUNT_ID);
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.visibility_timeout'],
-            20
-          );
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.wait_time_seconds'],
-            0
-          );
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.max_number_of_messages'],
-            10
-          );
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.attribute_name.0'],
-            'SentTimestamp'
-          );
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.attribute_name.1'],
-            'SenderId'
-          );
-          assert.strictEqual(
-            spans[0].attributes['aws.sqs.message_attribute_name.0'],
-            'All'
-          );
-        });
-    }
-
-    before(() => {
-      instrumentation.disable();
-      configureAwsInstrumentation(instrumentation, testOptions);
-      instrumentation.enable();
-    });
-
-    it('Test SQS sendMessage', done => {
-      const params = {
-        DelaySeconds: 10,
-        MessageAttributes: {
-          Title: {
-            DataType: 'String',
-            StringValue: 'The Whistler',
-          },
-          Author: {
-            DataType: 'String',
-            StringValue: 'John Grisham',
-          },
-          WeeksOn: {
-            DataType: 'Number',
-            StringValue: '6',
-          },
-        },
-        MessageBody: 'Test in aws v3: This is the message body.',
-        QueueUrl: QUEUE_URL,
-      };
+    async function innerTestSendMessage(params) {
       const sqsClient = new SQS({ region: 'us-east-1' });
       const promise = sqsClient.sendMessage(params);
       promise
         .then(data => {
-          console.log('success sqs sendMessage - should not happen!');
+          assert.equal(1, 0);
         })
         .catch(err => {
           const spans = memoryExporter.getFinishedSpans();
@@ -232,28 +161,14 @@ describe('Test AWS V3', () => {
             '{"DataType":"Number","StringValue":"6"}'
           );
         });
-      promise.should.be.rejected.and.notify(done());
-    });
+    }
 
-    it('Test SQS sendMessageBatch', done => {
-      const params = {
-        QueueUrl: QUEUE_URL,
-        Entries: [
-          {
-            Id: '1000',
-            MessageBody: 'msg body for 1000',
-          },
-          {
-            Id: '1001',
-            MessageBody: 'msg body for 1001',
-          },
-        ],
-      };
+    async function innerTestSendMessageBatch(params) {
       const sqsClient = new SQS({ region: 'us-east-1' });
       const promise = sqsClient.sendMessageBatch(params);
       promise
         .then(data => {
-          console.log('success sqs sendMessageBatch - should not happen!');
+          assert.equal(1, 0);
         })
         .catch(err => {
           const spans = memoryExporter.getFinishedSpans();
@@ -272,18 +187,9 @@ describe('Test AWS V3', () => {
             '{"Id":"1001","MessageBody":"msg body for 1001"}'
           );
         });
-      promise.should.be.rejected.and.notify(done());
-    });
+    }
 
-    xit('Test SQS receiveMessage', done => {
-      const params = {
-        AttributeNames: ['SentTimestamp', 'SenderId'],
-        MaxNumberOfMessages: 10,
-        MessageAttributeNames: ['All'],
-        QueueUrl: QUEUE_URL,
-        VisibilityTimeout: 20,
-        WaitTimeSeconds: 0,
-      };
+    async function innerTestReceiveMessage(params) {
       const sqsClient = new SQS({ region: 'us-east-1' });
       const promise = sqsClient.receiveMessage(params);
       promise
@@ -291,7 +197,6 @@ describe('Test AWS V3', () => {
           assert.equal(1, 0);
         })
         .catch(err => {
-          console.log('here 0.5');
           const spans = memoryExporter.getFinishedSpans();
           assert.strictEqual(spans.length, 1);
           assert.strictEqual(
@@ -303,7 +208,6 @@ describe('Test AWS V3', () => {
             spans[0].attributes['aws.sqs.visibility_timeout'],
             20
           );
-          console.log('here 1');
           assert.strictEqual(
             spans[0].attributes['aws.sqs.wait_time_seconds'],
             0
@@ -312,7 +216,6 @@ describe('Test AWS V3', () => {
             spans[0].attributes['aws.sqs.max_number_of_messages'],
             10
           );
-          console.log('here 2');
           assert.strictEqual(
             spans[0].attributes['aws.sqs.attribute_name.0'],
             'SentTimestamp'
@@ -321,13 +224,57 @@ describe('Test AWS V3', () => {
             spans[0].attributes['aws.sqs.attribute_name.1'],
             'SenderId'
           );
-          console.log('here 3');
           assert.strictEqual(
             spans[0].attributes['aws.sqs.message_attribute_name.0'],
             'All'
           );
         });
-      // promise.should.be.rejected.and.notify(done);
+    }
+
+    before(() => {
+      instrumentation.disable();
+      configureAwsInstrumentation(instrumentation, testOptions);
+      instrumentation.enable();
+    });
+
+    it('Test SQS sendMessage', async () => {
+      const params = {
+        DelaySeconds: 10,
+        MessageAttributes: {
+          Title: {
+            DataType: 'String',
+            StringValue: 'The Whistler',
+          },
+          Author: {
+            DataType: 'String',
+            StringValue: 'John Grisham',
+          },
+          WeeksOn: {
+            DataType: 'Number',
+            StringValue: '6',
+          },
+        },
+        MessageBody: 'Test in aws v3: This is the message body.',
+        QueueUrl: QUEUE_URL,
+      };
+      await innerTestSendMessage(params);
+    });
+
+    it('Test SQS sendMessageBatch', async () => {
+      const params = {
+        QueueUrl: QUEUE_URL,
+        Entries: [
+          {
+            Id: '1000',
+            MessageBody: 'msg body for 1000',
+          },
+          {
+            Id: '1001',
+            MessageBody: 'msg body for 1001',
+          },
+        ],
+      };
+      await innerTestSendMessageBatch(params);
     });
 
     it('Test SQS receiveMessage', async () => {
@@ -339,7 +286,7 @@ describe('Test AWS V3', () => {
         VisibilityTimeout: 20,
         WaitTimeSeconds: 0,
       };
-      await testReceiveMessage(params);
+      await innerTestReceiveMessage(params);
     });
   });
 });
