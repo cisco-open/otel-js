@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-const appRoot = process.cwd();
-
-const { version: VERSION } = require(`${appRoot}/package.json`);
-
 export default function getVersion(): string {
-  return VERSION;
+  return '0.0.0';
 }
