@@ -51,6 +51,7 @@ import {
 import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { VERSION } from '@opentelemetry/instrumentation-grpc/build/src/version';
+import { addFlattenedObj } from '../../utils/utils';
 
 export class GrpcJsInstrumentation extends InstrumentationBase {
   constructor(name: string, config?: GrpcInstrumentationConfig) {
@@ -193,6 +194,11 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
                       [AttributeNames.GRPC_KIND]: spanOptions.kind,
                     });
 
+                  addFlattenedObj(
+                    span,
+                    'rpc.request.metadata',
+                    call.metadata.getMap()
+                  );
                   context.with(trace.setSpan(context.active(), span), () => {
                     handleServerFunction.call(
                       self,
@@ -215,7 +221,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
 
   /**
    * Entry point for applying client patches to `grpc.makeClientConstructor(...)` equivalents
-   * @param this GrpcJsPlugin
+   * @param grpcClient
    */
   private _patchClient(
     grpcClient: typeof grpcJs
@@ -244,7 +250,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
 
   /**
    * Entry point for client patching for grpc.loadPackageDefinition(...)
-   * @param this - GrpcJsPlugin
+   * @param grpcClient
    */
   private _patchLoadPackageDefinition(grpcClient: typeof grpcJs) {
     const instrumentation = this;
@@ -285,6 +291,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
         const span = instrumentation.tracer.startSpan(name, {
           kind: SpanKind.CLIENT,
         });
+        addFlattenedObj(span, 'rpc.request.metadata', metadata.getMap());
         return context.with(trace.setSpan(context.active(), span), () =>
           makeGrpcClientRemoteCall(original, args, metadata, this)(span)
         );

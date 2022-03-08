@@ -37,6 +37,7 @@ import { CALL_SPAN_ENDED } from './serverUtils';
 import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import { addFlattenedObj } from '../../utils/utils';
 
 /**
  * Parse a package method list and return a list of methods to patch
@@ -137,6 +138,10 @@ export function makeGrpcClientRemoteCall(
 
     setSpanContext(metadata);
     const call = original.apply(self, args);
+
+    call.on('metadata', metadata => {
+      addFlattenedObj(span, 'rpc.response.metadata', metadata.getMap());
+    });
 
     // if server stream or bidi
     if (original.responseStream) {
