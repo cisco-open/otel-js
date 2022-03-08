@@ -18,13 +18,18 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { _configDefaultOptions, Options } from './options';
-//import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { Resource } from '@opentelemetry/resources';
+// import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import {
+  Resource,
+  detectResources,
+  processDetector,
+  envDetector,
+} from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 import getVersion from './version';
 
-export function init(userOptions: Partial<Options>) {
+export async function init(userOptions: Partial<Options>): Promise<void> {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
@@ -43,7 +48,22 @@ export function init(userOptions: Partial<Options>) {
     ['cisco.sdk.version']: getVersion(),
   });
 
-  const provider = new NodeTracerProvider({ resource });
+  const detectorResources = await detectResources({
+    detectors: [envDetector, processDetector],
+  })
+    .then(resources => {
+      return resources;
+    })
+    .catch(reason => diag.error(reason));
+
+  let provider: NodeTracerProvider;
+
+  if (detectorResources) {
+    const mergedResources = resource.merge(detectorResources);
+    provider = new NodeTracerProvider({ resource: mergedResources });
+  } else {
+    provider = new NodeTracerProvider({ resource: resource });
+  }
 
   const exporters = exporterFactory(options);
   if (exporters.length === 0) {

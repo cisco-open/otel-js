@@ -63,7 +63,7 @@ describe('Tracing test', () => {
     }
   }
 
-  it('setups tracing with custom options', () => {
+  it('setups tracing with custom options', async () => {
     const userOptions: Partial<Options> = {
       serviceName: 'my-app-name',
       ciscoToken: 'cisco-token',
@@ -74,7 +74,7 @@ describe('Tracing test', () => {
         },
       ],
     };
-    ciscoTracing.init(userOptions);
+    await ciscoTracing.init(userOptions);
     assertTracingPipeline('localhost:4317', 'my-app-name', 'cisco-token');
   });
 
