@@ -27,7 +27,7 @@ import {
 } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
-import getVersion from './version';
+// import getVersion from './version';
 
 export async function init(userOptions: Partial<Options>): Promise<void> {
   const options = _configDefaultOptions(userOptions);
@@ -45,7 +45,7 @@ export async function init(userOptions: Partial<Options>): Promise<void> {
     // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
     //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
     ['application']: options.serviceName,
-    ['cisco.sdk.version']: getVersion(),
+    // ['cisco.sdk.version']: getVersion(),
   });
 
   const detectorResources = await detectResources({
