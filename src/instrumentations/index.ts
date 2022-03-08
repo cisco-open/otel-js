@@ -26,14 +26,19 @@ import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
 import { configureRedisInstrumentation } from './extentions/redis';
 import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
 
-const REDEFINED_INSTRUMENTATION_NAMES = ['@opentelemetry/instrumentation-grpc'];
-
 export function getInstrumentations(options: Options): Instrumentation[] {
-  const instrumentations = getNodeAutoInstrumentations();
+  const instrumentations = getNodeAutoInstrumentations({
+    '@opentelemetry/instrumentation-grpc': { enabled: false },
+  });
 
   instrumentations.push(new AwsInstrumentation());
   // TODO: update the package path after this was contributed to OTel
   instrumentations.push(new AmqplibInstrumentation());
+
+  diag.debug('Adding Cisco grpc-js instrumentation');
+  instrumentations.push(
+    new GrpcJsInstrumentation('cisco-opentelemetry-instrumentation-grpc')
+  );
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
@@ -53,23 +58,7 @@ export function getInstrumentations(options: Options): Instrumentation[] {
         diag.debug('Adding Cisco amqplib patching');
         configureAmqplibInstrumentation(instrumentation, options);
         break;
-      case '@opentelemetry/instrumentation-grpc':
-        diag.debug('Adding Cisco grpc-js instrumentation');
-        instrumentations.push(
-          new GrpcJsInstrumentation(
-            'cisco-opentelemetry-instrumentation-grpc',
-            instrumentation.instrumentationVersion,
-            instrumentation.getConfig()
-          )
-        );
-        break;
     }
   }
-  // remove redefined instrumentations
-  return instrumentations.filter(
-    instrumentation =>
-      REDEFINED_INSTRUMENTATION_NAMES.indexOf(
-        instrumentation.instrumentationName
-      ) == -1
-  );
+  return instrumentations;
 }

@@ -50,20 +50,17 @@ import {
 } from './clientUtils';
 import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
+import { VERSION } from '@opentelemetry/instrumentation-grpc/build/src/version';
 
 export class GrpcJsInstrumentation extends InstrumentationBase {
-  constructor(
-    name: string,
-    version: string,
-    config?: GrpcInstrumentationConfig
-  ) {
-    super(name, version, config);
+  constructor(name: string, config?: GrpcInstrumentationConfig) {
+    super(name, VERSION, config);
   }
 
   init() {
     return [
       new InstrumentationNodeModuleDefinition<typeof grpcJs>(
-        '@grpc-js/grpc-js-js',
+        '@grpc/grpc-js',
         ['1.*'],
         (moduleExports, version) => {
           this._diag.debug(`Applying patch for @grpc/grpc-js@${version}`);
@@ -121,7 +118,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
   }
 
   /**
-   * Patch for grpc-js.Server.prototype.register(...) function. Provides auto-instrumentation for
+   * Patch for grpc.Server.prototype.register(...) function. Provides auto-instrumentation for
    * client_stream, server_stream, bidi, unary server handler calls.
    */
   private _patchServer(): (
@@ -217,7 +214,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
   }
 
   /**
-   * Entry point for applying client patches to `grpc-js.makeClientConstructor(...)` equivalents
+   * Entry point for applying client patches to `grpc.makeClientConstructor(...)` equivalents
    * @param this GrpcJsPlugin
    */
   private _patchClient(
@@ -246,7 +243,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
   }
 
   /**
-   * Entry point for client patching for grpc-js.loadPackageDefinition(...)
+   * Entry point for client patching for grpc.loadPackageDefinition(...)
    * @param this - GrpcJsPlugin
    */
   private _patchLoadPackageDefinition(grpcClient: typeof grpcJs) {
@@ -300,7 +297,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
   /**
    * Utility function to patch *all* functions loaded through a proto file.
    * Recursively searches for Client classes and patches all methods, reversing the
-   * parsing done by grpc-js.loadPackageDefinition
+   * parsing done by grpc.loadPackageDefinition
    * https://github.com/grpc/grpc-node/blob/1d14203c382509c3f36132bd0244c99792cb6601/packages/grpc-js/src/make-client.ts#L200-L217
    */
   private _patchLoadedPackage(
