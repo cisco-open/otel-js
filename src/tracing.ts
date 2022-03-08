@@ -27,7 +27,6 @@ import {
 } from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
-// import getVersion from './version';
 
 export async function init(userOptions: Partial<Options>): Promise<void> {
   const options = _configDefaultOptions(userOptions);
