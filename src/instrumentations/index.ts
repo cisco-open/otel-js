@@ -64,15 +64,12 @@ export function getInstrumentations(options: Options): Instrumentation[] {
         );
         break;
     }
-
-    // remove redefined instrumentations
-    instrumentations.filter(
-      instrumentation =>
-        REDEFINED_INSTRUMENTATION_NAMES.indexOf(
-          instrumentation.instrumentationName
-        ) == -1
-    );
   }
-
-  return instrumentations;
+  // remove redefined instrumentations
+  return instrumentations.filter(
+    instrumentation =>
+      REDEFINED_INSTRUMENTATION_NAMES.indexOf(
+        instrumentation.instrumentationName
+      ) == -1
+  );
 }
