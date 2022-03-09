@@ -43,7 +43,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.metadata?.get('x-cisco-token'), [
+    assert.deepEqual(traceExporter.metadata?.get('authorization'), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
@@ -66,7 +66,7 @@ describe('Tracing test', () => {
     )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
     assert.deepEqual(
-      traceExporter.headers['X-Epsagon-Token'],
+      traceExporter.headers['authorization'],
       userOptions.ciscoToken
     );
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
@@ -93,7 +93,7 @@ describe('Tracing test', () => {
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
     assert.deepEqual(
-      httpExporter.headers['X-Epsagon-Token'],
+      httpExporter.headers['authorization'],
       userOptions.ciscoToken
     );
     assert.strictEqual(httpExporter.url, httpExporterOptions.collectorEndpoint);
@@ -102,7 +102,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('x-cisco-token'), [
+    assert.deepEqual(grpcExporter.metadata?.get('authorization'), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);

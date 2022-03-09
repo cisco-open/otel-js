@@ -33,7 +33,7 @@ function otlpGrpcSpanFactory(
   exporterOptions: ExporterOptions
 ): SpanExporter {
   const metadata = new Metadata();
-  metadata.set('X-Cisco-Token', options.ciscoToken);
+  metadata.set('authorization', options.ciscoToken);
 
   const collectorOptions = {
     url: exporterOptions.collectorEndpoint,
@@ -51,7 +51,7 @@ function otlpHttpSpanFactory(
     url: exporterOptions.collectorEndpoint,
     headers: {
       // TODO: Change this to Cisco header after Telescope alpha is out
-      'X-Epsagon-Token': options.ciscoToken,
+      authorization: options.ciscoToken,
     },
   };
   return new HTTPTraceExporter(collectorOptions);
