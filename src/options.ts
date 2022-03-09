@@ -29,6 +29,7 @@ export interface ExporterOptions {
   collectorEndpoint: string;
   customHeaders?: Map<string, string>;
 }
+
 /**
  * Config all OTel & Cisco sdk default values.
  * First, take from userOptions/Env variables and at last, set default options if
