@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Based on https://github.com/open-telemetry/opentelemetry-js/blob/main/experimental/packages/opentelemetry-instrumentation-grpc/src/grpc-js/serverUtils.ts
 
 /**
  * Symbol to include on grpc-js call if it has already emitted an error event.

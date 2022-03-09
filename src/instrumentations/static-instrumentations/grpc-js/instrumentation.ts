@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Based on: https://github.com/open-telemetry/opentelemetry-js/blob/main/experimental/packages/opentelemetry-instrumentation-grpc/src/grpc-js/index.ts
 
 import type * as grpcJs from '@grpc/grpc-js';
 import {
