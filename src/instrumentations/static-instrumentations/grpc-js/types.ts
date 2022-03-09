@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as grpc from '@grpc/grpc-js';
+import { InstrumentationConfig } from '@opentelemetry/instrumentation';
 
-export const REQUEST_METADATA = new grpc.Metadata();
-export const RESPONSE_METADATA = new grpc.Metadata();
+export type IgnoreMatcher = string | RegExp | ((str: string) => boolean);
 
-export const REQUEST_MESSAGE = 'Request Hello';
-export const RESPONSE_MESSAGE = 'Response Hello';
-
-REQUEST_METADATA.add(
-  'extra-spam-header-request',
-  'spam-value from the request'
-);
-
-REQUEST_METADATA.add('and-another-one', 'bites to dust');
-
-RESPONSE_METADATA.add(
-  'extra-spam-header-response',
-  'spam-value from the response'
-);
+export interface GrpcInstrumentationConfig extends InstrumentationConfig {
+  /* Omits tracing on any gRPC methods that match any of
+   * the IgnoreMatchers in the ignoreGrpcMethods list
+   */
+  ignoreGrpcMethods?: IgnoreMatcher[];
+  maxPayloadSize: number;
+}

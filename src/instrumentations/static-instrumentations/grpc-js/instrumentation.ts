@@ -21,7 +21,7 @@ import {
   isWrapped,
 } from '@opentelemetry/instrumentation';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
-import { GrpcInstrumentationConfig } from '@opentelemetry/instrumentation-grpc/build/src/types';
+import { GrpcInstrumentationConfig } from './types';
 import {
   ServerCallWithMeta,
   SendUnaryDataCallback,
@@ -53,6 +53,8 @@ import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { VERSION } from '@opentelemetry/instrumentation-grpc/build/src/version';
 import { addFlattenedObj } from '../../utils/utils';
+import { PayloadHandler } from '../../utils/PayloadHandler';
+import { ServerUnaryCallImpl } from '@grpc/grpc-js/build/src/server-call';
 
 export class GrpcJsInstrumentation extends InstrumentationBase {
   constructor(name: string, config?: GrpcInstrumentationConfig) {
@@ -116,7 +118,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
   }
 
   override getConfig(): GrpcInstrumentationConfig {
-    return super.getConfig();
+    return <GrpcInstrumentationConfig>this._config;
   }
 
   /**
@@ -200,6 +202,16 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
                     'rpc.request.metadata',
                     call.metadata.getMap()
                   );
+
+                  PayloadHandler.setPayload(
+                    span,
+                    'rpc.request.body',
+                    (call as ServerUnaryCallImpl<RequestType, ResponseType>)
+                      .request,
+                    (instrumentation._config as GrpcInstrumentationConfig)
+                      .maxPayloadSize
+                  );
+
                   context.with(trace.setSpan(context.active(), span), () => {
                     handleServerFunction.call(
                       self,
@@ -207,7 +219,9 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
                       type,
                       originalFunc,
                       call,
-                      callback
+                      callback,
+                      (instrumentation._config as GrpcInstrumentationConfig)
+                        .maxPayloadSize
                     );
                   });
                 }
@@ -293,8 +307,21 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
           kind: SpanKind.CLIENT,
         });
         addFlattenedObj(span, 'rpc.request.metadata', metadata.getMap());
+        PayloadHandler.setPayload(
+          span,
+          'rpc.request.body',
+          args[0],
+          (instrumentation._config as GrpcInstrumentationConfig).maxPayloadSize
+        );
         return context.with(trace.setSpan(context.active(), span), () =>
-          makeGrpcClientRemoteCall(original, args, metadata, this)(span)
+          makeGrpcClientRemoteCall(
+            original,
+            args,
+            metadata,
+            this,
+            (instrumentation._config as GrpcInstrumentationConfig)
+              .maxPayloadSize
+          )(span)
         );
       }
       Object.assign(clientMethodTrace, original);

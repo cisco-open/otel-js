@@ -36,6 +36,7 @@ import {
 import { IgnoreMatcher } from '@opentelemetry/instrumentation-grpc/build/src/types';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import { PayloadHandler } from '../../utils/PayloadHandler';
 
 export const CALL_SPAN_ENDED = Symbol('opentelemetry call span ended');
 
@@ -111,7 +112,8 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
   callback: SendUnaryDataCallback<ResponseType>,
   original:
     | grpcJs.handleUnaryCall<RequestType, ResponseType>
-    | grpcJs.ClientReadableStream<RequestType>
+    | grpcJs.ClientReadableStream<RequestType>,
+  maxPayloadSize: number
 ): void {
   const patchedCallback: SendUnaryDataCallback<ResponseType> = (
     err: grpcJs.ServiceError | null,
@@ -140,6 +142,7 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
       );
     }
 
+    PayloadHandler.setPayload(span, 'rpc.response.body', value, 1000);
     span.end();
     return callback(err, value);
   };
@@ -157,7 +160,8 @@ export function handleServerFunction<RequestType, ResponseType>(
   type: string,
   originalFunc: HandleCall<RequestType, ResponseType>,
   call: ServerCallWithMeta<RequestType, ResponseType>,
-  callback: SendUnaryDataCallback<unknown>
+  callback: SendUnaryDataCallback<unknown>,
+  maxPayloadSize: number
 ): void {
   switch (type) {
     case 'unary':
@@ -169,7 +173,8 @@ export function handleServerFunction<RequestType, ResponseType>(
         callback,
         originalFunc as
           | grpcJs.handleUnaryCall<RequestType, ResponseType>
-          | grpcJs.ClientReadableStream<RequestType>
+          | grpcJs.ClientReadableStream<RequestType>,
+        maxPayloadSize
       );
     case 'serverStream':
     case 'server_stream':

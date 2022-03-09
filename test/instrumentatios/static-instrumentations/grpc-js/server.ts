@@ -17,7 +17,7 @@ import * as grpc from '@grpc/grpc-js';
 
 import { HelloRequest, HelloReply } from './generated_proto/hello_pb';
 import { GreeterService } from './generated_proto/hello_grpc_pb';
-import { RESPONSE_METADATA } from './consts';
+import { RESPONSE_MESSAGE, RESPONSE_METADATA } from './consts';
 
 const sayHello = (
   call: grpc.ServerUnaryCall<HelloRequest, HelloReply>,
@@ -25,7 +25,7 @@ const sayHello = (
 ): void => {
   const reply = new HelloReply();
   call.sendMetadata(RESPONSE_METADATA);
-  reply.setMessage(`Hello ${call.request.getName()}`);
+  reply.setMessage(RESPONSE_MESSAGE);
   callback(null, reply);
 };
 

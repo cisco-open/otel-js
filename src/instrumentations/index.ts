@@ -37,7 +37,9 @@ export function getInstrumentations(options: Options): Instrumentation[] {
 
   diag.debug('Adding Cisco grpc-js instrumentation');
   instrumentations.push(
-    new GrpcJsInstrumentation('cisco-opentelemetry-instrumentation-grpc')
+    new GrpcJsInstrumentation('cisco-opentelemetry-instrumentation-grpc', {
+      maxPayloadSize: options.maxPayloadSize,
+    })
   );
 
   for (const instrumentation of instrumentations) {

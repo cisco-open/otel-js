@@ -15,7 +15,9 @@
  */
 /*eslint sort-imports: ["error", { "ignoreDeclarationSort": true }]*/
 import { GrpcJsInstrumentation } from '../../../../src/instrumentations/static-instrumentations/grpc-js/instrumentation';
-const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation');
+const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation', {
+  maxPayloadSize: 10,
+});
 instrumentation.enable();
 import {
   BasicTracerProvider,
@@ -28,7 +30,13 @@ import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
 import { assertExpectedObj } from '../../../utils';
-import { REQUEST_METADATA, RESPONSE_METADATA } from './consts';
+import {
+  REQUEST_MESSAGE,
+  REQUEST_METADATA,
+  RESPONSE_MESSAGE,
+  RESPONSE_METADATA,
+} from './consts';
+import assert = require('assert');
 
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
@@ -37,7 +45,7 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('Capturing gRPC Metadata/Bodies', () => {
   const request = new HelloRequest();
-  request.setName('world');
+  request.setName(REQUEST_MESSAGE);
   const client = new GreeterClient(
     'localhost:51051',
     grpc.credentials.createInsecure()
@@ -87,6 +95,27 @@ describe('Capturing gRPC Metadata/Bodies', () => {
       RESPONSE_METADATA.getMap(),
       'rpc.response.metadata'
     );
+
+    assert.strictEqual(
+      serverSpan.attributes['rpc.request.body'],
+      REQUEST_MESSAGE
+    );
+
+    assert.strictEqual(
+      clientSpan.attributes['rpc.request.body'],
+      REQUEST_MESSAGE
+    );
+
+    assert.strictEqual(
+      serverSpan.attributes['rpc.response.body'],
+      RESPONSE_MESSAGE
+    );
+
+    assert.strictEqual(
+      clientSpan.attributes['rpc.response.body'],
+      RESPONSE_MESSAGE
+    );
+
     done();
   });
 });

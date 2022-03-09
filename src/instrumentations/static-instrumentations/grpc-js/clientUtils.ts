@@ -39,6 +39,7 @@ import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import { addFlattenedObj } from '../../utils/utils';
+import { PayloadHandler } from '../../utils/PayloadHandler';
 
 /**
  * Parse a package method list and return a list of methods to patch
@@ -78,7 +79,8 @@ export function makeGrpcClientRemoteCall(
   original: GrpcClientFunc,
   args: unknown[],
   metadata: grpcJs.Metadata,
-  self: grpcJs.Client
+  self: grpcJs.Client,
+  maxPayloadSize: number
 ): (span: Span) => EventEmitter {
   /**
    * Patches a callback so that the current span for this trace is also ended
@@ -92,6 +94,7 @@ export function makeGrpcClientRemoteCall(
       err: grpcJs.ServiceError | null,
       res: any
     ) => {
+      PayloadHandler.setPayload(span, 'rpc.response.body', res, maxPayloadSize);
       if (err) {
         if (err.code) {
           span.setStatus(_grpcStatusCodeToSpanStatus(err.code));
