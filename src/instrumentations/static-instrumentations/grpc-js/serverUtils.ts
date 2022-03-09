@@ -142,7 +142,7 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
       );
     }
 
-    PayloadHandler.setPayload(span, 'rpc.response.body', value, 1000);
+    PayloadHandler.setPayload(span, 'rpc.response.body', value, maxPayloadSize);
     span.end();
     return callback(err, value);
   };
