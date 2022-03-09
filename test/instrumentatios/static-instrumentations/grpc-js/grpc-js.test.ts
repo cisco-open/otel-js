@@ -28,6 +28,7 @@ import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
 import { assertExpectedObj } from '../../../utils';
+import { REQUEST_METADATA, RESPONSE_METADATA } from './consts';
 
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
@@ -37,12 +38,6 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 describe('Capturing gRPC Metadata/Bodies', () => {
   const request = new HelloRequest();
   request.setName('world');
-  const requestMetadata = new grpc.Metadata();
-  requestMetadata.add(
-    'extra-spam-header-request',
-    'spam-value from the request'
-  );
-  requestMetadata.add('and-another-one', 'bites to dust');
   const client = new GreeterClient(
     'localhost:51051',
     grpc.credentials.createInsecure()
@@ -65,7 +60,7 @@ describe('Capturing gRPC Metadata/Bodies', () => {
     utils.cleanEnvironmentVariables();
     // we need to make the grpc call before the actual test because the client wrapper doesnt
     // end the span until after the callback function returns
-    client.sayHello(request, requestMetadata, (err, response) => {
+    client.sayHello(request, REQUEST_METADATA, (err, response) => {
       if (err) throw err;
       done();
     });
@@ -79,13 +74,18 @@ describe('Capturing gRPC Metadata/Bodies', () => {
     const [serverSpan, clientSpan] = memoryExporter.getFinishedSpans();
     assertExpectedObj(
       serverSpan,
-      requestMetadata.getMap(),
+      REQUEST_METADATA.getMap(),
       'rpc.request.metadata'
     );
     assertExpectedObj(
       clientSpan,
-      requestMetadata.getMap(),
+      REQUEST_METADATA.getMap(),
       'rpc.request.metadata'
+    );
+    assertExpectedObj(
+      clientSpan,
+      RESPONSE_METADATA.getMap(),
+      'rpc.response.metadata'
     );
     done();
   });

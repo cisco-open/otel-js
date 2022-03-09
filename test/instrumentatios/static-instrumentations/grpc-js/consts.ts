@@ -15,19 +15,17 @@
  */
 import * as grpc from '@grpc/grpc-js';
 
-import { HelloRequest, HelloReply } from './generated_proto/hello_pb';
-import { GreeterService } from './generated_proto/hello_grpc_pb';
-import { RESPONSE_METADATA } from './consts';
+export const REQUEST_METADATA = new grpc.Metadata();
+export const RESPONSE_METADATA = new grpc.Metadata();
 
-const sayHello = (
-  call: grpc.ServerUnaryCall<HelloRequest, HelloReply>,
-  callback: grpc.sendUnaryData<HelloReply>
-): void => {
-  const reply = new HelloReply();
-  call.sendMetadata(RESPONSE_METADATA);
-  reply.setMessage(`Hello ${call.request.getName()}`);
-  callback(null, reply);
-};
+REQUEST_METADATA.add(
+  'extra-spam-header-request',
+  'spam-value from the request'
+);
 
-export const server = new grpc.Server();
-server.addService(GreeterService, { sayHello });
+REQUEST_METADATA.add('and-another-one', 'bites to dust');
+
+RESPONSE_METADATA.add(
+  'extra-spam-header-response',
+  'spam-value from the response'
+);
