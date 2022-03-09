@@ -78,6 +78,7 @@
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "grpc_tools_node_protoc_ts": "^5.0.0",
     "expect": "^26.6.2",
     "gts": "3.1.0",
     "husky": "^7.0.4",
