@@ -27,7 +27,6 @@ import * as grpc from '@grpc/grpc-js';
 import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
-import { SpanKind } from '@opentelemetry/api';
 import { assertExpectedObj } from '../../../utils';
 
 const memoryExporter = new InMemorySpanExporter();
