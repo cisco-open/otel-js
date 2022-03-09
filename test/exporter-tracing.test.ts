@@ -108,7 +108,6 @@ describe('Tracing test', () => {
     assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);
   });
 
-
   it('setup both HTTP and gRPC exporters with custom headers', () => {
     const httpExporterOptions: ExporterOptions = {
       type: 'otlp-http',
