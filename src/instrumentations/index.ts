@@ -24,12 +24,23 @@ import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
 import { configureRedisInstrumentation } from './extentions/redis';
+import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
-  const instrumentations = getNodeAutoInstrumentations();
+  const instrumentations = getNodeAutoInstrumentations({
+    '@opentelemetry/instrumentation-grpc': { enabled: false },
+  });
+
   instrumentations.push(new AwsInstrumentation());
   // TODO: update the package path after this was contributed to OTel
   instrumentations.push(new AmqplibInstrumentation());
+
+  diag.debug('Adding Cisco grpc-js instrumentation');
+  instrumentations.push(
+    new GrpcJsInstrumentation('cisco-opentelemetry-instrumentation-grpc', {
+      maxPayloadSize: options.maxPayloadSize,
+    })
+  );
 
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
@@ -48,6 +59,7 @@ export function getInstrumentations(options: Options): Instrumentation[] {
       case 'opentelemetry-instrumentation-amqplib':
         diag.debug('Adding Cisco amqplib patching');
         configureAmqplibInstrumentation(instrumentation, options);
+        break;
     }
   }
   return instrumentations;

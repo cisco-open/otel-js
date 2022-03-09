@@ -13,7 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as grpc from '@grpc/grpc-js';
 
-export default function getVersion(): string {
-  return '0.0.0';
-}
+export const REQUEST_METADATA = new grpc.Metadata();
+export const RESPONSE_METADATA = new grpc.Metadata();
+
+export const REQUEST_MESSAGE = 'Request Hello';
+export const RESPONSE_MESSAGE = 'Response Hello';
+
+REQUEST_METADATA.add(
+  'extra-spam-header-request',
+  'spam-value from the request'
+);
+
+REQUEST_METADATA.add('and-another-one', 'bites to dust');
+
+RESPONSE_METADATA.add(
+  'extra-spam-header-response',
+  'spam-value from the response'
+);

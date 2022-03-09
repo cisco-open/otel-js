@@ -35,6 +35,8 @@ instrumentation.setTracerProvider(provider);
 const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
+const SERVER_PORT = 12234;
+
 describe('Capturing HTTP Headers/Bodies', () => {
   const REQUEST_HEADERS = {
     'content-type': 'application/json',
@@ -74,25 +76,28 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
   app.get('/circular_test', (req: any, res: any) => {
     http
-      .request({ host: 'localhost', port: 8000, path: '/test_get' }, res2 => {
-        let str = '';
+      .request(
+        { host: 'localhost', port: SERVER_PORT, path: '/test_get' },
+        res2 => {
+          let str = '';
 
-        res2.on('data', chunk => {
-          str += chunk;
-        });
+          res2.on('data', chunk => {
+            str += chunk;
+          });
 
-        res2.on('end', () => {
-          res.setHeader('Content-Type', 'application/json');
-          res.send(str);
-        });
-      })
+          res2.on('end', () => {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(str);
+          });
+        }
+      )
       .end();
   });
 
   const server = http.createServer(app);
 
   before(done => {
-    server.listen(8000);
+    server.listen(SERVER_PORT);
     server.on('listening', () => {
       done();
     });
@@ -130,7 +135,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const span = tracer.startSpan('updateRootSpan');
       await utils.httpRequest.get({
         host: 'localhost',
-        port: 8000,
+        port: SERVER_PORT,
         path: '/test_get',
         headers: REQUEST_HEADERS,
       });
@@ -166,7 +171,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
       await utils.httpRequest.get({
         host: 'localhost',
-        port: 8000,
+        port: SERVER_PORT,
         path: '/test_get',
         headers: REQUEST_HEADERS,
       });
@@ -195,7 +200,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       await utils.httpRequest.post(
         {
           host: 'localhost',
-          port: 8000,
+          port: SERVER_PORT,
           path: '/test_post',
           headers: REQUEST_HEADERS,
         },
@@ -220,7 +225,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       await utils.httpRequest.post(
         {
           host: 'localhost',
-          port: 8000,
+          port: SERVER_PORT,
           path: '/non_existing_endpoint',
           headers: REQUEST_HEADERS,
         },
@@ -236,7 +241,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       await utils.httpRequest.post(
         {
           host: 'localhost',
-          port: 8000,
+          port: SERVER_PORT,
           path: '/test_post_end',
           headers: REQUEST_HEADERS,
         },
@@ -259,7 +264,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
     it('should capture request headers - sanity', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
-        port: 8000,
+        port: SERVER_PORT,
         path: '/test_get',
         headers: REQUEST_HEADERS,
       });
@@ -281,7 +286,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
     it('should capture request headers - non existing endpoint', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
-        port: 8000,
+        port: SERVER_PORT,
         path: '/non_existing_endpoint',
         headers: REQUEST_HEADERS,
       });
@@ -293,7 +298,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
     it('should circular request', async () => {
       await utils.httpRequest.get({
         host: 'localhost',
-        port: 8000,
+        port: SERVER_PORT,
         path: '/circular_test',
         headers: REQUEST_HEADERS,
       });

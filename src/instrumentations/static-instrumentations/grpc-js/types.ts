@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { InstrumentationConfig } from '@opentelemetry/instrumentation';
 
-export default function getVersion(): string {
-  return '0.0.0';
+export type IgnoreMatcher = string | RegExp | ((str: string) => boolean);
+
+export interface GrpcInstrumentationConfig extends InstrumentationConfig {
+  /* Omits tracing on any gRPC methods that match any of
+   * the IgnoreMatchers in the ignoreGrpcMethods list
+   */
+  ignoreGrpcMethods?: IgnoreMatcher[];
+  maxPayloadSize: number;
 }

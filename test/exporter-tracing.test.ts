@@ -72,7 +72,7 @@ describe('Tracing test', () => {
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
-  it('setup both HTTP and grpc exporters', () => {
+  it('setup both HTTP and gRPC exporters', () => {
     const httpExporterOptions: ExporterOptions = {
       type: 'otlp-http',
       collectorEndpoint: 'some-collector:4317',
