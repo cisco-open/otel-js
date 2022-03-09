@@ -32,7 +32,7 @@ const userOptions = {
   ciscoToken: 'cisco-token',
   exporters: [
     {
-      collectorEndpoint: 'grpc-js://localhost:4317',
+      collectorEndpoint: 'grpc://localhost:4317',
     },
   ],
 };
@@ -85,7 +85,7 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'sometoken',
   exporters: [
     {
-      collectorEndpoint: 'http://localhost:4317',
+      collectorEndpoint: 'grpc://localhost:4317',
       type: 'otlp-grpc',
     },
     {
