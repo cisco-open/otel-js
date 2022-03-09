@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 import { GrpcJsInstrumentation } from '../../../../src/instrumentations/static-instrumentations/grpc-js/instrumentation';
-import {
-  BasicTracerProvider,
-  InMemorySpanExporter,
-  SimpleSpanProcessor,
-} from '@opentelemetry/sdk-trace-base';
-const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation');
-instrumentation.enable();
+import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import * as utils from '../../../utils';
 import * as grpc from '@grpc/grpc-js';
 import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
+import { SpanKind } from '@opentelemetry/api';
+
+const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation');
+instrumentation.enable();
 
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
@@ -75,7 +73,7 @@ describe('Capturing gRPC Metadata/Bodies', () => {
 
   it('should capture request/response metadata & body', done => {
     const [serverSpan, clientSpan] = memoryExporter.getFinishedSpans();
-    console.log(serverSpan);
+    console.log(serverSpan.kind == SpanKind.SERVER);
     console.log(clientSpan);
     done();
   });
