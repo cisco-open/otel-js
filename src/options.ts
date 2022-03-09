@@ -27,7 +27,7 @@ export interface Options {
 export interface ExporterOptions {
   type?: string;
   collectorEndpoint: string;
-  customHeaders?: Map<string, string>;
+  customHeaders?: {};
 }
 
 /**

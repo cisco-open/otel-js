@@ -15,5 +15,6 @@
  */
 
 export default function getVersion(): string {
-  return '0.0.0';
+  // manually updated until we solve this issue
+  return '1.12.0';
 }
