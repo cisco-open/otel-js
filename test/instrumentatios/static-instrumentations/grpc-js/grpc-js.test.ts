@@ -38,6 +38,8 @@ import {
 } from './consts';
 import assert = require('assert');
 
+const SERVER_PORT = 51051;
+
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -47,13 +49,13 @@ describe('Capturing gRPC Metadata/Bodies', () => {
   const request = new HelloRequest();
   request.setName(REQUEST_MESSAGE);
   const client = new GreeterClient(
-    'localhost:51051',
+    `localhost:${SERVER_PORT}`,
     grpc.credentials.createInsecure()
   );
   before(done => {
     instrumentation.enable();
     server.bindAsync(
-      '0.0.0.0:51051',
+      `localhost:${SERVER_PORT}`,
       grpc.ServerCredentials.createInsecure(),
       () => {
         console.log('server listening');
