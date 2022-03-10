@@ -85,6 +85,7 @@ describe('Options tests', () => {
           <ExporterOptions>{
             type: 'otlp-http',
             collectorEndpoint: 'Not the default Endpoint',
+            customHeaders: { 'some-header': 'some-value' },
           },
         ],
       };
