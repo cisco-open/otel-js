@@ -49,6 +49,8 @@
         RUN_REDIS_TESTS: 1
         REDIS_HOST: redis
         REDIS_PORT: 6379
+
+        RUN_AWS_TESTS: 1
       steps:
         - name: Checkout
           uses: actions/checkout@v1
