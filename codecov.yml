@@ -15,4 +15,3 @@ coverage:
         threshold: 1%
 ignore:
   - src/instrumentatios/static-instrumentations/grpc-js/
-  - src/instrumentatios/extentions/aws/
