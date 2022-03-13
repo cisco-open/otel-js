@@ -54,6 +54,8 @@
       steps:
         - name: Checkout
           uses: actions/checkout@v1
+        - name: Sleep...
+          run: sleep 20
         - name: Debugging with tmate
           uses: mxschmitt/action-tmate@v3.11
           with:
