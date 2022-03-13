@@ -47,7 +47,13 @@ describe('Test AWS V3 with nock', () => {
     console.log('Skipping test-aws v3.run: export RUN_AWS_TESTS=1 to run them');
     shouldTest = false;
   }
-  const snsClient = new SNS({ region: 'us-east-1' });
+  const snsClient = new SNS({
+    region: 'us-east-1',
+    credentials: {
+      accessKeyId: 'abcde',
+      secretAccessKey: 'abcde',
+    },
+  });
 
   beforeEach(function shouldSkip(this: any, done) {
     if (!shouldTest) {
