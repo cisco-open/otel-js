@@ -30,6 +30,8 @@ instrumentation.enable();
 const memoryExporter = new InMemorySpanExporter();
 const provider = new NodeTracerProvider();
 import { SNS, PublishCommandOutput } from '@aws-sdk/client-sns';
+process.env.AWS_ACCESS_KEY_ID = 'test';
+process.env.AWS_SECRET_ACCESS_KEY = 'test';
 
 import * as nock from 'nock';
 import * as fs from 'fs';
