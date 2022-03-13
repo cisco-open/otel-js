@@ -24,8 +24,6 @@ import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
 import { testOptions } from '../../utils';
 const chai = require('chai');
-const expect = chai.expect;
-const should = chai.should();
 
 const instrumentation = new AwsInstrumentation();
 instrumentation.enable();
