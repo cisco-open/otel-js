@@ -28,7 +28,7 @@ import {
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 
-export async function init(userOptions: Partial<Options>): Promise<void> {
+export async function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
@@ -40,41 +40,33 @@ export async function init(userOptions: Partial<Options>): Promise<void> {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
   }
 
-  const resource = new Resource({
+  const exporters = exporterFactory(options);
+  if (exporters.length === 0) {
+    return;
+  }
+
+  registerInstrumentations({
+    instrumentations: getInstrumentations(options),
+  });
+
+  const detectedResources = await detectResources({
+    detectors: [envDetector, processDetector],
+  });
+
+  const ciscoResource = new Resource({
     // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
     //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
     ['application']: options.serviceName,
     // ['cisco.sdk.version']: getVersion(),
   });
 
-  const detectorResources = await detectResources({
-    detectors: [envDetector, processDetector],
-  })
-    .then(resources => {
-      return resources;
-    })
-    .catch(reason => diag.error(reason));
+  const provider = new NodeTracerProvider({
+    resource: ciscoResource.merge(detectedResources),
+  });
 
-  let provider: NodeTracerProvider;
-
-  if (detectorResources) {
-    const mergedResources = resource.merge(detectorResources);
-    provider = new NodeTracerProvider({ resource: mergedResources });
-  } else {
-    provider = new NodeTracerProvider({ resource: resource });
-  }
-
-  const exporters = exporterFactory(options);
-  if (exporters.length === 0) {
-    return;
-  }
   for (const index in exporters) {
     provider.addSpanProcessor(new BatchSpanProcessor(exporters[index]));
-    provider.register();
   }
 
-  registerInstrumentations({
-    tracerProvider: provider,
-    instrumentations: getInstrumentations(options),
-  });
+  provider.register();
 }
