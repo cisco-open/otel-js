@@ -24,12 +24,12 @@ import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
 import { testOptions } from '../../utils';
 const chai = require('chai');
-
 const instrumentation = new AwsInstrumentation();
 instrumentation.enable();
 const memoryExporter = new InMemorySpanExporter();
 const provider = new NodeTracerProvider();
 import { SNS, PublishCommandOutput } from '@aws-sdk/client-sns';
+import { SQS, SendMessageBatchCommandOutput } from '@aws-sdk/client-sqs';
 
 import * as nock from 'nock';
 import * as fs from 'fs';
@@ -45,13 +45,6 @@ describe('Test AWS V3 with nock', () => {
     console.log('Skipping test-aws v3.run: export RUN_AWS_TESTS=1 to run them');
     shouldTest = false;
   }
-  const snsClient = new SNS({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: 'abcde',
-      secretAccessKey: 'abcde',
-    },
-  });
 
   beforeEach(function shouldSkip(this: any, done) {
     if (!shouldTest) {
@@ -70,6 +63,25 @@ describe('Test AWS V3 with nock', () => {
   });
 
   describe('Test SNS using nock', () => {
+    const snsClient = new SNS({
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: 'abcde',
+        secretAccessKey: 'abcde',
+      },
+    });
+    const params = {
+      Message: 'MESSAGE_TEXT_FOR_TEST',
+      TopicArn: 'arn:aws:sns:us-east-1:000000000:dummy-topic',
+      Subject: 'mysubject',
+      PhoneNumber: '+972000000000',
+      MessageAttributes: {
+        myKey: {
+          DataType: 'String',
+          StringValue: 'somestringvalue',
+        },
+      },
+    };
     before(() => {
       instrumentation.disable();
       configureAwsInstrumentation(instrumentation, testOptions);
@@ -86,18 +98,6 @@ describe('Test AWS V3 with nock', () => {
             'utf8'
           )
         );
-      const params = {
-        Message: 'MESSAGE_TEXT_FOR_TEST',
-        TopicArn: 'arn:aws:sns:us-east-1:000000000:dummy-topic',
-        Subject: 'mysubject',
-        PhoneNumber: '+972000000000',
-        MessageAttributes: {
-          myKey: {
-            DataType: 'String',
-            StringValue: 'somestringvalue',
-          },
-        },
-      };
       await snsClient.publish(params);
       const spans = memoryExporter.getFinishedSpans();
       assert.strictEqual(spans.length, 1);
@@ -133,18 +133,6 @@ describe('Test AWS V3 with nock', () => {
             'utf8'
           )
         );
-      const params = {
-        Message: 'MESSAGE_TEXT_FOR_TEST',
-        TopicArn: 'arn:aws:sns:us-east-1:000000000:dummy-topic',
-        Subject: 'mysubject',
-        PhoneNumber: '+972000000000',
-        MessageAttributes: {
-          myKey: {
-            DataType: 'String',
-            StringValue: 'somestringvalue',
-          },
-        },
-      };
       snsClient.publish(params, (err: any, data?: PublishCommandOutput) => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 1);
@@ -170,6 +158,143 @@ describe('Test AWS V3 with nock', () => {
         );
         done();
       });
+    });
+  });
+
+  describe('Test SQS using nock', () => {
+    const sqsClient = new SQS({
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: 'abcde',
+        secretAccessKey: 'abcde',
+      },
+    });
+
+    before(() => {
+      instrumentation.disable();
+      configureAwsInstrumentation(instrumentation, testOptions);
+      instrumentation.enable();
+    });
+
+    it('sqs sendMessage promise await', async () => {
+      nock(`https://sqs.${region}.amazonaws.com/`)
+        .post('/')
+        .reply(
+          200,
+          fs.readFileSync(
+            `${__dirname}/aws-mock-responses/sqs-send-message.xml`,
+            'utf8'
+          )
+        );
+      const params = {
+        DelaySeconds: 10,
+        MessageAttributes: {
+          Title: {
+            DataType: 'String',
+            StringValue: 'The Whistler',
+          },
+          Author: {
+            DataType: 'String',
+            StringValue: 'John Grisham',
+          },
+          WeeksOn: {
+            DataType: 'Number',
+            StringValue: '6',
+          },
+        },
+        MessageBody: 'Test sqs: This is the message body.',
+        QueueUrl: 'queue/dummy-account/testing',
+      };
+
+      await sqsClient.sendMessage(params);
+      const spans = memoryExporter.getFinishedSpans();
+      assert.strictEqual(spans.length, 1);
+      assert.strictEqual(spans[0].attributes['aws.sqs.queue_name'], 'testing');
+      assert.strictEqual(
+        spans[0].attributes['aws.account_id'],
+        'dummy-account'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_body'],
+        'Test sqs: This is the message body.'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.delay_seconds'],
+        10
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.message_attribute.Author'],
+        '{"DataType":"String","StringValue":"John Grisham"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.message_attribute.Title'],
+        '{"DataType":"String","StringValue":"The Whistler"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.message_attribute.WeeksOn'],
+        '{"DataType":"Number","StringValue":"6"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_id'],
+        '35de59a8-cdcc-4f55-9734-d73434058622' // taken from the mock response in sqs-send-message.xml
+      );
+    });
+
+    it('sqs sendMessageBatch callback interface', done => {
+      nock(`https://sqs.${region}.amazonaws.com/`)
+        .post('/')
+        .reply(
+          200,
+          fs.readFileSync(
+            `${__dirname}/aws-mock-responses/sqs-send-message-batch.xml`,
+            'utf8'
+          )
+        );
+      const params = {
+        QueueUrl: 'queue/dummy-account/testing',
+        Entries: [
+          {
+            Id: '1000',
+            MessageBody: 'msg body for 1000',
+          },
+          {
+            Id: '1001',
+            MessageBody: 'msg body for 1001',
+          },
+        ],
+      };
+      sqsClient.sendMessageBatch(
+        params,
+        (err: any, data?: SendMessageBatchCommandOutput) => {
+          const spans = memoryExporter.getFinishedSpans();
+          assert.strictEqual(spans.length, 1);
+          assert.strictEqual(
+            spans[0].attributes['aws.sqs.queue_name'],
+            'testing'
+          );
+          assert.strictEqual(
+            spans[0].attributes['aws.account_id'],
+            'dummy-account'
+          );
+          assert.strictEqual(
+            spans[0].attributes['aws.sqs.request_entry.0'],
+            '{"Id":"1000","MessageBody":"msg body for 1000"}'
+          );
+          assert.strictEqual(
+            spans[0].attributes['aws.sqs.request_entry.1'],
+            '{"Id":"1001","MessageBody":"msg body for 1001"}'
+          );
+          assert.strictEqual(
+            spans[0].attributes['aws.sqs.result_entry.0'],
+            '{"Id":"1000","MessageId":"57f7be0d-22a2-42f4-a9d9-3a136fbb219d","MD5OfMessageBody":"c1fa3d847ec219eeb524250e0498b614"}'
+          );
+          assert.strictEqual(
+            spans[0].attributes['aws.sqs.result_entry.1'],
+            '{"Id":"1001","MessageId":"fee3d5ba-32f1-48b9-a4bc-8a6ef6d4457c","MD5OfMessageBody":"3e83b83eef8cece2b95bfc8b9501da0a"}'
+          );
+          done();
+        }
+      );
     });
   });
 });
