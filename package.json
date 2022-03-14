@@ -56,6 +56,7 @@
     "opentelemetry-instrumentation-amqplib": "^0.27.0"
   },
   "devDependencies": {
+    "cisco-opentelemetry-specifications": "0.0.2",
     "@aws-sdk/client-sns": "^3.49.0",
     "@aws-sdk/client-sqs": "^3.54.0",
     "@commitlint/cli": "13.1.0",

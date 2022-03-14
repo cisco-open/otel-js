@@ -29,6 +29,7 @@ import * as utils from '../../utils';
 import * as assert from 'assert';
 import { assertExpectedObj, testOptions } from '../../utils';
 import { _configDefaultOptions } from '../../../src/options';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -125,7 +126,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
         requestHook: (span, request) => {
           span.setAttribute('user.attribute', 'dont change me');
           span.setAttribute(
-            'http.request.header.missed-header',
+            `${SemanticAttributes.HTTP_REQUEST_HEADER.key}.missed-header`,
             'header-u-missed'
           );
         },
@@ -143,7 +144,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 3);
       // make sure our request hook still triggered
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
@@ -152,7 +157,9 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
-        spans[1].attributes['http.request.header.missed-header'],
+        spans[1].attributes[
+          `${SemanticAttributes.HTTP_REQUEST_HEADER.key}.missed-header`
+        ],
         'header-u-missed'
       );
     });
@@ -179,7 +186,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(spans.length, 2);
 
       // make sure our response hook still triggered
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
@@ -208,7 +219,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
@@ -233,7 +248,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
     });
 
@@ -250,7 +269,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       // this is an echo endpoint
       assert.equal(
@@ -271,7 +294,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
 
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
@@ -292,7 +319,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       });
       const spans = memoryExporter.getFinishedSpans();
       assert.equal(spans.length, 2);
-      assertExpectedObj(spans[1], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
     });
 
     it('should circular request', async () => {
@@ -313,9 +344,17 @@ describe('Capturing HTTP Headers/Bodies', () => {
         spans[1].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE
       );
-      assertExpectedObj(spans[2], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[2],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assert.equal(spans[2].attributes['http.request.body'], '');
-      assertExpectedObj(spans[3], REQUEST_HEADERS, 'http.request.header');
+      assertExpectedObj(
+        spans[3],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER.key
+      );
       assert.equal(
         spans[3].attributes['http.response.body'],
         SUCCESS_GET_MESSAGE

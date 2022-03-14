@@ -16,6 +16,8 @@
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../../options';
 
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+
 import {
   HttpInstrumentationConfig,
   HttpResponseCustomAttributeFunction,
@@ -82,7 +84,7 @@ function createHttpRequestHook(
         ? request.headers
         : request.getHeaders();
 
-    addFlattenedObj(span, 'http.request.header', headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER.key, headers);
 
     const bodyHandler = new PayloadHandler(
       options,
