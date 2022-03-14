@@ -59,7 +59,7 @@ describe('Tracing test', () => {
 
     if (accessToken) {
       // gRPC not yet supported in ingest
-      assert.equal(exporter?.metadata?.get('X-Cisco-Token'), accessToken);
+      assert.equal(exporter?.metadata?.get('authorization'), accessToken);
     }
   }
 

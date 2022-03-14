@@ -13,3 +13,5 @@ coverage:
       default:
         target: auto
         threshold: 1%
+ignore:
+  - src/instrumentatios/static-instrumentations/grpc-js/

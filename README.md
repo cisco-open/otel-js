@@ -71,10 +71,11 @@ Advanced options can be configured as a parameter to the init() method:
 
 Exporter options
 
-| Parameter         | Env                     | Type   | Default                 | Description                                                                                                                                         |
-| ----------------- | ----------------------- | ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string | `http://localhost:4317` | The address of the trace collector to send traces to                                                                                                |
-| type.             | OTEL_EXPORTER_TYPE      | string | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below |
+| Parameter         | Env                     | Type                | Default                 | Description                                                                                                                                         |
+| ----------------- | ----------------------- | ------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `http://localhost:4317` | The address of the trace collector to send traces to                                                                                                |
+| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below |
+| customHeaders     | None                    | Map<string, string> | {}                      | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                               |
 
 Multiple exporter can be initialize using ciscoTracing init function with the following options:
 
@@ -85,7 +86,7 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'sometoken',
   exporters: [
     {
-      collectorEndpoint: 'http://localhost:4317',
+      collectorEndpoint: 'grpc://localhost:4317',
       type: 'otlp-grpc',
     },
     {
