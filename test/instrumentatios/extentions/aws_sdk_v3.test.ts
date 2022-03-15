@@ -296,5 +296,79 @@ describe('Test AWS V3 with nock', () => {
         }
       );
     });
+
+    it('sqs receiveMessage promise await', async () => {
+      nock(`https://sqs.${region}.amazonaws.com/`)
+        .post('/')
+        .reply(
+          200,
+          fs.readFileSync(
+            `${__dirname}/aws-mock-responses/sqs-receive-message.xml`,
+            'utf8'
+          )
+        );
+      const params = {
+        AttributeNames: ['SentTimestamp', 'SenderId'],
+        MaxNumberOfMessages: 10,
+        MessageAttributeNames: ['All'],
+        QueueUrl: 'queue/dummy-account/testing',
+        VisibilityTimeout: 20,
+        WaitTimeSeconds: 0,
+      };
+      await sqsClient.receiveMessage(params);
+      const spans = memoryExporter.getFinishedSpans();
+      assert.strictEqual(spans.length, 1);
+      assert.strictEqual(spans[0].attributes['aws.sqs.queue_name'], 'testing');
+      assert.strictEqual(
+        spans[0].attributes['aws.account_id'],
+        'dummy-account'
+      );
+      assert.strictEqual(spans[0].attributes['aws.sqs.visibility_timeout'], 20);
+      assert.strictEqual(spans[0].attributes['aws.sqs.wait_time_seconds'], 0);
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.max_number_of_messages'],
+        10
+      );
+      //We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
+      // with single quote + double quote
+      assert.equal(
+        spans[0].attributes['aws.sqs.attribute_name.0'],
+        '"SentTimestamp"'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.attribute_name.1'],
+        '"SenderId"'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.message_attribute_name.0'],
+        '"All"'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_body'],
+        'Test in aws v3: This is the message body.'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.attribute.SentTimestamp'],
+        '"1646865204230"'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_attribute.Author'],
+        '{"StringValue":"John Grisham","DataType":"String"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_attribute.Title'],
+        '{"StringValue":"The Whistler","DataType":"String"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_attribute.WeeksOn'],
+        '{"StringValue":"6","DataType":"Number"}'
+      );
+      assert.strictEqual(
+        spans[0].attributes['aws.sqs.record.message_id'],
+        '45bfb285-7169-40b0-9de8-c72052bdfe90'
+      );
+      // done();
+      // }
+    });
   });
 });
