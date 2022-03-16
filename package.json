@@ -57,7 +57,7 @@
     "nyc": "^15.1.0"
   },
   "devDependencies": {
-    "cisco-opentelemetry-specifications": "0.0.2",
+    "cisco-opentelemetry-specifications": "0.0.4",
     "@aws-sdk/client-sns": "^3.49.0",
     "@aws-sdk/client-sqs": "^3.54.0",
     "@commitlint/cli": "13.1.0",
