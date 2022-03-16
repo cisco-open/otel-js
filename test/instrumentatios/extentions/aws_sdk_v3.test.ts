@@ -141,6 +141,7 @@ describe('Test AWS V3 with nock', () => {
             'utf8'
           )
         );
+
       snsClient.publish(params, (err: any, data?: PublishCommandOutput) => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 1);
