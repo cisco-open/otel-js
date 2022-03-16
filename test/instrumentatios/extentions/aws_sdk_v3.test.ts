@@ -107,19 +107,26 @@ describe('Test AWS V3 with nock', () => {
         'MESSAGE_TEXT_FOR_TEST'
       );
       chai
-        .expect(spans[0].attributes['aws.sns.message_attribute.myKey'])
+        .expect(
+          spans[0].attributes[
+            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE}.myKey`
+          ]
+        )
         .be.an('string');
       assert.strictEqual(
-        spans[0].attributes['aws.sns.PhoneNumber'],
+        spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
         '+972000000000'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sns.TopicArn'],
+        spans[0].attributes[SemanticAttributes.AWS_SNS_TOPIC_ARN.key],
         'arn:aws:sns:us-east-1:000000000:dummy-topic'
       );
-      assert.strictEqual(spans[0].attributes['aws.sns.subject'], 'mysubject');
       assert.strictEqual(
-        spans[0].attributes['aws.sns.message_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SNS_SUBJECT.key],
+        'mysubject'
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SNS_MESSAGE_ID.key],
         '90d1987b-4853-54ad-a499-c2d89c4edf3a' //taken from the mock response in sns-publish.xml
       );
     });
@@ -142,19 +149,26 @@ describe('Test AWS V3 with nock', () => {
           'MESSAGE_TEXT_FOR_TEST'
         );
         chai
-          .expect(spans[0].attributes['aws.sns.message_attribute.myKey'])
+          .expect(
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE}.myKey`
+            ]
+          )
           .be.an('string');
         assert.strictEqual(
-          spans[0].attributes['aws.sns.PhoneNumber'],
+          spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
           '+972000000000'
         );
         assert.strictEqual(
-          spans[0].attributes['aws.sns.TopicArn'],
+          spans[0].attributes[SemanticAttributes.AWS_SNS_TOPIC_ARN.key],
           'arn:aws:sns:us-east-1:000000000:dummy-topic'
         );
-        assert.strictEqual(spans[0].attributes['aws.sns.subject'], 'mysubject');
         assert.strictEqual(
-          spans[0].attributes['aws.sns.message_id'],
+          spans[0].attributes[SemanticAttributes.AWS_SNS_SUBJECT.key],
+          'mysubject'
+        );
+        assert.strictEqual(
+          spans[0].attributes[SemanticAttributes.AWS_SNS_MESSAGE_ID.key],
           '90d1987b-4853-54ad-a499-c2d89c4edf3a' //taken from the mock response in sns-publish.xml
         );
         done();
@@ -229,15 +243,21 @@ describe('Test AWS V3 with nock', () => {
         10
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.Author'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.Author`
+        ],
         '{"DataType":"String","StringValue":"John Grisham"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.Title'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.Title`
+        ],
         '{"DataType":"String","StringValue":"The Whistler"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.WeeksOn'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.WeeksOn`
+        ],
         '{"DataType":"Number","StringValue":"6"}'
       );
       assert.strictEqual(
@@ -283,19 +303,27 @@ describe('Test AWS V3 with nock', () => {
             'dummy-account'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.request_entry.0'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.0`
+            ],
             '{"Id":"1000","MessageBody":"msg body for 1000"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.request_entry.1'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.1`
+            ],
             '{"Id":"1001","MessageBody":"msg body for 1001"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.result_entry.0'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.0`
+            ],
             '{"Id":"1000","MessageId":"57f7be0d-22a2-42f4-a9d9-3a136fbb219d","MD5OfMessageBody":"c1fa3d847ec219eeb524250e0498b614"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.result_entry.1'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.1`
+            ],
             '{"Id":"1001","MessageId":"fee3d5ba-32f1-48b9-a4bc-8a6ef6d4457c","MD5OfMessageBody":"3e83b83eef8cece2b95bfc8b9501da0a"}'
           );
           done();
@@ -349,15 +377,21 @@ describe('Test AWS V3 with nock', () => {
       //We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
       // with single quote + double quote
       assert.equal(
-        spans[0].attributes['aws.sqs.attribute_name.0'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.0`
+        ],
         '"SentTimestamp"'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.attribute_name.1'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.1`
+        ],
         '"SenderId"'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute_name.0'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.1`
+        ],
         '"All"'
       );
       assert.strictEqual(
@@ -365,19 +399,27 @@ describe('Test AWS V3 with nock', () => {
         'Test in aws v3: This is the message body.'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.attribute.SentTimestamp'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.SentTimestamp`
+        ],
         '"1646865204230"'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.Author'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.Author`
+        ],
         '{"StringValue":"John Grisham","DataType":"String"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.Title'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.Title`
+        ],
         '{"StringValue":"The Whistler","DataType":"String"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.WeeksOn'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.WeeksOn`
+        ],
         '{"StringValue":"6","DataType":"Number"}'
       );
       assert.strictEqual(
