@@ -78,6 +78,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
             'register',
             this._patchServer() as any
           );
+
           // Patch Client methods
           if (isWrapped(moduleExports.makeGenericClientConstructor)) {
             this._unwrap(moduleExports, 'makeGenericClientConstructor');
