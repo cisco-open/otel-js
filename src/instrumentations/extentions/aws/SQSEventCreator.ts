@@ -20,6 +20,7 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addFlattenedObj } from '../../utils/utils';
 
 export class SQSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
@@ -78,18 +79,18 @@ export class SQSEventCreator implements AwsEventCreator {
           SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key,
           cmdInput.MaxNumberOfMessages
         );
-        for (const i in cmdInput.AttributeNames) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.${i}`,
-            JSON.stringify(cmdInput.AttributeNames[i])
-          );
-        }
-        for (const i in cmdInput.MessageAttributeNames) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.${i}`,
-            JSON.stringify(cmdInput.MessageAttributeNames[i])
-          );
-        }
+
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key,
+          cmdInput.AttributeNames
+        );
+
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key,
+          cmdInput.MessageAttributeNames
+        );
         break;
     }
   }
@@ -106,21 +107,21 @@ export class SQSEventCreator implements AwsEventCreator {
         break;
       case 'SendMessageBatch': {
         const successMsgList = responseInfo.response.data?.Successful;
-        for (const i in successMsgList) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.${i}`,
-            JSON.stringify(successMsgList[i])
-          );
-        }
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_RESULT_ENTRY.key,
+          successMsgList
+        );
+
         const failedMsgList = responseInfo.response.data?.Failed;
-        for (const i in failedMsgList) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY.key}.${i}`,
-            JSON.stringify(successMsgList[i])
-          );
-        }
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY.key,
+          failedMsgList
+        );
         break;
       }
+
       case 'ReceiveMessage': {
         const data = responseInfo.response.data;
         if (!data) {
@@ -132,15 +133,15 @@ export class SQSEventCreator implements AwsEventCreator {
             SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key,
             data.Messages[0].Body
           );
-          const atts = data.Messages[0].Attributes;
-          for (const [key, value] of Object.entries(atts)) {
+          const attrs = data.Messages[0].Attributes;
+          for (const [key, value] of Object.entries(attrs)) {
             span.setAttribute(
               `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.${key}`,
               JSON.stringify(value)
             );
           }
-          const msgAtts = data.Messages[0].MessageAttributes;
-          for (const [key, value] of Object.entries(msgAtts)) {
+          const msgAttrs = data.Messages[0].MessageAttributes;
+          for (const [key, value] of Object.entries(msgAttrs)) {
             span.setAttribute(
               `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.${key}`,
               JSON.stringify(value)
