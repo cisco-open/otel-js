@@ -33,6 +33,7 @@ import { SQS, SendMessageBatchCommandOutput } from '@aws-sdk/client-sqs';
 
 import * as nock from 'nock';
 import * as fs from 'fs';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 instrumentation.setTracerProvider(provider);
 
@@ -209,7 +210,10 @@ describe('Test AWS V3 with nock', () => {
       await sqsClient.sendMessage(params);
       const spans = memoryExporter.getFinishedSpans();
       assert.strictEqual(spans.length, 1);
-      assert.strictEqual(spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key], 'testing');
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key],
+        'testing'
+      );
       assert.strictEqual(
         spans[0].attributes[SemanticAttributes.AWS_SQS_ACCOUNT_ID.key],
         'dummy-account'
@@ -219,7 +223,9 @@ describe('Test AWS V3 with nock', () => {
         'Test sqs: This is the message body.'
       );
       assert.strictEqual(
-        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS.key],
+        spans[0].attributes[
+          SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS.key
+        ],
         10
       );
       assert.strictEqual(
@@ -318,15 +324,26 @@ describe('Test AWS V3 with nock', () => {
       await sqsClient.receiveMessage(params);
       const spans = memoryExporter.getFinishedSpans();
       assert.strictEqual(spans.length, 1);
-      assert.strictEqual(spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key], 'testing');
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key],
+        'testing'
+      );
       assert.strictEqual(
         spans[0].attributes[SemanticAttributes.AWS_SQS_ACCOUNT_ID.key],
         'dummy-account'
       );
-      assert.strictEqual(spans[0].attributes[SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT.key], 20);
-      assert.strictEqual(spans[0].attributes[SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS.key], 0);
       assert.strictEqual(
-        spans[0].attributes[SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT.key],
+        20
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS.key],
+        0
+      );
+      assert.strictEqual(
+        spans[0].attributes[
+          SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key
+        ],
         10
       );
       //We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
@@ -392,7 +409,7 @@ describe('Test AWS V3 with nock', () => {
       console.log(spans);
       assert.strictEqual(spans.length, 1);
       assert.strictEqual(
-        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD.key],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_AWS_SQS_RECORD.key],
         '[{"MessageId":"7fe3a2a6-c36a-420a-9830-edba7747f61a","ReceiptHandle":"AQEBo/8PlpWUiTd7Ks5xJRlbQ0yfHUgRkzSaYlsW9m4VDqIvJvGcr8ZOSuuQH3ChvDouB9xR1CdeSijDoRvoiePU7lx32+K/s1ZpascBwpdVO58R54Se6ak5pn3c/5giJ+8ZVMFqzRSCW0zw9dPGFvVhV16rltqpbffgVwboWmTkwiMvyon7aZUexuzqYwuqOVS21PfuROfEOSCvqcM5WMROoadIJsUgLbOyuV9O5yB4Wp8eva9ZPCNIvex6kj8duiSFjkW7hdlDR3FuGu7TQbLpCaFm3HnDmYD694FrP1WQQUhw6KjGvmSlPSTkkKkz6CWbHSw67RdMekRrzhodWWEj8Zls7rJXEtWxQDpU5bq2EMpbSpv7ofQ7dHOYI3w0iIhSJglr6TVva/0BNwZhuKSZAQ==","MD5OfBody":"2a6d3c908467b6ca7d6a820217913613","Body":"msg 3","Attributes":{"SentTimestamp":"1647343166484","SenderId":"AROA4I6NZPZGDWDPWYSYK:haddasb@cisco.com"}},{"MessageId":"ba865c18-8146-414c-99b0-b4ab1fc5c14e","ReceiptHandle":"AQEBtxF0wtdEgZ7qvzDbDJ+fxZwMJrwI/NVpzChuHTzBvGhjasTcX0HjS4poZYH2zvc+QiKWZ318pgkIt91ufkoXXkMhC3jv+nmV9nOS5hWJPUbeeN97NuTl1F1ArSYoMaVH8Q077iLsKuTmvB3ROALCMF9mvjBBkTWcby2nlShQZLGIG8G09VE19M5MRfHwntsjnclrK7mitcM+0HLq90zyiuDdGKjin9ozjP1Tx8768L+Xjx6YJXMGePy2qveW6tzI1Q5i44Jy0b4z1Bn08DpgPhcZs+V9SnU+AtGKxlDtkX5bq9H2huwlrMxMSgbXpM1pzyLieE1w2ScS+lLhyrZl1FFHGpl2pLHQ94TwbFCzISUup1j+QSQdaVQuoyt6pWLhtlxoqgHpI5cmuzTgEniHrQ==","MD5OfBody":"49957fc82eea4500cb738d507b094594","Body":"msg 2","Attributes":{"SentTimestamp":"1647342798650","SenderId":"AROA4I6NZPZGDWDPWYSYK:haddasb@cisco.com"}}]'
       );
     });

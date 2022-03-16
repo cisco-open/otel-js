@@ -32,6 +32,7 @@ instrumentation.enable();
 
 import * as redisTypes from 'redis';
 import { testOptions } from '../../utils';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 const memoryExporter = new InMemorySpanExporter();
 
@@ -118,7 +119,8 @@ describe('Test redis', () => {
         assert.strictEqual(spans.length, 1);
         const firstHookAtt = spans[0].attributes['someFieldName'];
         assert.strictEqual(firstHookAtt, 'someData');
-        const secondHookAtt = spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+        const secondHookAtt =
+          spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
         assert.strictEqual(secondHookAtt, '1');
         done();
       });
@@ -198,9 +200,12 @@ describe('Test redis', () => {
         operation.method(() => {
           const spans = memoryExporter.getFinishedSpans();
           assert.strictEqual(spans.length, 1);
-          const res = spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+          const res =
+            spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
           assert.strictEqual(res, operation.responseShouldBe);
-          const arg = spans[0].attributes[SemanticAttributes.DB_REDIS_ARGUMENTS.key] as string;
+          const arg = spans[0].attributes[
+            SemanticAttributes.DB_REDIS_ARGUMENTS.key
+          ] as string;
           assert.deepEqual(JSON.parse(arg), operation.args);
           done();
         });
@@ -213,9 +218,12 @@ describe('Test redis', () => {
       multi.exec(() => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 3);
-        const multiRes = spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key] as string;
+        const multiRes = spans[0].attributes[
+          SemanticAttributes.DB_REDIS_RESPONSE.key
+        ] as string;
         assert.equal(JSON.parse(multiRes), 'OK');
-        const execRes = spans[2].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+        const execRes =
+          spans[2].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
         assert.strictEqual(execRes, '[1]');
         done();
       });

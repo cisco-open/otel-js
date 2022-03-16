@@ -142,7 +142,12 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
       );
     }
 
-    PayloadHandler.setPayload(span, 'rpc.response.body', value, maxPayloadSize);
+    PayloadHandler.setPayload(
+      span,
+      CiscoSemanticAttributes.RPC_RESPONSE_BODY.key,
+      value,
+      maxPayloadSize
+    );
     span.end();
     return callback(err, value);
   };
