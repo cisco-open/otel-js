@@ -448,7 +448,6 @@ describe('Test AWS V3 with nock', () => {
       };
       await sqsClient.receiveMessage(params);
       const spans = memoryExporter.getFinishedSpans();
-      console.log(spans);
       assert.strictEqual(spans.length, 1);
       assert.strictEqual(
         spans[0].attributes[SemanticAttributes.AWS_SQS_AWS_SQS_RECORD.key],
