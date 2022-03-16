@@ -20,7 +20,7 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { addFlattenedObj } from '../../utils/utils';
+import { addFlattenedArr, addFlattenedObj } from '../../utils/utils';
 
 export class SQSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
@@ -106,18 +106,16 @@ export class SQSEventCreator implements AwsEventCreator {
         );
         break;
       case 'SendMessageBatch': {
-        const successMsgList = responseInfo.response.data?.Successful;
-        addFlattenedObj(
+        addFlattenedArr(
           span,
           SemanticAttributes.AWS_SQS_RESULT_ENTRY.key,
-          successMsgList
+          responseInfo.response.data?.Successful
         );
 
-        const failedMsgList = responseInfo.response.data?.Failed;
-        addFlattenedObj(
+        addFlattenedArr(
           span,
           SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY.key,
-          failedMsgList
+          responseInfo.response.data?.Failed
         );
         break;
       }

@@ -23,7 +23,6 @@ import * as assert from 'assert';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
 import { testOptions } from '../../utils';
-const chai = require('chai');
 const instrumentation = new AwsInstrumentation();
 instrumentation.enable();
 const memoryExporter = new InMemorySpanExporter();
@@ -106,13 +105,13 @@ describe('Test AWS V3 with nock', () => {
         spans[0].attributes['aws.sns.message'],
         'MESSAGE_TEXT_FOR_TEST'
       );
-      chai
-        .expect(
-          spans[0].attributes[
-            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
-          ]
-        )
-        .be.an('string');
+      assert.strictEqual(
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
+        ],
+        '{"DataType":"String","StringValue":"somestringvalue"}'
+      );
+
       assert.strictEqual(
         spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
         '+972000000000'
@@ -148,13 +147,13 @@ describe('Test AWS V3 with nock', () => {
           spans[0].attributes['aws.sns.message'],
           'MESSAGE_TEXT_FOR_TEST'
         );
-        chai
-          .expect(
-            spans[0].attributes[
-              `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE}.myKey`
-            ]
-          )
-          .be.an('string');
+
+        assert.strictEqual(
+          spans[0].attributes[
+            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
+          ],
+          '{"DataType":"String","StringValue":"somestringvalue"}'
+        );
         assert.strictEqual(
           spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
           '+972000000000'
@@ -304,13 +303,13 @@ describe('Test AWS V3 with nock', () => {
           );
           assert.strictEqual(
             spans[0].attributes[
-              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.0`
+              `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.0`
             ],
             '{"Id":"1000","MessageBody":"msg body for 1000"}'
           );
           assert.strictEqual(
             spans[0].attributes[
-              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.1`
+              `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.1`
             ],
             '{"Id":"1001","MessageBody":"msg body for 1001"}'
           );
