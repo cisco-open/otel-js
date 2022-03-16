@@ -98,7 +98,7 @@ function createHttpRequestHook(
 
       request.on('data', listener);
       request.once('end', () => {
-        bodyHandler.setPayload(span, 'http.request.body');
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY.key);
         request.removeListener('data', listener);
       });
     }
@@ -120,7 +120,7 @@ function createHttpResponseHook(
         ? response.headers
         : response.getHeaders();
 
-    addFlattenedObj(span, 'http.response.header', headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER.key, headers);
 
     const bodyHandler = new PayloadHandler(
       options,
@@ -135,7 +135,7 @@ function createHttpResponseHook(
 
       response.on('data', listener);
       response.once('end', () => {
-        bodyHandler.setPayload(span, 'http.response.body');
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY.key);
         response.removeListener('data', listener);
       });
     }

@@ -33,7 +33,7 @@ const memoryExporter = new InMemorySpanExporter();
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('PayloadHandler tests', () => {
-  const ATTR_PREFIX = 'http.request.body';
+  const ATTR_PREFIX = SemanticAttributes.HTTP_REQUEST_BODY.key;
   let logger;
 
   beforeEach(() => {
