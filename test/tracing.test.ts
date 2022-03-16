@@ -63,7 +63,7 @@ describe('Tracing test', () => {
     }
   }
 
-  it('setups tracing with custom options', () => {
+  it('setups tracing with custom options', async () => {
     const userOptions: Partial<Options> = {
       serviceName: 'my-app-name',
       ciscoToken: 'cisco-token',
@@ -74,11 +74,11 @@ describe('Tracing test', () => {
         },
       ],
     };
-    ciscoTracing.init(userOptions);
+    await ciscoTracing.init(userOptions);
     assertTracingPipeline('localhost:4317', 'my-app-name', 'cisco-token');
   });
 
-  it('setups tracing with defaults', () => {
+  it('setups tracing with defaults', async () => {
     const exporterOptions: ExporterOptions = {
       collectorEndpoint: '',
     };
@@ -91,7 +91,7 @@ describe('Tracing test', () => {
     process.env.OTEL_SERVICE_NAME = userOptions.serviceName;
     process.env.CISCO_TOKEN = userOptions.ciscoToken;
 
-    ciscoTracing.init(userOptions);
+    await ciscoTracing.init(userOptions);
     sinon.assert.notCalled(addSpanProcessorMock);
   });
 });

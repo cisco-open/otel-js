@@ -18,13 +18,17 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { _configDefaultOptions, Options } from './options';
-//import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { Resource } from '@opentelemetry/resources';
+// import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import {
+  Resource,
+  detectResources,
+  processDetector,
+  envDetector,
+} from '@opentelemetry/resources';
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
-import getVersion from './version';
 
-export function init(userOptions: Partial<Options>) {
+export async function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
@@ -36,26 +40,33 @@ export function init(userOptions: Partial<Options>) {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
   }
 
-  const resource = new Resource({
-    // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
-    //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
-    ['application']: options.serviceName,
-    ['cisco.sdk.version']: getVersion(),
-  });
-
-  const provider = new NodeTracerProvider({ resource });
-
   const exporters = exporterFactory(options);
   if (exporters.length === 0) {
     return;
   }
-  for (const index in exporters) {
-    provider.addSpanProcessor(new BatchSpanProcessor(exporters[index]));
-    provider.register();
-  }
 
   registerInstrumentations({
-    tracerProvider: provider,
     instrumentations: getInstrumentations(options),
   });
+
+  const detectedResources = await detectResources({
+    detectors: [envDetector, processDetector],
+  });
+
+  const ciscoResource = new Resource({
+    // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
+    //[SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
+    ['application']: options.serviceName,
+    // ['cisco.sdk.version']: getVersion(),
+  });
+
+  const provider = new NodeTracerProvider({
+    resource: ciscoResource.merge(detectedResources),
+  });
+
+  for (const index in exporters) {
+    provider.addSpanProcessor(new BatchSpanProcessor(exporters[index]));
+  }
+
+  provider.register();
 }

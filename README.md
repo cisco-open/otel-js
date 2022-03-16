@@ -37,7 +37,7 @@ const userOptions = {
   ],
 };
 
-ciscoTracing.init(userOptions);
+await ciscoTracing.init(userOptions);
 ```
 
 ### typescript
@@ -54,7 +54,7 @@ const userOptions: Partial<Options> = {
     },
   ],
 };
-ciscoTracing.init(userOptions);
+await ciscoTracing.init(userOptions);
 ```
 
 ## Configuration
@@ -95,7 +95,7 @@ const userOptions: Partial<Options> = {
     },
   ],
 };
-ciscoTracing.init(userOptions);
+await ciscoTracing.init(userOptions);
 ```
 
 To test the launcher:
