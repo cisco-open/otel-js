@@ -59,8 +59,8 @@ describe('Capturing gRPC Metadata/Bodies', () => {
       `localhost:${SERVER_PORT}`,
       grpc.ServerCredentials.createInsecure(),
       () => {
-        console.log('server listening');
         server.start();
+        console.log('server listening');
         done();
       }
     );

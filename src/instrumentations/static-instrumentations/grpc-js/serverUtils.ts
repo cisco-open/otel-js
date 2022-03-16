@@ -33,6 +33,7 @@ import {
   _grpcStatusCodeToOpenTelemetryStatusCode,
   _methodIsIgnored,
 } from '@opentelemetry/instrumentation-grpc/build/src/utils';
+import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { IgnoreMatcher } from '@opentelemetry/instrumentation-grpc/build/src/types';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
