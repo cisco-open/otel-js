@@ -109,7 +109,7 @@ describe('Test AWS V3 with nock', () => {
       chai
         .expect(
           spans[0].attributes[
-            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE}.myKey`
+            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
           ]
         )
         .be.an('string');
@@ -244,19 +244,19 @@ describe('Test AWS V3 with nock', () => {
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.Author`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.Author`
         ],
         '{"DataType":"String","StringValue":"John Grisham"}'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.Title`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.Title`
         ],
         '{"DataType":"String","StringValue":"The Whistler"}'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.WeeksOn`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.WeeksOn`
         ],
         '{"DataType":"Number","StringValue":"6"}'
       );
@@ -374,25 +374,25 @@ describe('Test AWS V3 with nock', () => {
         ],
         10
       );
-      //We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
+      // We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
       // with single quote + double quote
       assert.equal(
         spans[0].attributes[
           `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.0`
         ],
-        '"SentTimestamp"'
+        'SentTimestamp'
       );
       assert.strictEqual(
         spans[0].attributes[
           `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.1`
         ],
-        '"SenderId"'
+        'SenderId'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.1`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.0`
         ],
-        '"All"'
+        'All'
       );
       assert.strictEqual(
         spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key],
@@ -400,25 +400,25 @@ describe('Test AWS V3 with nock', () => {
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.SentTimestamp`
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.SentTimestamp`
         ],
         '"1646865204230"'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.Author`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.Author`
         ],
         '{"StringValue":"John Grisham","DataType":"String"}'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.Title`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.Title`
         ],
         '{"StringValue":"The Whistler","DataType":"String"}'
       );
       assert.strictEqual(
         spans[0].attributes[
-          `${SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ATTRIBUTE.key}.WeeksOn`
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.WeeksOn`
         ],
         '{"StringValue":"6","DataType":"Number"}'
       );
