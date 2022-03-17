@@ -19,6 +19,8 @@ import {
   AwsSdkResponseHookInformation,
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addFlattenedArr, addFlattenedObj } from '../../utils/utils';
 
 export class SQSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
@@ -34,19 +36,22 @@ export class SQSEventCreator implements AwsEventCreator {
     }
     // assuming this structure for QueueUrl:
     // https://sqs.<region>.amazonaws.com/<accountId>/<queueName>
-    span.setAttribute('aws.sqs.queue_name', splited.pop());
-    span.setAttribute('aws.account_id', splited.pop());
+    span.setAttribute(SemanticAttributes.AWS_SQS_QUEUE_NAME.key, splited.pop());
+    span.setAttribute(SemanticAttributes.AWS_SQS_ACCOUNT_ID.key, splited.pop());
 
     switch (requestInfo.request.commandName) {
       case 'SendMessage': {
-        span.setAttribute('aws.sqs.record.message_body', cmdInput.MessageBody);
         span.setAttribute(
-          'aws.sqs.record.delay_seconds',
+          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key,
+          cmdInput.MessageBody
+        );
+        span.setAttribute(
+          SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS.key,
           cmdInput.DelaySeconds
         );
         for (const [key, value] of Object.entries(cmdInput.MessageAttributes)) {
           span.setAttribute(
-            `aws.sqs.message_attribute.${key}`,
+            `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.${key}`,
             JSON.stringify(value)
           );
         }
@@ -55,7 +60,7 @@ export class SQSEventCreator implements AwsEventCreator {
       case 'SendMessageBatch': {
         for (const [key, value] of Object.entries(cmdInput.Entries)) {
           span.setAttribute(
-            `aws.sqs.request_entry.${key}`,
+            `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.${key}`,
             JSON.stringify(value)
           );
         }
@@ -63,29 +68,29 @@ export class SQSEventCreator implements AwsEventCreator {
       }
       case 'ReceiveMessage':
         span.setAttribute(
-          'aws.sqs.visibility_timeout',
+          SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT.key,
           cmdInput.VisibilityTimeout
         );
         span.setAttribute(
-          'aws.sqs.wait_time_seconds',
+          SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS.key,
           cmdInput.WaitTimeSeconds
         );
         span.setAttribute(
-          'aws.sqs.max_number_of_messages',
+          SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key,
           cmdInput.MaxNumberOfMessages
         );
-        for (const i in cmdInput.AttributeNames) {
-          span.setAttribute(
-            `aws.sqs.attribute_name.${i}`,
-            JSON.stringify(cmdInput.AttributeNames[i])
-          );
-        }
-        for (const i in cmdInput.MessageAttributeNames) {
-          span.setAttribute(
-            `aws.sqs.message_attribute_name.${i}`,
-            JSON.stringify(cmdInput.MessageAttributeNames[i])
-          );
-        }
+
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key,
+          cmdInput.AttributeNames
+        );
+
+        addFlattenedObj(
+          span,
+          SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key,
+          cmdInput.MessageAttributeNames
+        );
         break;
     }
   }
@@ -96,27 +101,25 @@ export class SQSEventCreator implements AwsEventCreator {
     switch (responseInfo.response.request.commandName) {
       case 'SendMessage':
         span.setAttribute(
-          'aws.sqs.record.message_id',
+          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key,
           responseInfo.response.data?.MessageId
         );
         break;
       case 'SendMessageBatch': {
-        const successMsgList = responseInfo.response.data?.Successful;
-        for (const i in successMsgList) {
-          span.setAttribute(
-            `aws.sqs.result_entry.${i}`,
-            JSON.stringify(successMsgList[i])
-          );
-        }
-        const failedMsgList = responseInfo.response.data?.Failed;
-        for (const i in failedMsgList) {
-          span.setAttribute(
-            `aws.sqs.result_error_entry.${i}`,
-            JSON.stringify(successMsgList[i])
-          );
-        }
+        addFlattenedArr(
+          span,
+          SemanticAttributes.AWS_SQS_RESULT_ENTRY.key,
+          responseInfo.response.data?.Successful
+        );
+
+        addFlattenedArr(
+          span,
+          SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY.key,
+          responseInfo.response.data?.Failed
+        );
         break;
       }
+
       case 'ReceiveMessage': {
         const data = responseInfo.response.data;
         if (!data) {
@@ -125,30 +128,33 @@ export class SQSEventCreator implements AwsEventCreator {
         }
         if (data.Messages.length == 1) {
           span.setAttribute(
-            'aws.sqs.record.message_body',
+            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key,
             data.Messages[0].Body
           );
-          const atts = data.Messages[0].Attributes;
-          for (const [key, value] of Object.entries(atts)) {
+          const attrs = data.Messages[0].Attributes;
+          for (const [key, value] of Object.entries(attrs)) {
             span.setAttribute(
-              `aws.sqs.record.attribute.${key}`,
+              `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.${key}`,
               JSON.stringify(value)
             );
           }
-          const msgAtts = data.Messages[0].MessageAttributes;
-          for (const [key, value] of Object.entries(msgAtts)) {
+          const msgAttrs = data.Messages[0].MessageAttributes;
+          for (const [key, value] of Object.entries(msgAttrs)) {
             span.setAttribute(
-              `aws.sqs.record.message_attribute.${key}`,
+              `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.${key}`,
               JSON.stringify(value)
             );
           }
           span.setAttribute(
-            'aws.sqs.record.message_id',
+            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key,
             data.Messages[0].MessageId
           );
         }
         if (data.Messages.length > 1) {
-          span.setAttribute('aws.sqs.record', JSON.stringify(data.Messages));
+          span.setAttribute(
+            SemanticAttributes.AWS_SQS_AWS_SQS_RECORD.key,
+            JSON.stringify(data.Messages)
+          );
         }
         break;
       }

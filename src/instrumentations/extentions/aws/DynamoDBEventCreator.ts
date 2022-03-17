@@ -19,6 +19,7 @@ import {
   AwsSdkResponseHookInformation,
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 // TODO: follow spec and fix the attribute names accordingly.
 export class DynamoDBEventCreator implements AwsEventCreator {
@@ -26,7 +27,7 @@ export class DynamoDBEventCreator implements AwsEventCreator {
     switch (requestInfo.request.commandName) {
       case 'PutItem':
         span.setAttribute(
-          'db.item',
+          SemanticAttributes.DB_DYNAMO_PARAMETERS.key,
           JSON.stringify(requestInfo.request.commandInput.Item)
         );
         break;
@@ -39,7 +40,7 @@ export class DynamoDBEventCreator implements AwsEventCreator {
     switch (responseInfo.response.request.commandName) {
       case 'PutItem':
         span.setAttribute(
-          'db.data',
+          SemanticAttributes.DB_DYNAMO_RESPONSE.key,
           JSON.stringify(responseInfo.response.data)
         );
         break;

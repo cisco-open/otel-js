@@ -24,6 +24,7 @@ import {
 import { isSpanContextValid } from '@opentelemetry/api';
 import { addFlattenedObj } from '../utils/utils';
 import { PayloadHandler } from '../utils/PayloadHandler';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 export function configureAmqplibInstrumentation(
   instrumentation: Instrumentation,
@@ -74,20 +75,19 @@ function createPublishHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-
     addFlattenedObj(
       span,
-      'messaging.message.header',
+      SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key,
       publishParams.options.headers
     );
     span.setAttribute(
-      'messaging.message.payload_size',
+      SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key,
       publishParams.content.length
     );
     // TODO: we need to separate the user Options from our using options
     PayloadHandler.setPayload(
       span,
-      'messaging.message.payload',
+      SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key,
       publishParams.content,
       options.maxPayloadSize
     );
@@ -105,14 +105,17 @@ function createConsumeHook(
 
     addFlattenedObj(
       span,
-      'messaging.message.header',
+      SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key,
       message.properties.headers
     );
-    span.setAttribute('messaging.message.payload_size', message.content.length);
+    span.setAttribute(
+      SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key,
+      message.content.length
+    );
 
     PayloadHandler.setPayload(
       span,
-      'messaging.message.payload',
+      SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key,
       message.content,
       options.maxPayloadSize
     );

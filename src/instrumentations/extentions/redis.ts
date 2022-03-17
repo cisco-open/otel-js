@@ -23,6 +23,7 @@ import {
   RedisCommand,
   RedisResponseCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-redis/build/src/types';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 export function configureRedisInstrumentation(
   instrumentation: Instrumentation,
@@ -72,7 +73,13 @@ function createRedisResponseHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    span.setAttribute('db.redis.arguments', JSON.stringify(cmdArgs));
-    span.setAttribute('db.redis.response', JSON.stringify(responseInfo));
+    span.setAttribute(
+      SemanticAttributes.DB_REDIS_ARGUMENTS.key,
+      JSON.stringify(cmdArgs)
+    );
+    span.setAttribute(
+      SemanticAttributes.DB_REDIS_RESPONSE.key,
+      JSON.stringify(responseInfo)
+    );
   };
 }

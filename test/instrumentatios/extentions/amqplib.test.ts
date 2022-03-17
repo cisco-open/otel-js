@@ -34,6 +34,7 @@ import * as amqp from 'amqplib';
 import { Channel, ConfirmChannel } from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { assertExpectedObj, testOptions } from '../../utils';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
@@ -151,29 +152,37 @@ describe('amqplib instrumentation callback model', () => {
       assertExpectedObj(
         publishSpan,
         MESSAGE_HEADERS,
-        'messaging.message.header'
+        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key
       );
       assertExpectedObj(
         consumeSpan,
         MESSAGE_HEADERS,
-        'messaging.message.header'
+        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key
       );
 
       assert.strictEqual(
-        publishSpan.attributes['messaging.message.payload_size'],
+        publishSpan.attributes[
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key
+        ],
         MESSAGE_TO_SEND.length
       );
       assert.strictEqual(
-        consumeSpan.attributes['messaging.message.payload_size'],
+        consumeSpan.attributes[
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key
+        ],
         MESSAGE_TO_SEND.length
       );
 
       assert.strictEqual(
-        publishSpan.attributes['messaging.message.payload'],
+        publishSpan.attributes[
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key
+        ],
         MESSAGE_TO_SEND
       );
       assert.strictEqual(
-        consumeSpan.attributes['messaging.message.payload'],
+        consumeSpan.attributes[
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key
+        ],
         MESSAGE_TO_SEND
       );
     });

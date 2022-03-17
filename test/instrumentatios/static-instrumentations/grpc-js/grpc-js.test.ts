@@ -15,6 +15,7 @@
  */
 /*eslint sort-imports: ["error", { "ignoreDeclarationSort": true }]*/
 import { GrpcJsInstrumentation } from '../../../../src/instrumentations/static-instrumentations/grpc-js/instrumentation';
+import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation', {
   maxPayloadSize: 10,
 });
@@ -58,8 +59,8 @@ describe('Capturing gRPC Metadata/Bodies', () => {
       `localhost:${SERVER_PORT}`,
       grpc.ServerCredentials.createInsecure(),
       () => {
-        console.log('server listening');
         server.start();
+        console.log('server listening');
         done();
       }
     );
@@ -85,36 +86,36 @@ describe('Capturing gRPC Metadata/Bodies', () => {
     assertExpectedObj(
       serverSpan,
       REQUEST_METADATA.getMap(),
-      'rpc.request.metadata'
+      CiscoSemanticAttributes.RPC_REQUEST_METADATA.key
     );
     assertExpectedObj(
       clientSpan,
       REQUEST_METADATA.getMap(),
-      'rpc.request.metadata'
+      CiscoSemanticAttributes.RPC_REQUEST_METADATA.key
     );
     assertExpectedObj(
       clientSpan,
       RESPONSE_METADATA.getMap(),
-      'rpc.response.metadata'
+      CiscoSemanticAttributes.RPC_RESPONSE_METADATA.key
     );
 
     assert.strictEqual(
-      serverSpan.attributes['rpc.request.body'],
+      serverSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY.key],
       REQUEST_MESSAGE
     );
 
     assert.strictEqual(
-      clientSpan.attributes['rpc.request.body'],
+      clientSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY.key],
       REQUEST_MESSAGE
     );
 
     assert.strictEqual(
-      serverSpan.attributes['rpc.response.body'],
+      serverSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY.key],
       RESPONSE_MESSAGE
     );
 
     assert.strictEqual(
-      clientSpan.attributes['rpc.response.body'],
+      clientSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY.key],
       RESPONSE_MESSAGE
     );
 

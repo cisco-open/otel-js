@@ -19,15 +19,17 @@ import {
   AwsSdkResponseHookInformation,
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 export class SNSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     switch (requestInfo.request.commandName) {
       case 'Publish': {
         const cmdInput = requestInfo.request.commandInput;
+        // TODO: add sem conv to this
         span.setAttribute('aws.sns.message', cmdInput.Message);
         span.setAttribute(
-          'aws.sns.MessageStructure',
+          SemanticAttributes.AWS_SNS_MESSAGE_STRUCTURE.key,
           cmdInput.MessageStructure
         );
         if (cmdInput.MessageAttributes) {
@@ -35,15 +37,25 @@ export class SNSEventCreator implements AwsEventCreator {
             cmdInput.MessageAttributes
           )) {
             span.setAttribute(
-              `aws.sns.message_attribute.${key}`,
+              `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.${key}`,
               JSON.stringify(value)
             );
           }
         }
-        span.setAttribute('aws.sns.PhoneNumber', cmdInput.PhoneNumber);
+        span.setAttribute(
+          SemanticAttributes.AWS_SNS_PHONE_NUMBER.key,
+          cmdInput.PhoneNumber
+        );
+        // TODO: add sem cont to this
         span.setAttribute('aws.sns.TargetArn', cmdInput.TargetArn);
-        span.setAttribute('aws.sns.TopicArn', cmdInput.TopicArn);
-        span.setAttribute('aws.sns.subject', cmdInput.Subject);
+        span.setAttribute(
+          SemanticAttributes.AWS_SNS_TOPIC_ARN.key,
+          cmdInput.TopicArn
+        );
+        span.setAttribute(
+          SemanticAttributes.AWS_SNS_SUBJECT.key,
+          cmdInput.Subject
+        );
         break;
       }
     }
@@ -55,7 +67,7 @@ export class SNSEventCreator implements AwsEventCreator {
     switch (responseInfo.response.request.commandName) {
       case 'Publish':
         span.setAttribute(
-          'aws.sns.message_id',
+          SemanticAttributes.AWS_SNS_MESSAGE_ID.key,
           responseInfo.response.data?.MessageId
         );
         break;

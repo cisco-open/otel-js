@@ -31,6 +31,7 @@ import {
   PackageDefinition,
   GrpcClientFunc,
 } from '@opentelemetry/instrumentation-grpc/build/src/grpc-js/types';
+import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 import {
   context,
   propagation,
@@ -77,6 +78,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
             'register',
             this._patchServer() as any
           );
+
           // Patch Client methods
           if (isWrapped(moduleExports.makeGenericClientConstructor)) {
             this._unwrap(moduleExports, 'makeGenericClientConstructor');
@@ -199,13 +201,13 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
 
                   addFlattenedObj(
                     span,
-                    'rpc.request.metadata',
+                    CiscoSemanticAttributes.RPC_REQUEST_METADATA.key,
                     call.metadata.getMap()
                   );
 
                   PayloadHandler.setPayload(
                     span,
-                    'rpc.request.body',
+                    CiscoSemanticAttributes.RPC_REQUEST_BODY.key,
                     (call as ServerUnaryCallImpl<RequestType, ResponseType>)
                       .request,
                     (instrumentation._config as GrpcInstrumentationConfig)
@@ -306,10 +308,14 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
         const span = instrumentation.tracer.startSpan(name, {
           kind: SpanKind.CLIENT,
         });
-        addFlattenedObj(span, 'rpc.request.metadata', metadata.getMap());
+        addFlattenedObj(
+          span,
+          CiscoSemanticAttributes.RPC_REQUEST_METADATA.key,
+          metadata.getMap()
+        );
         PayloadHandler.setPayload(
           span,
-          'rpc.request.body',
+          CiscoSemanticAttributes.RPC_REQUEST_BODY.key,
           args[0],
           (instrumentation._config as GrpcInstrumentationConfig).maxPayloadSize
         );

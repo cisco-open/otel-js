@@ -152,7 +152,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        'http.response.header'
+        SemanticAttributes.HTTP_RESPONSE_HEADER.key
       );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
@@ -194,7 +194,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        'http.response.header'
+        SemanticAttributes.HTTP_RESPONSE_HEADER.key
       );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
@@ -227,11 +227,14 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        'http.response.header'
+        SemanticAttributes.HTTP_RESPONSE_HEADER.key
       );
-      assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
       assert.equal(
-        spans[1].attributes['http.response.body'],
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        POST_REQUEST_DATA
+      );
+      assert.equal(
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
         SUCCESS_POST_MESSAGE
       );
     });
@@ -253,7 +256,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
         REQUEST_HEADERS,
         SemanticAttributes.HTTP_REQUEST_HEADER.key
       );
-      assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        POST_REQUEST_DATA
+      );
     });
 
     it('test post when the response in the end', async () => {
@@ -274,10 +280,13 @@ describe('Capturing HTTP Headers/Bodies', () => {
         REQUEST_HEADERS,
         SemanticAttributes.HTTP_REQUEST_HEADER.key
       );
-      assert.equal(spans[0].attributes['http.request.body'], POST_REQUEST_DATA);
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        POST_REQUEST_DATA
+      );
       // this is an echo endpoint
       assert.equal(
-        spans[1].attributes['http.response.body'],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
         POST_REQUEST_DATA
       );
     });
@@ -302,10 +311,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        'http.response.header'
+        SemanticAttributes.HTTP_RESPONSE_HEADER.key
       );
       assert.equal(
-        spans[1].attributes['http.response.body'],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
         SUCCESS_GET_MESSAGE
       );
     });
@@ -338,10 +347,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        'http.response.header'
+        SemanticAttributes.HTTP_RESPONSE_HEADER.key
       );
       assert.equal(
-        spans[1].attributes['http.response.body'],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
         SUCCESS_GET_MESSAGE
       );
       assertExpectedObj(
@@ -349,14 +358,17 @@ describe('Capturing HTTP Headers/Bodies', () => {
         REQUEST_HEADERS,
         SemanticAttributes.HTTP_REQUEST_HEADER.key
       );
-      assert.equal(spans[2].attributes['http.request.body'], '');
+      assert.equal(
+        spans[2].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        ''
+      );
       assertExpectedObj(
         spans[3],
         REQUEST_HEADERS,
         SemanticAttributes.HTTP_REQUEST_HEADER.key
       );
       assert.equal(
-        spans[3].attributes['http.response.body'],
+        spans[3].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
         SUCCESS_GET_MESSAGE
       );
     });

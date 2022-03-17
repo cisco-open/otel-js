@@ -38,6 +38,7 @@ import { CALL_SPAN_ENDED } from './serverUtils';
 import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { addFlattenedObj } from '../../utils/utils';
 import { PayloadHandler } from '../../utils/PayloadHandler';
 
@@ -94,7 +95,12 @@ export function makeGrpcClientRemoteCall(
       err: grpcJs.ServiceError | null,
       res: any
     ) => {
-      PayloadHandler.setPayload(span, 'rpc.response.body', res, maxPayloadSize);
+      PayloadHandler.setPayload(
+        span,
+        CiscoSemanticAttributes.RPC_RESPONSE_BODY.key,
+        res,
+        maxPayloadSize
+      );
       if (err) {
         if (err.code) {
           span.setStatus(_grpcStatusCodeToSpanStatus(err.code));
@@ -144,7 +150,11 @@ export function makeGrpcClientRemoteCall(
     const call = original.apply(self, args);
 
     call.on('metadata', metadata => {
-      addFlattenedObj(span, 'rpc.response.metadata', metadata.getMap());
+      addFlattenedObj(
+        span,
+        CiscoSemanticAttributes.RPC_RESPONSE_METADATA.key,
+        metadata.getMap()
+      );
     });
 
     // if server stream or bidi

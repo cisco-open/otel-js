@@ -23,7 +23,6 @@ import * as assert from 'assert';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
 import { testOptions } from '../../utils';
-const chai = require('chai');
 const instrumentation = new AwsInstrumentation();
 instrumentation.enable();
 const memoryExporter = new InMemorySpanExporter();
@@ -33,6 +32,7 @@ import { SQS, SendMessageBatchCommandOutput } from '@aws-sdk/client-sqs';
 
 import * as nock from 'nock';
 import * as fs from 'fs';
+import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 instrumentation.setTracerProvider(provider);
 
@@ -105,20 +105,27 @@ describe('Test AWS V3 with nock', () => {
         spans[0].attributes['aws.sns.message'],
         'MESSAGE_TEXT_FOR_TEST'
       );
-      chai
-        .expect(spans[0].attributes['aws.sns.message_attribute.myKey'])
-        .be.an('string');
       assert.strictEqual(
-        spans[0].attributes['aws.sns.PhoneNumber'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
+        ],
+        '{"DataType":"String","StringValue":"somestringvalue"}'
+      );
+
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
         '+972000000000'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sns.TopicArn'],
+        spans[0].attributes[SemanticAttributes.AWS_SNS_TOPIC_ARN.key],
         'arn:aws:sns:us-east-1:000000000:dummy-topic'
       );
-      assert.strictEqual(spans[0].attributes['aws.sns.subject'], 'mysubject');
       assert.strictEqual(
-        spans[0].attributes['aws.sns.message_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SNS_SUBJECT.key],
+        'mysubject'
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SNS_MESSAGE_ID.key],
         '90d1987b-4853-54ad-a499-c2d89c4edf3a' //taken from the mock response in sns-publish.xml
       );
     });
@@ -140,20 +147,27 @@ describe('Test AWS V3 with nock', () => {
           spans[0].attributes['aws.sns.message'],
           'MESSAGE_TEXT_FOR_TEST'
         );
-        chai
-          .expect(spans[0].attributes['aws.sns.message_attribute.myKey'])
-          .be.an('string');
+
         assert.strictEqual(
-          spans[0].attributes['aws.sns.PhoneNumber'],
+          spans[0].attributes[
+            `${SemanticAttributes.AWS_SNS_MESSAGE_ATTRIBUTE.key}.myKey`
+          ],
+          '{"DataType":"String","StringValue":"somestringvalue"}'
+        );
+        assert.strictEqual(
+          spans[0].attributes[SemanticAttributes.AWS_SNS_PHONE_NUMBER.key],
           '+972000000000'
         );
         assert.strictEqual(
-          spans[0].attributes['aws.sns.TopicArn'],
+          spans[0].attributes[SemanticAttributes.AWS_SNS_TOPIC_ARN.key],
           'arn:aws:sns:us-east-1:000000000:dummy-topic'
         );
-        assert.strictEqual(spans[0].attributes['aws.sns.subject'], 'mysubject');
         assert.strictEqual(
-          spans[0].attributes['aws.sns.message_id'],
+          spans[0].attributes[SemanticAttributes.AWS_SNS_SUBJECT.key],
+          'mysubject'
+        );
+        assert.strictEqual(
+          spans[0].attributes[SemanticAttributes.AWS_SNS_MESSAGE_ID.key],
           '90d1987b-4853-54ad-a499-c2d89c4edf3a' //taken from the mock response in sns-publish.xml
         );
         done();
@@ -209,33 +223,44 @@ describe('Test AWS V3 with nock', () => {
       await sqsClient.sendMessage(params);
       const spans = memoryExporter.getFinishedSpans();
       assert.strictEqual(spans.length, 1);
-      assert.strictEqual(spans[0].attributes['aws.sqs.queue_name'], 'testing');
       assert.strictEqual(
-        spans[0].attributes['aws.account_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key],
+        'testing'
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_ACCOUNT_ID.key],
         'dummy-account'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_body'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key],
         'Test sqs: This is the message body.'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.delay_seconds'],
+        spans[0].attributes[
+          SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS.key
+        ],
         10
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.Author'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.Author`
+        ],
         '{"DataType":"String","StringValue":"John Grisham"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.Title'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.Title`
+        ],
         '{"DataType":"String","StringValue":"The Whistler"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute.WeeksOn'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.WeeksOn`
+        ],
         '{"DataType":"Number","StringValue":"6"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key],
         '35de59a8-cdcc-4f55-9734-d73434058622' // taken from the mock response in sqs-send-message.xml
       );
     });
@@ -269,27 +294,35 @@ describe('Test AWS V3 with nock', () => {
           const spans = memoryExporter.getFinishedSpans();
           assert.strictEqual(spans.length, 1);
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.queue_name'],
+            spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key],
             'testing'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.account_id'],
+            spans[0].attributes[SemanticAttributes.AWS_SQS_ACCOUNT_ID.key],
             'dummy-account'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.request_entry.0'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.0`
+            ],
             '{"Id":"1000","MessageBody":"msg body for 1000"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.request_entry.1'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.1`
+            ],
             '{"Id":"1001","MessageBody":"msg body for 1001"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.result_entry.0'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.0`
+            ],
             '{"Id":"1000","MessageId":"57f7be0d-22a2-42f4-a9d9-3a136fbb219d","MD5OfMessageBody":"c1fa3d847ec219eeb524250e0498b614"}'
           );
           assert.strictEqual(
-            spans[0].attributes['aws.sqs.result_entry.1'],
+            spans[0].attributes[
+              `${SemanticAttributes.AWS_SQS_RESULT_ENTRY.key}.1`
+            ],
             '{"Id":"1001","MessageId":"fee3d5ba-32f1-48b9-a4bc-8a6ef6d4457c","MD5OfMessageBody":"3e83b83eef8cece2b95bfc8b9501da0a"}'
           );
           done();
@@ -318,53 +351,78 @@ describe('Test AWS V3 with nock', () => {
       await sqsClient.receiveMessage(params);
       const spans = memoryExporter.getFinishedSpans();
       assert.strictEqual(spans.length, 1);
-      assert.strictEqual(spans[0].attributes['aws.sqs.queue_name'], 'testing');
       assert.strictEqual(
-        spans[0].attributes['aws.account_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_QUEUE_NAME.key],
+        'testing'
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_ACCOUNT_ID.key],
         'dummy-account'
       );
-      assert.strictEqual(spans[0].attributes['aws.sqs.visibility_timeout'], 20);
-      assert.strictEqual(spans[0].attributes['aws.sqs.wait_time_seconds'], 0);
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.max_number_of_messages'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT.key],
+        20
+      );
+      assert.strictEqual(
+        spans[0].attributes[SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS.key],
+        0
+      );
+      assert.strictEqual(
+        spans[0].attributes[
+          SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key
+        ],
         10
       );
-      //We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
+      // We 'stringify' all our attributes, therefore the comparison is with '"abcd"'
       // with single quote + double quote
       assert.equal(
-        spans[0].attributes['aws.sqs.attribute_name.0'],
-        '"SentTimestamp"'
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.0`
+        ],
+        'SentTimestamp'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.attribute_name.1'],
-        '"SenderId"'
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.1`
+        ],
+        'SenderId'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.message_attribute_name.0'],
-        '"All"'
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.0`
+        ],
+        'All'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_body'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key],
         'Test in aws v3: This is the message body.'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.attribute.SentTimestamp'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.SentTimestamp`
+        ],
         '"1646865204230"'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.Author'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.Author`
+        ],
         '{"StringValue":"John Grisham","DataType":"String"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.Title'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.Title`
+        ],
         '{"StringValue":"The Whistler","DataType":"String"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_attribute.WeeksOn'],
+        spans[0].attributes[
+          `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.WeeksOn`
+        ],
         '{"StringValue":"6","DataType":"Number"}'
       );
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record.message_id'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key],
         '45bfb285-7169-40b0-9de8-c72052bdfe90'
       );
     });
@@ -389,10 +447,9 @@ describe('Test AWS V3 with nock', () => {
       };
       await sqsClient.receiveMessage(params);
       const spans = memoryExporter.getFinishedSpans();
-      console.log(spans);
       assert.strictEqual(spans.length, 1);
       assert.strictEqual(
-        spans[0].attributes['aws.sqs.record'],
+        spans[0].attributes[SemanticAttributes.AWS_SQS_AWS_SQS_RECORD.key],
         '[{"MessageId":"7fe3a2a6-c36a-420a-9830-edba7747f61a","ReceiptHandle":"AQEBo/8PlpWUiTd7Ks5xJRlbQ0yfHUgRkzSaYlsW9m4VDqIvJvGcr8ZOSuuQH3ChvDouB9xR1CdeSijDoRvoiePU7lx32+K/s1ZpascBwpdVO58R54Se6ak5pn3c/5giJ+8ZVMFqzRSCW0zw9dPGFvVhV16rltqpbffgVwboWmTkwiMvyon7aZUexuzqYwuqOVS21PfuROfEOSCvqcM5WMROoadIJsUgLbOyuV9O5yB4Wp8eva9ZPCNIvex6kj8duiSFjkW7hdlDR3FuGu7TQbLpCaFm3HnDmYD694FrP1WQQUhw6KjGvmSlPSTkkKkz6CWbHSw67RdMekRrzhodWWEj8Zls7rJXEtWxQDpU5bq2EMpbSpv7ofQ7dHOYI3w0iIhSJglr6TVva/0BNwZhuKSZAQ==","MD5OfBody":"2a6d3c908467b6ca7d6a820217913613","Body":"msg 3","Attributes":{"SentTimestamp":"1647343166484","SenderId":"AROA4I6NZPZGDWDPWYSYK:haddasb@cisco.com"}},{"MessageId":"ba865c18-8146-414c-99b0-b4ab1fc5c14e","ReceiptHandle":"AQEBtxF0wtdEgZ7qvzDbDJ+fxZwMJrwI/NVpzChuHTzBvGhjasTcX0HjS4poZYH2zvc+QiKWZ318pgkIt91ufkoXXkMhC3jv+nmV9nOS5hWJPUbeeN97NuTl1F1ArSYoMaVH8Q077iLsKuTmvB3ROALCMF9mvjBBkTWcby2nlShQZLGIG8G09VE19M5MRfHwntsjnclrK7mitcM+0HLq90zyiuDdGKjin9ozjP1Tx8768L+Xjx6YJXMGePy2qveW6tzI1Q5i44Jy0b4z1Bn08DpgPhcZs+V9SnU+AtGKxlDtkX5bq9H2huwlrMxMSgbXpM1pzyLieE1w2ScS+lLhyrZl1FFHGpl2pLHQ94TwbFCzISUup1j+QSQdaVQuoyt6pWLhtlxoqgHpI5cmuzTgEniHrQ==","MD5OfBody":"49957fc82eea4500cb738d507b094594","Body":"msg 2","Attributes":{"SentTimestamp":"1647342798650","SenderId":"AROA4I6NZPZGDWDPWYSYK:haddasb@cisco.com"}}]'
       );
     });

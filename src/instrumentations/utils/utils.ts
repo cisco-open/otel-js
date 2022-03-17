@@ -27,3 +27,13 @@ export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
     span.setAttribute(`${attrPrefix}.${key.toLocaleLowerCase()}`, value);
   }
 }
+/** Add an Array to Span as flattened labels */
+export function addFlattenedArr(
+  span: Span,
+  attrPrefix: string,
+  arr: Array<any>
+) {
+  for (const index in arr) {
+    span.setAttribute(`${attrPrefix}.${index}`, JSON.stringify(arr[index]));
+  }
+}

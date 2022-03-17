@@ -33,6 +33,7 @@ import {
   _grpcStatusCodeToOpenTelemetryStatusCode,
   _methodIsIgnored,
 } from '@opentelemetry/instrumentation-grpc/build/src/utils';
+import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { IgnoreMatcher } from '@opentelemetry/instrumentation-grpc/build/src/types';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
@@ -142,7 +143,12 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
       );
     }
 
-    PayloadHandler.setPayload(span, 'rpc.response.body', value, maxPayloadSize);
+    PayloadHandler.setPayload(
+      span,
+      CiscoSemanticAttributes.RPC_RESPONSE_BODY.key,
+      value,
+      maxPayloadSize
+    );
     span.end();
     return callback(err, value);
   };
