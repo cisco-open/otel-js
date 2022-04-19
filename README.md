@@ -8,21 +8,39 @@
    <img src=https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
 </a></p>
 
+#### TODO - Add screenshot
 An Alpha version
 
-This package provides a Cisco Launcher for OpenTelemetry Node.js
+This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.com/?utm_source=github).
+
+## Contents
+
+- [Installation](#installation)
+  - [Install Packages](#install-packages)
+  - [Library initialization](#library-initialization)
+    - [javascript](#javascript)
+    - [typescript](#typescript)
+  - [OpenTelemetry Collector Configuration](#opentelemetry-collector-configuration)
+  - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
+- [Frameworks](#frameworks)
+- [Supported Libraries](#supported-libraries)
+- [Configuration](#configuration)
+- [Getting Help](#getting-help)
+- [Opening Issues](#opening-issues)
+- [License](#license)
 
 ## Installation
 
-To install Cisco launcher for OpenTelemtry simply run:
+### Install packages
+To install Cisco OpenTelemetry Distribution simply run:
 
 ```sh
 npm install cisco-opentelemetry-node
 ```
 
-## Usage
-
-### javascript
+### Library initialization
+> Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
+#### javascript
 
 ```javascript
 const { ciscoTracing } = require('cisco-opentelemetry-node');
@@ -30,17 +48,12 @@ const { ciscoTracing } = require('cisco-opentelemetry-node');
 const userOptions = {
   serviceName: 'my-app-name',
   ciscoToken: 'cisco-token',
-  exporters: [
-    {
-      collectorEndpoint: 'grpc://localhost:4317',
-    },
-  ],
 };
 
 await ciscoTracing.init(userOptions);
 ```
 
-### typescript
+#### typescript
 
 ```javascript
 import { ciscoTracing, Options } from 'cisco-opentelemetry-node';
@@ -48,14 +61,65 @@ import { ciscoTracing, Options } from 'cisco-opentelemetry-node';
 const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
   ciscoToken: 'sometoken',
-  exporters: [
-    {
-      collectorEndpoint: 'http://localhost:4317',
-    },
-  ],
 };
 await ciscoTracing.init(userOptions);
 ```
+
+### OpenTelemetry Collector Configuration
+> By default, Cisco OpenTelemetry Distribution exports data to [Cisco Telescope's](https://console.telescope.com/?utm_source=github) external collector.
+> **Existing** OpenTelemetery Collector is supported, the following configuration can be applied 
+
+```yaml
+collector.yaml ...
+
+exporters:
+  otlphttp:
+    traces_endpoint: https://production.cisco-udp.com/trace-collector:80
+    headers:
+      authorization: <Your Telescope Token>
+    compression: gzip
+
+
+service:
+  pipelines:
+    traces:
+      exporters: [otlphttp]
+```
+
+### Existing OpenTelemetry Instrumentation
+> Notice: Only relevant if interested in streaming existing OpenTelemetry workloads. 
+> [Cisco Telescope](https://console.telescope.com/?utm_source=github). supports native OpenTelemetery traces.
+
+```typescript
+const traceProvider = new NodeTracerProvider({
+ resource: Resource(),
+});
+const collectorOptions = {
+ url: https://production.cisco-udp.com/trace-collector:80,
+ headers: {
+     authorization: <Your Telescope Token>,
+   },
+ ),
+};
+const httpExporter = new HTTPTraceExporter(collectorOptions);
+traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
+```
+
+## Frameworks
+> Cisco OpenTelemetry JS Distribution is extending Native OpenTelemetry, supported frameworks [available here](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations).
+
+## Supported Libraries
+> Cisco OpenTelemetry JS Distribution is extending Native OpenTelemetry, supported libraries [available here](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations).
+
+ Cisco OpenTelemetry JS Distribution provides out-of-the-box instrumentation (tracing) and advanced **payload collections** for many popular frameworks and libraries.
+
+| Library | Extended Support Version |
+|---------|--------------------------|
+| http    | Fully supported          |
+| aws-sdk | V2, V3                   |
+| amqplib | ^0.5.5                   |
+| grpc-js | ^1.X                     |
+| redis   | ^2.6.0, ^3.0.0           |
 
 ## Configuration
 
@@ -71,60 +135,38 @@ Advanced options can be configured as a parameter to the init() method:
 
 Exporter options
 
-| Parameter         | Env                     | Type                | Default                 | Description                                                                                                                                         |
-| ----------------- | ----------------------- | ------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `http://localhost:4317` | The address of the trace collector to send traces to                                                                                                |
-| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-grpc`             | The exporter type to use (Currently `otlp-grpc`, `otlp-http` are supported). Multiple exporter option available via init function see example below |
-| customHeaders     | None                    | Map<string, string> | {}                      | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                               |
+| Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                 |
+| ----------------- | ----------------------- | ------------------- |-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector:80` | The address of the trace collector to send traces to                                                                                        |
+| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` are supported). Multiple exporter option available via init function see example below |
+| customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                       |
 
-Multiple exporter can be initialize using ciscoTracing init function with the following options:
+## Getting Help
 
-```javascript
-const userOptions: Partial<Options> = {
-  collectorEndpoint: 'http://localhost:4317',
-  serviceName: 'my-app-name',
-  ciscoToken: 'sometoken',
-  exporters: [
-    {
-      collectorEndpoint: 'grpc://localhost:4317',
-      type: 'otlp-grpc',
-    },
-    {
-      collectorEndpoint: 'http://localhost:4317',
-      type: 'otlp-http',
-    },
-  ],
-};
-await ciscoTracing.init(userOptions);
-```
+If you have any issue around using the library or the product, please don't hesitate to:
 
-To test the launcher:
+* Use the [documentation](https://docs.telescope.com).
+* Use the help widget inside the product.
+* Open an issue in GitHub.
 
-1. verify you have docker installed and use the config.yaml in this repository to run the collector:
-   Note: you should supply full path in -v argument:
 
-   ```javascript
-   docker run --rm -p 13133:13133 -p 14250:14250 -p 14268:14268 \
-         -p 55678-55679:55678-55679 -p 4317:4317 -p 8888:8888 -p 9411:9411 \
-               -v "${HOME}/YOUR_PATH/otel-js/test/config.yaml":/otel-local-config.yaml \
-         --name otelcol otel/opentelemetry-collector \
-         --config otel-local-config.yaml;
-   ```
+## Opening Issues
 
-2. Build from the root:
+If you encounter a bug with the Cisco OpenTelemetry Distribution for JavaScript, we want to hear about it.
 
-   ```sh
-   npm run build
-   ```
+When opening a new issue, please provide as much information about the environment:
+* Library version, JavaScript runtime version, dependencies, etc.
+* Snippet of the usage.
+* A reproducible example can really help.
 
-3. Run from the root:
+The GitHub issues are intended for bug reports and feature requests.
+For help and questions about Epsagon, use the help widget inside the product.
 
-   ```sh
-   node lib/test/app.js
-   ```
+## License
 
-4. Go to <http://localhost:8081/> and verify you see "Hello World"
-5. Check the collector, you should see a trace there.
+Provided under the Apache 2.0. See LICENSE for details.
+
+Copyright 2022, Cisco
 
 [npm-url]: https://www.npmjs.com/package/cisco-opentelemetry-node
 [npm-image]: https://img.shields.io/github/v/release/epsagon/otel-js?include_prereleases&style=for-the-badge
