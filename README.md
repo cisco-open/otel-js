@@ -200,7 +200,7 @@ When opening a new issue, please provide as much information about the environme
 - A reproducible example can really help.
 
 The GitHub issues are intended for bug reports and feature requests.
-For help and questions about [Cisco Telescope](https://console.telescope.app/?utm_source=github),, use the help widget inside the product.
+For help and questions about [Cisco Telescope](https://console.telescope.app/?utm_source=github), use the help widget inside the product.
 
 ## License
 
