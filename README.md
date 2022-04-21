@@ -11,7 +11,7 @@
 #### TODO - Add screenshot
 An Alpha version
 
-This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.com/?utm_source=github).
+This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.app/?utm_source=github).
 
 ## Contents
 
@@ -66,7 +66,7 @@ await ciscoTracing.init(userOptions);
 ```
 
 ### OpenTelemetry Collector Configuration
-> By default, Cisco OpenTelemetry Distribution exports data to [Cisco Telescope's](https://console.telescope.com/?utm_source=github) external collector.
+> By default, Cisco OpenTelemetry Distribution exports data directly to [Cisco Telescope's](https://console.telescope.app/?utm_source=github) infrastructure backend.
 > **Existing** OpenTelemetery Collector is supported, the following configuration can be applied 
 
 ```yaml
@@ -88,7 +88,7 @@ service:
 
 ### Existing OpenTelemetry Instrumentation
 > Notice: Only relevant if interested in streaming existing OpenTelemetry workloads. 
-> [Cisco Telescope](https://console.telescope.com/?utm_source=github). supports native OpenTelemetery traces.
+> [Cisco Telescope](https://console.telescope.app/?utm_source=github). supports native OpenTelemetery traces.
 
 ```typescript
 const traceProvider = new NodeTracerProvider({
@@ -145,7 +145,7 @@ Exporter options
 
 If you have any issue around using the library or the product, please don't hesitate to:
 
-* Use the [documentation](https://docs.telescope.com).
+* Use the [documentation](https://docs.telescope.app).
 * Use the help widget inside the product.
 * Open an issue in GitHub.
 
@@ -160,7 +160,7 @@ When opening a new issue, please provide as much information about the environme
 * A reproducible example can really help.
 
 The GitHub issues are intended for bug reports and feature requests.
-For help and questions about Epsagon, use the help widget inside the product.
+For help and questions about [Cisco Telescope](https://console.telescope.app/?utm_source=github), use the help widget inside the product.
 
 ## License
 
