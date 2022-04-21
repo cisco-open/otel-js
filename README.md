@@ -5,12 +5,10 @@
 [![Coverage][coverage-image]][coverage-url]
 
 <p><a>
-   <img src=https://github.com/epsagon/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
+   <img src=https://github.com/cisco-open/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
 </a></p>
 
-#### TODO - Add screenshot
-
-An Alpha version
+![Trace](trace.png)
 
 This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.com/?utm_source=github).
 
@@ -101,11 +99,10 @@ const traceProvider = new NodeTracerProvider({
  resource: Resource(),
 });
 const collectorOptions = {
- url: https://production.cisco-udp.com/trace-collector:80,
+ url: "https://production.cisco-udp.com/trace-collector:80",
  headers: {
-     authorization: <Your Telescope Token>,
-   },
- ),
+     authorization: "<Your Telescope Token>",
+   }
 };
 const httpExporter = new HTTPTraceExporter(collectorOptions);
 traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
@@ -139,7 +136,6 @@ Advanced options can be configured as a parameter to the init() method:
 | serviceName     | OTEL_SERVICE_NAME      | string  | `application` | Application name that will be set for traces                      |
 | debug           | CISCO_DEBUG            | string  | `false`       | Debug logs                                                        |
 | payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `false`       | The number in bytes of the maximum payload to capture for request |
-| maxPayloadSize  | CISCO_MAX_PAYLOAD_SIZE | number  | `1024`        | The number in bytes of the maximum payload to capture for request |
 
 Exporter options
 
@@ -177,8 +173,8 @@ Provided under the Apache 2.0. See LICENSE for details.
 Copyright 2022, Cisco
 
 [npm-url]: https://www.npmjs.com/package/cisco-opentelemetry-node
-[npm-image]: https://img.shields.io/github/v/release/epsagon/otel-js?include_prereleases&style=for-the-badge
-[license-url]: https://github.com/https://github.com/epsagon/otel-js/blob/main/LICENSE
+[npm-image]: https://img.shields.io/github/v/release/cisco-open/otel-js?include_prereleases&style=for-the-badge
+[license-url]: https://github.com/https://github.com/cisco-open/otel-js/blob/main/LICENSE
 [license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=for-the-badge
-[coverage-url]: https://codecov.io/gh/epsagon/otel-js/branch/main/
-[coverage-image]: https://img.shields.io/codecov/c/github/epsagon/otel-js?style=for-the-badge
+[coverage-url]: https://codecov.io/gh/cisco-open/otel-js/branch/main/
+[coverage-image]: https://img.shields.io/codecov/c/github/cisco-open/otel-js?style=for-the-badge
