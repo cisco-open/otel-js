@@ -140,7 +140,6 @@ traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 
 | Platform Version | Supported |
 | ---------------- | --------- |
-| Node.JS `v16`    | ✅        |
 | Node.JS `v14`    | ✅        |
 | Node.JS `v12`    | ✅        |
 | Node.JS `v10`    | ✅        |
