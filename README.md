@@ -72,9 +72,12 @@ await ciscoTracing.init(userOptions);
 
 > By default, Cisco OpenTelemetry Distribution exports data to [Cisco Telescope's](https://console.telescope.com/?utm_source=github) external collector.
 > **Existing** OpenTelemetery Collector is supported, the following configuration can be applied
+
 #### Configure custom trace exporter
+
 > Cisco OpenTelemetry Distribution supports configure multiple custom exporters.
 > Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata(headers) injection:
+
 ```javascript
 const { ciscoTracing } = require('cisco-opentelemetry-node');
 
@@ -86,14 +89,15 @@ const userOptions = {
       type: 'otlp-grpc',
       collectorEndpoint: 'grpc://localhost:4317',
       customHeaders: {
-        'someheader-to-inject': 'header value'
-      }
+        'someheader-to-inject': 'header value',
+      },
     },
   ],
 };
 
 await ciscoTracing.init(userOptions);
 ```
+
 #### Configure custom OpenTelemetry collector to export trace data to [Cisco Telescope's](https://console.telescope.com/?utm_source=github) external collector.
 
 ```yaml
@@ -120,25 +124,26 @@ service:
 
 ```typescript
 const traceProvider = new NodeTracerProvider({
- resource: Resource(),
+  resource: Resource(),
 });
 const collectorOptions = {
- url: "https://production.cisco-udp.com/trace-collector:80",
- headers: {
-     authorization: "<Your Telescope Token>",
-   }
+  url: 'https://production.cisco-udp.com/trace-collector:80',
+  headers: {
+    authorization: '<Your Telescope Token>',
+  },
 };
 const httpExporter = new HTTPTraceExporter(collectorOptions);
 traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 ```
 
 ## Supported Runtimes
-| Platform Version | Supported                                       |
-|------------------|-------------------------------------------------|
-| Node.JS `v16`    | ✅                                               |
-| Node.JS `v14`    | ✅                                               |
-| Node.JS `v12`    | ✅                                               |
-| Node.JS `v10`    | ✅                                               |
+
+| Platform Version | Supported |
+| ---------------- | --------- |
+| Node.JS `v16`    | ✅        |
+| Node.JS `v14`    | ✅        |
+| Node.JS `v12`    | ✅        |
+| Node.JS `v10`    | ✅        |
 
 ## Frameworks
 
