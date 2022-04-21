@@ -9,6 +9,7 @@
 </a></p>
 
 #### TODO - Add screenshot
+
 An Alpha version
 
 This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.com/?utm_source=github).
@@ -32,6 +33,7 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
 ## Installation
 
 ### Install packages
+
 To install Cisco OpenTelemetry Distribution simply run:
 
 ```sh
@@ -39,7 +41,9 @@ npm install cisco-opentelemetry-node
 ```
 
 ### Library initialization
+
 > Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
+
 #### javascript
 
 ```javascript
@@ -66,8 +70,9 @@ await ciscoTracing.init(userOptions);
 ```
 
 ### OpenTelemetry Collector Configuration
+
 > By default, Cisco OpenTelemetry Distribution exports data to [Cisco Telescope's](https://console.telescope.com/?utm_source=github) external collector.
-> **Existing** OpenTelemetery Collector is supported, the following configuration can be applied 
+> **Existing** OpenTelemetery Collector is supported, the following configuration can be applied
 
 ```yaml
 collector.yaml ...
@@ -87,7 +92,8 @@ service:
 ```
 
 ### Existing OpenTelemetry Instrumentation
-> Notice: Only relevant if interested in streaming existing OpenTelemetry workloads. 
+
+> Notice: Only relevant if interested in streaming existing OpenTelemetry workloads.
 > [Cisco Telescope](https://console.telescope.com/?utm_source=github). supports native OpenTelemetery traces.
 
 ```typescript
@@ -106,15 +112,17 @@ traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 ```
 
 ## Frameworks
+
 > Cisco OpenTelemetry JS Distribution is extending Native OpenTelemetry, supported frameworks [available here](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations).
 
 ## Supported Libraries
+
 > Cisco OpenTelemetry JS Distribution is extending Native OpenTelemetry, supported libraries [available here](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations).
 
- Cisco OpenTelemetry JS Distribution provides out-of-the-box instrumentation (tracing) and advanced **payload collections** for many popular frameworks and libraries.
+Cisco OpenTelemetry JS Distribution provides out-of-the-box instrumentation (tracing) and advanced **payload collections** for many popular frameworks and libraries.
 
 | Library | Extended Support Version |
-|---------|--------------------------|
+| ------- | ------------------------ |
 | http    | Fully supported          |
 | aws-sdk | V2, V3                   |
 | amqplib | ^0.5.5                   |
@@ -136,7 +144,7 @@ Advanced options can be configured as a parameter to the init() method:
 Exporter options
 
 | Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                 |
-| ----------------- | ----------------------- | ------------------- |-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ----------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector:80` | The address of the trace collector to send traces to                                                                                        |
 | type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` are supported). Multiple exporter option available via init function see example below |
 | customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                       |
@@ -145,19 +153,19 @@ Exporter options
 
 If you have any issue around using the library or the product, please don't hesitate to:
 
-* Use the [documentation](https://docs.telescope.com).
-* Use the help widget inside the product.
-* Open an issue in GitHub.
-
+- Use the [documentation](https://docs.telescope.com).
+- Use the help widget inside the product.
+- Open an issue in GitHub.
 
 ## Opening Issues
 
 If you encounter a bug with the Cisco OpenTelemetry Distribution for JavaScript, we want to hear about it.
 
 When opening a new issue, please provide as much information about the environment:
-* Library version, JavaScript runtime version, dependencies, etc.
-* Snippet of the usage.
-* A reproducible example can really help.
+
+- Library version, JavaScript runtime version, dependencies, etc.
+- Snippet of the usage.
+- A reproducible example can really help.
 
 The GitHub issues are intended for bug reports and feature requests.
 For help and questions about Epsagon, use the help widget inside the product.
