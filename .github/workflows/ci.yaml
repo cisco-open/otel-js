@@ -24,8 +24,6 @@
         matrix:
           node: ["10", "12", "14", "16"]
       runs-on: ubuntu-latest
-      container:
-        image: ${{ matrix.container }}
       services:
         rabbitmq:
           image: rabbitmq:3
