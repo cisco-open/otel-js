@@ -22,7 +22,7 @@
       strategy:
         fail-fast: false
         matrix:
-          container: [ "node:10", "node:12", "node:14", "node:16" ]
+          node: ["10", "12", "14", "16"]
       runs-on: ubuntu-latest
       container:
         image: ${{ matrix.container }}
@@ -54,13 +54,16 @@
       steps:
         - name: Checkout
           uses: actions/checkout@v1
+        - uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node }}
         - name: Cache Dependencies
-          uses: actions/cache@v2
+          uses: actions/cache@v3
           with:
             path: |
               node_modules
               package-lock.json
-            key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
+            key: ${{ runner.os }}-${{ matrix.node }}-${{ hashFiles('**/package.json') }}
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
         - name: build
