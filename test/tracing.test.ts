@@ -18,11 +18,12 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import { OTLPTraceExporter as OTLPGrpcTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { OTLPTraceExporter as OTLPHttpTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { diag } from '@opentelemetry/api';
 import { ciscoTracing, Options } from '../src';
 import * as utils from './utils';
 import { ExporterOptions } from '../src/options';
+import { Consts } from 'cisco-opentelemetry-specifications';
 
 describe('Tracing test', () => {
   let addSpanProcessorMock;
@@ -53,13 +54,17 @@ describe('Tracing test', () => {
 
     assert(processor instanceof BatchSpanProcessor);
     const exporter = processor['_exporter'];
-    assert(exporter instanceof OTLPGrpcTraceExporter);
+    assert(exporter instanceof OTLPHttpTraceExporter);
 
     assert.deepEqual(exporter.url, exportURL);
 
     if (accessToken) {
       // gRPC not yet supported in ingest
-      assert.equal(exporter?.metadata?.get('authorization'), accessToken);
+      assert.equal(
+        // eslint-disable-next-line no-prototype-builtins
+        exporter?.headers?.[Consts.TOKEN_HEADER_KEY],
+        accessToken
+      );
     }
   }
 
@@ -68,14 +73,13 @@ describe('Tracing test', () => {
       serviceName: 'my-app-name',
       ciscoToken: 'cisco-token',
       debug: false,
-      exporters: [
-        <ExporterOptions>{
-          collectorEndpoint: 'http://localhost:4317',
-        },
-      ],
     };
     await ciscoTracing.init(userOptions);
-    assertTracingPipeline('localhost:4317', 'my-app-name', 'cisco-token');
+    assertTracingPipeline(
+      Consts.DEFAULT_COLLECTOR_ENDPOINT,
+      'my-app-name',
+      'cisco-token'
+    );
   });
 
   it('setups tracing with defaults', async () => {

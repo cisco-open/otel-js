@@ -22,6 +22,7 @@ import * as utils from './utils';
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as api from '@opentelemetry/api';
+import { Consts } from 'cisco-opentelemetry-specifications';
 
 describe('Options tests', () => {
   let logger;
@@ -51,15 +52,15 @@ describe('Options tests', () => {
       });
       assert.ok(options);
       assert.deepStrictEqual(options, <Options>{
-        debug: false,
+        debug: Consts.DEFAULT_CISCO_DEBUG,
         ciscoToken: defaultToken,
-        serviceName: 'application',
-        maxPayloadSize: 1024,
-        payloadsEnabled: false,
+        serviceName: Consts.DEFAULT_SERVICE_NAME,
+        maxPayloadSize: Consts.DEFAULT_MAX_PAYLOAD_SIZE,
+        payloadsEnabled: Consts.DEFAULT_PAYLOADS_ENABLED,
         exporters: [
           <ExporterOptions>{
-            type: 'otlp-grpc',
-            collectorEndpoint: 'grpc://localhost:4317',
+            type: Consts.DEFAULT_EXPORTER_TYPE,
+            collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
           },
         ],
       });

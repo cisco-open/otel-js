@@ -15,7 +15,6 @@
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../../options';
-// TODO: we need to separate the user Options from our using options
 import {
   AmqplibConsumerCustomAttributeFunction,
   AmqplibInstrumentationConfig,

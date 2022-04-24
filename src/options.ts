@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { diag } from '@opentelemetry/api';
-
+import { Consts } from 'cisco-opentelemetry-specifications';
 export interface Options {
   serviceName: string;
   ciscoToken: string;
@@ -39,7 +39,8 @@ export interface ExporterOptions {
 export function _configDefaultOptions(
   options: Partial<Options>
 ): Options | undefined {
-  options.ciscoToken = options.ciscoToken || process.env.CISCO_TOKEN || '';
+  options.ciscoToken =
+    options.ciscoToken || process.env[Consts.CISCO_TOKEN_ENV] || '';
 
   if (!options.ciscoToken) {
     diag.error('Cisco token must be passed into initialization');
@@ -47,15 +48,27 @@ export function _configDefaultOptions(
   }
 
   options.serviceName =
-    options.serviceName || process.env.OTEL_SERVICE_NAME || 'application';
+    options.serviceName ||
+    process.env.OTEL_SERVICE_NAME ||
+    Consts.DEFAULT_SERVICE_NAME;
 
-  options.debug = options.debug || getEnvBoolean('CISCO_DEBUG', false);
+  options.debug =
+    options.debug ||
+    getEnvBoolean(Consts.CISCO_DEBUG_ENV, Consts.DEFAULT_CISCO_DEBUG);
 
   options.maxPayloadSize =
-    options.maxPayloadSize || getEnvNumber('CISCO_MAX_PAYLOAD_SIZE', 1024);
+    options.maxPayloadSize ||
+    getEnvNumber(
+      Consts.CISCO_MAX_PAYLOAD_SIZE_ENV,
+      Consts.DEFAULT_MAX_PAYLOAD_SIZE
+    );
 
   options.payloadsEnabled =
-    options.payloadsEnabled || getEnvBoolean('CISCO_PAYLOADS_ENABLED', false);
+    options.payloadsEnabled ||
+    getEnvBoolean(
+      Consts.CISCO_PAYLOADS_ENABLED_ENV,
+      Consts.DEFAULT_PAYLOADS_ENABLED
+    );
 
   options.exporters =
     options.exporters &&
@@ -64,9 +77,12 @@ export function _configDefaultOptions(
       ? options.exporters
       : [
           <ExporterOptions>{
-            type: process.env.OTEL_EXPORTER_TYPE || 'otlp-grpc',
+            type:
+              process.env[Consts.OTEL_EXPORTER_TYPE_ENV] ||
+              Consts.DEFAULT_EXPORTER_TYPE,
             collectorEndpoint:
-              process.env.OTEL_COLLECTOR_ENDPOINT || 'grpc://localhost:4317',
+              process.env[Consts.OTEL_COLLECTOR_ENDPOINT] ||
+              Consts.DEFAULT_COLLECTOR_ENDPOINT,
           },
         ];
 
