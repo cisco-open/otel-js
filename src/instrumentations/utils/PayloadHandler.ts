@@ -16,6 +16,7 @@
 
 import { Options } from '../../options';
 import { diag, Span } from '@opentelemetry/api';
+import { addAttribute } from './utils';
 
 export class PayloadHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
@@ -68,7 +69,7 @@ export class PayloadHandler {
 
   private static addPayloadToSpan(span: Span, attrPrefix: string, chunk: any) {
     try {
-      span.setAttribute(attrPrefix, chunk.toString());
+      addAttribute(span, attrPrefix, chunk.toString());
     } catch (e) {
       diag.debug('Failed to parse the payload data');
       return;

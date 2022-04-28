@@ -53,7 +53,7 @@
     "@opentelemetry/sdk-trace-node": "~1.0.1",
     "opentelemetry-instrumentation-amqplib": "^0.27.0",
     "@opentelemetry/semantic-conventions": "^1.0.1",
-    "cisco-opentelemetry-specifications": "0.0.9",
+    "cisco-opentelemetry-specifications": "0.0.13",
     "express": "^4.17.2",
     "nyc": "^15.1.0"
   },

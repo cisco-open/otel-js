@@ -35,6 +35,8 @@ import { Channel, ConfirmChannel } from 'amqplib/callback_api';
 import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
 import { assertExpectedObj, testOptions } from '../../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addAttribute } from '../../../src/instrumentations/utils/utils';
+import { setInnerOptions } from '../../../src/inner-options';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
@@ -99,6 +101,7 @@ describe('amqplib instrumentation callback model', () => {
   before(async () => {
     if (shouldTest) {
       configureAmqplibInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
       conn = await amqp.connect(url);
     }
   });
@@ -152,37 +155,33 @@ describe('amqplib instrumentation callback model', () => {
       assertExpectedObj(
         publishSpan,
         MESSAGE_HEADERS,
-        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key
+        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER
       );
       assertExpectedObj(
         consumeSpan,
         MESSAGE_HEADERS,
-        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER.key
+        SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER
       );
 
       assert.strictEqual(
         publishSpan.attributes[
-          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE
         ],
         MESSAGE_TO_SEND.length
       );
       assert.strictEqual(
         consumeSpan.attributes[
-          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE.key
+          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE
         ],
         MESSAGE_TO_SEND.length
       );
 
       assert.strictEqual(
-        publishSpan.attributes[
-          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key
-        ],
+        publishSpan.attributes[SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD],
         MESSAGE_TO_SEND
       );
       assert.strictEqual(
-        consumeSpan.attributes[
-          SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD.key
-        ],
+        consumeSpan.attributes[SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD],
         MESSAGE_TO_SEND
       );
     });
@@ -191,23 +190,31 @@ describe('amqplib instrumentation callback model', () => {
       afterEach(() => {
         instrumentation.setConfig({});
         configureAmqplibInstrumentation(instrumentation, testOptions);
+        setInnerOptions({ payloadsEnabled: true });
       });
 
       it('should see and not override user publishHook, consumeHook', async () => {
         instrumentation.setConfig({
           publishHook: (span, publishParams) => {
-            span.setAttribute('user.attribute', 'hey! publish! dont change me');
-            span.setAttribute(
+            addAttribute(
+              span,
+              'user.attribute',
+              'hey! publish! dont change me'
+            );
+            addAttribute(
+              span,
               'messaging.message.header.missed-header',
               'header-u-missed'
             );
           },
           consumeHook: (span, msg) => {
-            span.setAttribute(
+            addAttribute(
+              span,
               'user.attribute',
               'hey! consumer! dont change me'
             );
-            span.setAttribute(
+            addAttribute(
+              span,
               'messaging.message.header.missed-header',
               'header-u-missed'
             );
@@ -215,6 +222,7 @@ describe('amqplib instrumentation callback model', () => {
         });
 
         configureAmqplibInstrumentation(instrumentation, testOptions);
+        setInnerOptions({ payloadsEnabled: true });
 
         const hadSpaceInBuffer = channel.sendToQueue(
           QUEUE_NAME,

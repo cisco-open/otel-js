@@ -20,7 +20,11 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { addFlattenedArr, addFlattenedObj } from '../../utils/utils';
+import {
+  addAttribute,
+  addFlattenedArr,
+  addFlattenedObj,
+} from '../../utils/utils';
 
 export class SQSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
@@ -36,59 +40,62 @@ export class SQSEventCreator implements AwsEventCreator {
     }
     // assuming this structure for QueueUrl:
     // https://sqs.<region>.amazonaws.com/<accountId>/<queueName>
-    span.setAttribute(SemanticAttributes.AWS_SQS_QUEUE_NAME.key, splited.pop());
-    span.setAttribute(SemanticAttributes.AWS_SQS_ACCOUNT_ID.key, splited.pop());
+    addAttribute(span, SemanticAttributes.AWS_SQS_QUEUE_NAME, splited.pop());
+    addAttribute(span, SemanticAttributes.AWS_SQS_ACCOUNT_ID, splited.pop());
 
     switch (requestInfo.request.commandName) {
       case 'SendMessage': {
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY,
           cmdInput.MessageBody
         );
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_RECORD_DELAY_SECONDS,
           cmdInput.DelaySeconds
         );
-        for (const [key, value] of Object.entries(cmdInput.MessageAttributes)) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE.key}.${key}`,
-            JSON.stringify(value)
-          );
-        }
+        addFlattenedArr(
+          span,
+          SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE,
+          cmdInput.MessageAttributes
+        );
         break;
       }
       case 'SendMessageBatch': {
-        for (const [key, value] of Object.entries(cmdInput.Entries)) {
-          span.setAttribute(
-            `${SemanticAttributes.AWS_SQS_REQUEST_ENTRY.key}.${key}`,
-            JSON.stringify(value)
-          );
-        }
+        addFlattenedArr(
+          span,
+          SemanticAttributes.AWS_SQS_REQUEST_ENTRY,
+          cmdInput.Entries
+        );
         break;
       }
       case 'ReceiveMessage':
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_VISIBILITY_TIMEOUT,
           cmdInput.VisibilityTimeout
         );
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_WAIT_TIME_SECONDS,
           cmdInput.WaitTimeSeconds
         );
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_MAX_NUMBER_OF_MESSAGES,
           cmdInput.MaxNumberOfMessages
         );
 
         addFlattenedObj(
           span,
-          SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key,
+          SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME,
           cmdInput.AttributeNames
         );
 
         addFlattenedObj(
           span,
-          SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key,
+          SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME,
           cmdInput.MessageAttributeNames
         );
         break;
@@ -100,21 +107,22 @@ export class SQSEventCreator implements AwsEventCreator {
   ): void {
     switch (responseInfo.response.request.commandName) {
       case 'SendMessage':
-        span.setAttribute(
-          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key,
+        addAttribute(
+          span,
+          SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID,
           responseInfo.response.data?.MessageId
         );
         break;
       case 'SendMessageBatch': {
         addFlattenedArr(
           span,
-          SemanticAttributes.AWS_SQS_RESULT_ENTRY.key,
+          SemanticAttributes.AWS_SQS_RESULT_ENTRY,
           responseInfo.response.data?.Successful
         );
 
         addFlattenedArr(
           span,
-          SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY.key,
+          SemanticAttributes.AWS_SQS_RESULT_ERROR_ENTRY,
           responseInfo.response.data?.Failed
         );
         break;
@@ -127,32 +135,37 @@ export class SQSEventCreator implements AwsEventCreator {
           return;
         }
         if (data.Messages.length == 1) {
-          span.setAttribute(
-            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY.key,
+          addAttribute(
+            span,
+            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_BODY,
             data.Messages[0].Body
           );
           const attrs = data.Messages[0].Attributes;
           for (const [key, value] of Object.entries(attrs)) {
-            span.setAttribute(
-              `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME.key}.${key}`,
+            addAttribute(
+              span,
+              `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME}.${key}`,
               JSON.stringify(value)
             );
           }
           const msgAttrs = data.Messages[0].MessageAttributes;
           for (const [key, value] of Object.entries(msgAttrs)) {
-            span.setAttribute(
-              `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME.key}.${key}`,
+            addAttribute(
+              span,
+              `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME}.${key}`,
               JSON.stringify(value)
             );
           }
-          span.setAttribute(
-            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID.key,
+          addAttribute(
+            span,
+            SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID,
             data.Messages[0].MessageId
           );
         }
         if (data.Messages.length > 1) {
-          span.setAttribute(
-            SemanticAttributes.AWS_SQS_AWS_SQS_RECORD.key,
+          addAttribute(
+            span,
+            SemanticAttributes.AWS_SQS_AWS_SQS_RECORD,
             JSON.stringify(data.Messages)
           );
         }

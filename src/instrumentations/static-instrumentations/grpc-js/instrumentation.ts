@@ -53,7 +53,7 @@ import {
 import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { VERSION } from '@opentelemetry/instrumentation-grpc/build/src/version';
-import { addFlattenedObj } from '../../utils/utils';
+import { addAttributes, addFlattenedObj } from '../../utils/utils';
 import { PayloadHandler } from '../../utils/PayloadHandler';
 import { ServerUnaryCallImpl } from '@grpc/grpc-js/build/src/server-call';
 
@@ -193,21 +193,23 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
                   keys: carrier => Object.keys(carrier.getMap()),
                 }),
                 () => {
-                  const span = instrumentation.tracer
-                    .startSpan(spanName, spanOptions)
-                    .setAttributes({
-                      [AttributeNames.GRPC_KIND]: spanOptions.kind,
-                    });
+                  const span = instrumentation.tracer.startSpan(
+                    spanName,
+                    spanOptions
+                  );
+                  addAttributes(span, {
+                    [AttributeNames.GRPC_KIND]: spanOptions.kind,
+                  });
 
                   addFlattenedObj(
                     span,
-                    CiscoSemanticAttributes.RPC_REQUEST_METADATA.key,
+                    CiscoSemanticAttributes.RPC_REQUEST_METADATA,
                     call.metadata.getMap()
                   );
 
                   PayloadHandler.setPayload(
                     span,
-                    CiscoSemanticAttributes.RPC_REQUEST_BODY.key,
+                    CiscoSemanticAttributes.RPC_REQUEST_BODY,
                     (call as ServerUnaryCallImpl<RequestType, ResponseType>)
                       .request,
                     (instrumentation._config as GrpcInstrumentationConfig)
@@ -310,12 +312,12 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
         });
         addFlattenedObj(
           span,
-          CiscoSemanticAttributes.RPC_REQUEST_METADATA.key,
+          CiscoSemanticAttributes.RPC_REQUEST_METADATA,
           metadata.getMap()
         );
         PayloadHandler.setPayload(
           span,
-          CiscoSemanticAttributes.RPC_REQUEST_BODY.key,
+          CiscoSemanticAttributes.RPC_REQUEST_BODY,
           args[0],
           (instrumentation._config as GrpcInstrumentationConfig).maxPayloadSize
         );

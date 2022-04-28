@@ -39,7 +39,11 @@ import { EventEmitter } from 'events';
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { addFlattenedObj } from '../../utils/utils';
+import {
+  addAttribute,
+  addAttributes,
+  addFlattenedObj,
+} from '../../utils/utils';
 import { PayloadHandler } from '../../utils/PayloadHandler';
 
 /**
@@ -97,25 +101,27 @@ export function makeGrpcClientRemoteCall(
     ) => {
       PayloadHandler.setPayload(
         span,
-        CiscoSemanticAttributes.RPC_RESPONSE_BODY.key,
+        CiscoSemanticAttributes.RPC_RESPONSE_BODY,
         res,
         maxPayloadSize
       );
       if (err) {
         if (err.code) {
           span.setStatus(_grpcStatusCodeToSpanStatus(err.code));
-          span.setAttribute(
+          addAttribute(
+            span,
             SemanticAttributes.RPC_GRPC_STATUS_CODE,
             err.code.toString()
           );
         }
-        span.setAttributes({
+        addAttributes(span, {
           [AttributeNames.GRPC_ERROR_NAME]: err.name,
           [AttributeNames.GRPC_ERROR_MESSAGE]: err.message,
         });
       } else {
         span.setStatus({ code: SpanStatusCode.UNSET });
-        span.setAttribute(
+        addAttribute(
+          span,
           SemanticAttributes.RPC_GRPC_STATUS_CODE,
           SpanStatusCode.UNSET.toString()
         );
@@ -141,7 +147,7 @@ export function makeGrpcClientRemoteCall(
       }
     }
 
-    span.setAttributes({
+    addAttributes(span, {
       [AttributeNames.GRPC_METHOD]: original.path,
       [AttributeNames.GRPC_KIND]: SpanKind.CLIENT,
     });
@@ -152,7 +158,7 @@ export function makeGrpcClientRemoteCall(
     call.on('metadata', metadata => {
       addFlattenedObj(
         span,
-        CiscoSemanticAttributes.RPC_RESPONSE_METADATA.key,
+        CiscoSemanticAttributes.RPC_RESPONSE_METADATA,
         metadata.getMap()
       );
     });
@@ -179,7 +185,7 @@ export function makeGrpcClientRemoteCall(
           code: _grpcStatusCodeToOpenTelemetryStatusCode(err.code),
           message: err.message,
         });
-        span.setAttributes({
+        addAttributes(span, {
           [AttributeNames.GRPC_ERROR_NAME]: err.name,
           [AttributeNames.GRPC_ERROR_MESSAGE]: err.message,
         });

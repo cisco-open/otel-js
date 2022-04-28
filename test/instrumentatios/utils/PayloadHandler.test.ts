@@ -27,6 +27,7 @@ import * as assert from 'assert';
 import { _configDefaultOptions } from '../../../src/options';
 import { testOptions } from '../../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { setInnerOptions } from '../../../src/inner-options';
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');
@@ -34,11 +35,12 @@ const memoryExporter = new InMemorySpanExporter();
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 describe('PayloadHandler tests', () => {
-  const ATTR_PREFIX = SemanticAttributes.HTTP_REQUEST_BODY.key;
+  const ATTR_PREFIX = SemanticAttributes.HTTP_REQUEST_BODY;
   let logger;
 
   beforeEach(() => {
     memoryExporter.reset();
+    setInnerOptions({ payloadsEnabled: true });
     logger = {
       debug: sinon.spy(),
     };
@@ -143,6 +145,7 @@ describe('PayloadHandler tests', () => {
         collectorEndpoint: 'http://localhost:4317',
         serviceName: 'application',
         maxPayloadSize: 10,
+        payloadsEnabled: true,
       };
 
       const options = <Options>_configDefaultOptions(userOptions);

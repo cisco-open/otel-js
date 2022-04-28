@@ -38,6 +38,7 @@ import { IgnoreMatcher } from '@opentelemetry/instrumentation-grpc/build/src/typ
 import { AttributeNames } from '@opentelemetry/instrumentation-grpc/build/src/enums/AttributeNames';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import { PayloadHandler } from '../../utils/PayloadHandler';
+import { addAttribute, addAttributes } from '../../utils/utils';
 
 export const CALL_SPAN_ENDED = Symbol('opentelemetry call span ended');
 
@@ -73,7 +74,8 @@ function serverStreamAndBidiHandler<RequestType, ResponseType>(
     span.setStatus({
       code: SpanStatusCode.UNSET,
     });
-    span.setAttribute(
+    addAttribute(
+      span,
       SemanticAttributes.RPC_GRPC_STATUS_CODE,
       SpanStatusCode.OK.toString()
     );
@@ -93,7 +95,7 @@ function serverStreamAndBidiHandler<RequestType, ResponseType>(
       code: _grpcStatusCodeToOpenTelemetryStatusCode(err.code),
       message: err.message,
     });
-    span.setAttributes({
+    addAttributes(span, {
       [AttributeNames.GRPC_ERROR_NAME]: err.name,
       [AttributeNames.GRPC_ERROR_MESSAGE]: err.message,
     });
@@ -126,18 +128,20 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
           code: _grpcStatusCodeToOpenTelemetryStatusCode(err.code),
           message: err.message,
         });
-        span.setAttribute(
+        addAttribute(
+          span,
           SemanticAttributes.RPC_GRPC_STATUS_CODE,
           err.code.toString()
         );
       }
-      span.setAttributes({
+      addAttributes(span, {
         [AttributeNames.GRPC_ERROR_NAME]: err.name,
         [AttributeNames.GRPC_ERROR_MESSAGE]: err.message,
       });
     } else {
       span.setStatus({ code: SpanStatusCode.UNSET });
-      span.setAttribute(
+      addAttribute(
+        span,
         SemanticAttributes.RPC_GRPC_STATUS_CODE,
         SpanStatusCode.OK.toString()
       );
@@ -145,7 +149,7 @@ function clientStreamAndUnaryHandler<RequestType, ResponseType>(
 
     PayloadHandler.setPayload(
       span,
-      CiscoSemanticAttributes.RPC_RESPONSE_BODY.key,
+      CiscoSemanticAttributes.RPC_RESPONSE_BODY,
       value,
       maxPayloadSize
     );
