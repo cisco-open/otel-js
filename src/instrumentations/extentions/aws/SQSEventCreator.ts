@@ -141,21 +141,17 @@ export class SQSEventCreator implements AwsEventCreator {
             data.Messages[0].Body
           );
           const attrs = data.Messages[0].Attributes;
-          for (const [key, value] of Object.entries(attrs)) {
-            addAttribute(
-              span,
-              `${SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME}.${key}`,
-              JSON.stringify(value)
-            );
-          }
+          addFlattenedArr(
+            span,
+            SemanticAttributes.AWS_SQS_ATTRIBUTE_NAME,
+            attrs
+          );
           const msgAttrs = data.Messages[0].MessageAttributes;
-          for (const [key, value] of Object.entries(msgAttrs)) {
-            addAttribute(
-              span,
-              `${SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME}.${key}`,
-              JSON.stringify(value)
-            );
-          }
+          addFlattenedArr(
+            span,
+            SemanticAttributes.AWS_SQS_MESSAGE_ATTRIBUTE_NAME,
+            msgAttrs
+          );
           addAttribute(
             span,
             SemanticAttributes.AWS_SQS_RECORD_MESSAGE_ID,
