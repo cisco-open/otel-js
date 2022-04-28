@@ -16,7 +16,7 @@
 
 // IN ORDER TO RUN THIS UNIT_TEST, RUN 'npm run redis'
 
-import { Span, SpanAttributes } from '@opentelemetry/api';
+import { Span } from '@opentelemetry/api';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import {
   InMemorySpanExporter,

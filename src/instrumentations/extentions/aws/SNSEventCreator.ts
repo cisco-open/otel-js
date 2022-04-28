@@ -20,11 +20,7 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import {
-  addAttribute,
-  addFlattenedArr,
-  addFlattenedObj,
-} from '../../utils/utils';
+import { addAttribute, addFlattenedArr } from '../../utils/utils';
 
 export class SNSEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
