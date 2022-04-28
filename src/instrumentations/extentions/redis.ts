@@ -24,6 +24,7 @@ import {
   RedisResponseCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-redis/build/src/types';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addAttribute } from '../utils/utils';
 
 export function configureRedisInstrumentation(
   instrumentation: Instrumentation,
@@ -73,12 +74,14 @@ function createRedisResponseHook(
     if (!isSpanContextValid(spanContext)) {
       return;
     }
-    span.setAttribute(
-      SemanticAttributes.DB_REDIS_ARGUMENTS.key,
+    addAttribute(
+      span,
+      SemanticAttributes.DB_REDIS_ARGUMENTS,
       JSON.stringify(cmdArgs)
     );
-    span.setAttribute(
-      SemanticAttributes.DB_REDIS_RESPONSE.key,
+    addAttribute(
+      span,
+      SemanticAttributes.DB_REDIS_RESPONSE,
       JSON.stringify(responseInfo)
     );
   };

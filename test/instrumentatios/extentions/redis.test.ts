@@ -26,6 +26,7 @@ import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { configureRedisInstrumentation } from '../../../src/instrumentations/extentions/redis';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
+import { setInnerOptions } from '../../../src/inner-options';
 
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
@@ -33,6 +34,7 @@ instrumentation.enable();
 import * as redisTypes from 'redis';
 import { testOptions } from '../../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addAttribute } from '../../../src/instrumentations/utils/utils';
 
 const memoryExporter = new InMemorySpanExporter();
 
@@ -53,7 +55,7 @@ describe('Test redis', () => {
   const RUN_REDIS_TESTS = process.env.RUN_REDIS_TESTS as string;
   let shouldTest = true;
   if (!RUN_REDIS_TESTS) {
-    console.log('Skipping test-redis. Run Redis to test');
+    console.log('Skipping test-redis. Run "export RUN_REDIS_TESTS" to test');
     shouldTest = false;
   }
 
@@ -107,11 +109,12 @@ describe('Test redis', () => {
         _cmdArgs: string[],
         response: unknown
       ) => {
-        span.setAttribute('someFieldName', 'someData');
+        addAttribute(span, 'someFieldName', 'someData');
       };
       instrumentation.disable();
       instrumentation.setConfig({ responseHook });
       configureRedisInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
       instrumentation.enable();
 
       client.hset(hash, key, value, () => {
@@ -120,7 +123,7 @@ describe('Test redis', () => {
         const firstHookAtt = spans[0].attributes['someFieldName'];
         assert.strictEqual(firstHookAtt, 'someData');
         const secondHookAtt =
-          spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+          spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE];
         assert.strictEqual(secondHookAtt, '1');
         done();
       });
@@ -131,6 +134,7 @@ describe('Test redis', () => {
     before(() => {
       instrumentation.disable();
       configureRedisInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
       instrumentation.enable();
     });
 
@@ -200,11 +204,10 @@ describe('Test redis', () => {
         operation.method(() => {
           const spans = memoryExporter.getFinishedSpans();
           assert.strictEqual(spans.length, 1);
-          const res =
-            spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+          const res = spans[0].attributes[SemanticAttributes.DB_REDIS_RESPONSE];
           assert.strictEqual(res, operation.responseShouldBe);
           const arg = spans[0].attributes[
-            SemanticAttributes.DB_REDIS_ARGUMENTS.key
+            SemanticAttributes.DB_REDIS_ARGUMENTS
           ] as string;
           assert.deepEqual(JSON.parse(arg), operation.args);
           done();
@@ -212,19 +215,43 @@ describe('Test redis', () => {
       });
     });
 
-    it(`multi & exec commands: should use multi eo execute the command hset and return ${value}`, done => {
+    it(`multi & exec commands: should use multi to execute the command hset and return ${value}`, done => {
       const multi = client.multi();
       multi.hset(hash, key, value);
       multi.exec(() => {
         const spans = memoryExporter.getFinishedSpans();
         assert.strictEqual(spans.length, 3);
         const multiRes = spans[0].attributes[
-          SemanticAttributes.DB_REDIS_RESPONSE.key
+          SemanticAttributes.DB_REDIS_RESPONSE
         ] as string;
         assert.equal(JSON.parse(multiRes), 'OK');
         const execRes =
-          spans[2].attributes[SemanticAttributes.DB_REDIS_RESPONSE.key];
+          spans[2].attributes[SemanticAttributes.DB_REDIS_RESPONSE];
         assert.strictEqual(execRes, '[1]');
+        done();
+      });
+    });
+
+    it('command hset should create a span without payloads', done => {
+      instrumentation.disable();
+      configureRedisInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: false });
+      instrumentation.enable();
+
+      client.hset(hash, key, value, () => {
+        const spans = memoryExporter.getFinishedSpans();
+        assert.strictEqual(spans.length, 1);
+        const atts = spans[0].attributes; // as SpanAttributes;
+        assert.equal(
+          // eslint-disable-next-line no-prototype-builtins
+          atts.hasOwnProperty(SemanticAttributes.DB_REDIS_ARGUMENTS),
+          false
+        );
+        assert.equal(
+          // eslint-disable-next-line no-prototype-builtins
+          atts.hasOwnProperty(SemanticAttributes.DB_REDIS_RESPONSE),
+          false
+        );
         done();
       });
     });

@@ -15,6 +15,7 @@
  */
 import { diag } from '@opentelemetry/api';
 import { Consts } from 'cisco-opentelemetry-specifications';
+import { setInnerOptions } from './inner-options';
 export interface Options {
   serviceName: string;
   ciscoToken: string;
@@ -86,6 +87,7 @@ export function _configDefaultOptions(
           },
         ];
 
+  setInnerOptions(options);
   return <Options>options;
 }
 

@@ -14,20 +14,24 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
 
 ## Contents
 
-- [Installation](#installation)
-  - [Install Packages](#install-packages)
-  - [Library initialization](#library-initialization)
-    - [javascript](#javascript)
-    - [typescript](#typescript)
-  - [OpenTelemetry Collector Configuration](#opentelemetry-collector-configuration)
-  - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
-- [Supported Runtimes](#supported-runtimes)
-- [Frameworks](#frameworks)
-- [Supported Libraries](#supported-libraries)
-- [Configuration](#configuration)
-- [Getting Help](#getting-help)
-- [Opening Issues](#opening-issues)
-- [License](#license)
+- [otel-js](#otel-js)
+  - [Contents](#contents)
+  - [Installation](#installation)
+    - [Install packages](#install-packages)
+    - [Library initialization](#library-initialization)
+      - [javascript](#javascript)
+      - [typescript](#typescript)
+    - [OpenTelemetry Collector Configuration](#opentelemetry-collector-configuration)
+      - [Configure custom trace exporter](#configure-custom-trace-exporter)
+      - [Configure custom OpenTelemetry collector to export trace data to Cisco Telescope's external collector.](#configure-custom-opentelemetry-collector-to-export-trace-data-to-cisco-telescopes-external-collector)
+    - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
+  - [Supported Runtimes](#supported-runtimes)
+  - [Frameworks](#frameworks)
+  - [Supported Libraries](#supported-libraries)
+  - [Configuration](#configuration)
+  - [Getting Help](#getting-help)
+  - [Opening Issues](#opening-issues)
+  - [License](#license)
 
 ## Installation
 
@@ -166,12 +170,12 @@ Cisco OpenTelemetry JS Distribution provides out-of-the-box instrumentation (tra
 
 Advanced options can be configured as a parameter to the init() method:
 
-| Parameter       | Env                    | Type    | Default       | Description                                                       |
-| --------------- | ---------------------- | ------- | ------------- | ----------------------------------------------------------------- |
-| ciscoToken      | CISCO_TOKEN            | string  | -             | Cisco account token                                               |
-| serviceName     | OTEL_SERVICE_NAME      | string  | `application` | Application name that will be set for traces                      |
-| debug           | CISCO_DEBUG            | string  | `false`       | Debug logs                                                        |
-| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `false`       | The number in bytes of the maximum payload to capture for request |
+| Parameter       | Env                    | Type    | Default       | Description                                                                                                                                                                                                                      |
+| --------------- | ---------------------- | ------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ciscoToken      | CISCO_TOKEN            | string  | -             | Cisco account token                                                                                                                                                                                                              |
+| serviceName     | OTEL_SERVICE_NAME      | string  | `application` | Application name that will be set for traces                                                                                                                                                                                     |
+| debug           | CISCO_DEBUG            | string  | `false`       | Debug logs                                                                                                                                                                                                                       |
+| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `false`       | Whether the span should include paylaods or not according to [this list](https://github.com/epsagon/cisco-otel-distribution-specifications/blob/7594c0d2f6504e59e1b8c238426eba5171155b90/packages/js/src/payload_attributes.ts). |
 
 Exporter options
 

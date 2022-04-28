@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Span } from '@opentelemetry/api';
+import { Span, SpanAttributes, SpanAttributeValue } from '@opentelemetry/api';
+import { getInnerOptions } from '../../inner-options';
+import { PayloadAttributes } from 'cisco-opentelemetry-specifications';
 
 /** Add Object to Span as flattened labels */
 export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
@@ -23,7 +25,9 @@ export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
     if (value === undefined) {
       continue;
     }
-
+    const options = getInnerOptions();
+    if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
+    // we don't call our addAttribute() bacuase it checks again if the key is payload or not
     span.setAttribute(`${attrPrefix}.${key.toLocaleLowerCase()}`, value);
   }
 }
@@ -33,7 +37,28 @@ export function addFlattenedArr(
   attrPrefix: string,
   arr: Array<any>
 ) {
+  const options = getInnerOptions();
+  if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   for (const index in arr) {
+    // we don't call our addAttribute() bacuase it checks again if the key is payload or not
     span.setAttribute(`${attrPrefix}.${index}`, JSON.stringify(arr[index]));
   }
+}
+
+/** Wrapper for native setAttributes */
+export function addAttributes(span: Span, attributes: SpanAttributes) {
+  for (const att in attributes) {
+    addAttribute(span, att, JSON.stringify(attributes[att]));
+  }
+}
+
+/** Wrapper for native setAttribute */
+export function addAttribute(
+  span: Span,
+  attrPrefix: string,
+  value: SpanAttributeValue
+) {
+  const options = getInnerOptions();
+  if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
+  span.setAttribute(attrPrefix, value);
 }

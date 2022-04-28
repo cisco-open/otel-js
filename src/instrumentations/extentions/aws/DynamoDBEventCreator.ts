@@ -20,14 +20,16 @@ import {
 } from '@opentelemetry/instrumentation-aws-sdk';
 import { AwsEventCreator } from './event-creator-interface';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addAttribute } from '../../utils/utils';
 
 // TODO: follow spec and fix the attribute names accordingly.
 export class DynamoDBEventCreator implements AwsEventCreator {
   requestHandler(span: Span, requestInfo: AwsSdkRequestHookInformation): void {
     switch (requestInfo.request.commandName) {
       case 'PutItem':
-        span.setAttribute(
-          SemanticAttributes.DB_DYNAMO_PARAMETERS.key,
+        addAttribute(
+          span,
+          SemanticAttributes.DB_DYNAMO_PARAMETERS,
           JSON.stringify(requestInfo.request.commandInput.Item)
         );
         break;
@@ -39,8 +41,9 @@ export class DynamoDBEventCreator implements AwsEventCreator {
   ): void {
     switch (responseInfo.response.request.commandName) {
       case 'PutItem':
-        span.setAttribute(
-          SemanticAttributes.DB_DYNAMO_RESPONSE.key,
+        addAttribute(
+          span,
+          SemanticAttributes.DB_DYNAMO_RESPONSE,
           JSON.stringify(responseInfo.response.data)
         );
         break;

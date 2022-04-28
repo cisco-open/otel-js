@@ -38,6 +38,7 @@ import {
   RESPONSE_METADATA,
 } from './consts';
 import assert = require('assert');
+import { setInnerOptions } from '../../../../src/inner-options';
 
 const SERVER_PORT = 51051;
 
@@ -53,7 +54,9 @@ describe('Capturing gRPC Metadata/Bodies', () => {
     `localhost:${SERVER_PORT}`,
     grpc.credentials.createInsecure()
   );
+
   before(done => {
+    setInnerOptions({ payloadsEnabled: true });
     instrumentation.enable();
     server.bindAsync(
       `localhost:${SERVER_PORT}`,
@@ -86,36 +89,36 @@ describe('Capturing gRPC Metadata/Bodies', () => {
     assertExpectedObj(
       serverSpan,
       REQUEST_METADATA.getMap(),
-      CiscoSemanticAttributes.RPC_REQUEST_METADATA.key
+      CiscoSemanticAttributes.RPC_REQUEST_METADATA
     );
     assertExpectedObj(
       clientSpan,
       REQUEST_METADATA.getMap(),
-      CiscoSemanticAttributes.RPC_REQUEST_METADATA.key
+      CiscoSemanticAttributes.RPC_REQUEST_METADATA
     );
     assertExpectedObj(
       clientSpan,
       RESPONSE_METADATA.getMap(),
-      CiscoSemanticAttributes.RPC_RESPONSE_METADATA.key
+      CiscoSemanticAttributes.RPC_RESPONSE_METADATA
     );
 
     assert.strictEqual(
-      serverSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY.key],
+      serverSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY],
       REQUEST_MESSAGE
     );
 
     assert.strictEqual(
-      clientSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY.key],
+      clientSpan.attributes[CiscoSemanticAttributes.RPC_REQUEST_BODY],
       REQUEST_MESSAGE
     );
 
     assert.strictEqual(
-      serverSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY.key],
+      serverSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY],
       RESPONSE_MESSAGE
     );
 
     assert.strictEqual(
-      clientSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY.key],
+      clientSpan.attributes[CiscoSemanticAttributes.RPC_RESPONSE_BODY],
       RESPONSE_MESSAGE
     );
 

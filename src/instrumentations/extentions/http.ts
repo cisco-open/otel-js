@@ -84,7 +84,7 @@ function createHttpRequestHook(
         ? request.headers
         : request.getHeaders();
 
-    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER.key, headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
 
     const bodyHandler = new PayloadHandler(
       options,
@@ -98,7 +98,7 @@ function createHttpRequestHook(
 
       request.on('data', listener);
       request.once('end', () => {
-        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY.key);
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         request.removeListener('data', listener);
       });
     }
@@ -120,7 +120,7 @@ function createHttpResponseHook(
         ? response.headers
         : response.getHeaders();
 
-    addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER.key, headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER, headers);
 
     const bodyHandler = new PayloadHandler(
       options,
@@ -135,7 +135,7 @@ function createHttpResponseHook(
 
       response.on('data', listener);
       response.once('end', () => {
-        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY.key);
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         response.removeListener('data', listener);
       });
     }

@@ -30,6 +30,8 @@ import * as assert from 'assert';
 import { assertExpectedObj, testOptions } from '../../utils';
 import { _configDefaultOptions } from '../../../src/options';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+import { addAttribute } from '../../../src/instrumentations/utils/utils';
+import { setInnerOptions } from '../../../src/inner-options';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
@@ -108,6 +110,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
   beforeEach(() => {
     memoryExporter.reset();
     configureHttpInstrumentation(instrumentation, testOptions);
+    setInnerOptions({ payloadsEnabled: true });
     utils.cleanEnvironmentVariables();
   });
 
@@ -119,19 +122,22 @@ describe('Capturing HTTP Headers/Bodies', () => {
     afterEach(() => {
       instrumentation.setConfig({});
       configureHttpInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
     });
 
     it('should see user request hook tags', async () => {
       instrumentation.setConfig({
         requestHook: (span, request) => {
-          span.setAttribute('user.attribute', 'dont change me');
-          span.setAttribute(
-            `${SemanticAttributes.HTTP_REQUEST_HEADER.key}.missed-header`,
+          addAttribute(span, 'user.attribute', 'dont change me');
+          addAttribute(
+            span,
+            `${SemanticAttributes.HTTP_REQUEST_HEADER}.missed-header`,
             'header-u-missed'
           );
         },
       });
       configureHttpInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
 
       const span = tracer.startSpan('updateRootSpan');
       await utils.httpRequest.get({
@@ -147,18 +153,18 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        SemanticAttributes.HTTP_RESPONSE_HEADER.key
+        SemanticAttributes.HTTP_RESPONSE_HEADER
       );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
       assert.equal(
         spans[1].attributes[
-          `${SemanticAttributes.HTTP_REQUEST_HEADER.key}.missed-header`
+          `${SemanticAttributes.HTTP_REQUEST_HEADER}.missed-header`
         ],
         'header-u-missed'
       );
@@ -167,14 +173,16 @@ describe('Capturing HTTP Headers/Bodies', () => {
     it('should see user response hook tags', async () => {
       instrumentation.setConfig({
         responseHook: (span, request) => {
-          span.setAttribute('user.attribute', 'dont change me');
-          span.setAttribute(
+          addAttribute(span, 'user.attribute', 'dont change me');
+          addAttribute(
+            span,
             'http.response.header.missed-header',
             'header-u-missed'
           );
         },
       });
       configureHttpInstrumentation(instrumentation, testOptions);
+      setInnerOptions({ payloadsEnabled: true });
 
       await utils.httpRequest.get({
         host: 'localhost',
@@ -189,12 +197,12 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        SemanticAttributes.HTTP_RESPONSE_HEADER.key
+        SemanticAttributes.HTTP_RESPONSE_HEADER
       );
 
       assert.equal(spans[1].attributes['user.attribute'], 'dont change me');
@@ -222,19 +230,19 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        SemanticAttributes.HTTP_RESPONSE_HEADER.key
+        SemanticAttributes.HTTP_RESPONSE_HEADER
       );
       assert.equal(
-        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
         POST_REQUEST_DATA
       );
       assert.equal(
-        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         SUCCESS_POST_MESSAGE
       );
     });
@@ -254,10 +262,10 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assert.equal(
-        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
         POST_REQUEST_DATA
       );
     });
@@ -278,15 +286,15 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assert.equal(
-        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
         POST_REQUEST_DATA
       );
       // this is an echo endpoint
       assert.equal(
-        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         POST_REQUEST_DATA
       );
     });
@@ -306,15 +314,15 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        SemanticAttributes.HTTP_RESPONSE_HEADER.key
+        SemanticAttributes.HTTP_RESPONSE_HEADER
       );
       assert.equal(
-        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         SUCCESS_GET_MESSAGE
       );
     });
@@ -331,7 +339,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
     });
 
@@ -347,28 +355,28 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assertExpectedObj(
         spans[1],
         EXTRA_RESPONSE_HEADERS,
-        SemanticAttributes.HTTP_RESPONSE_HEADER.key
+        SemanticAttributes.HTTP_RESPONSE_HEADER
       );
       assert.equal(
-        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         SUCCESS_GET_MESSAGE
       );
       assertExpectedObj(
         spans[2],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assert.equal(
-        spans[2].attributes[SemanticAttributes.HTTP_REQUEST_BODY.key],
+        spans[2].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
         ''
       );
       assertExpectedObj(
         spans[3],
         REQUEST_HEADERS,
-        SemanticAttributes.HTTP_REQUEST_HEADER.key
+        SemanticAttributes.HTTP_REQUEST_HEADER
       );
       assert.equal(
-        spans[3].attributes[SemanticAttributes.HTTP_RESPONSE_BODY.key],
+        spans[3].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         SUCCESS_GET_MESSAGE
       );
     });
