@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 export * as opentelemetry from '@opentelemetry/api';
 export * as ciscoTracing from './tracing';
 export { Options } from './options';
