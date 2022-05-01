@@ -17,6 +17,8 @@
 import { Options } from '../../options';
 import { diag, Span } from '@opentelemetry/api';
 import { addAttribute } from './utils';
+import { getInnerOptions } from '../../inner-options';
+import { PayloadAttributes } from 'cisco-opentelemetry-specifications';
 
 export class PayloadHandler {
   private maxPayloadSize: number; // The size in bytes of the maximum payload capturing
@@ -68,6 +70,10 @@ export class PayloadHandler {
   }
 
   private static addPayloadToSpan(span: Span, attrPrefix: string, chunk: any) {
+    //skip if it's a payload
+    const options = getInnerOptions();
+    if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
+
     try {
       addAttribute(span, attrPrefix, chunk.toString());
     } catch (e) {
