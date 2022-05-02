@@ -1,7 +1,7 @@
 {
-  "name": "cisco-opentelemetry-node",
+  "name": "cisco-telescope",
   "version": "0.0.0-development",
-  "description": "Epsagon Instrumentation for Node.js",
+  "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
   "main": "lib/src/index.js",

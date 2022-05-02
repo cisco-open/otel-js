@@ -23,7 +23,7 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
       - [typescript](#typescript)
     - [OpenTelemetry Collector Configuration](#opentelemetry-collector-configuration)
       - [Configure custom trace exporter](#configure-custom-trace-exporter)
-      - [Configure custom OpenTelemetry collector to export trace data to Cisco Telescope's external collector.](#configure-custom-opentelemetry-collector-to-export-trace-data-to-cisco-telescopes-external-collector)
+      - [Configure custom OpenTelemetry collector to export trace data to Cisco Telescope's external collector.](#configure-custom-opentelemetry-collector-to-export-trace-data-to-cisco-telescopeshttpsconsoletelescopeapputm_sourcegithub-external-collector)
     - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
   - [Supported Runtimes](#supported-runtimes)
   - [Frameworks](#frameworks)
@@ -40,7 +40,7 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
 To install Cisco OpenTelemetry Distribution simply run:
 
 ```sh
-npm install cisco-opentelemetry-node
+npm install cisco-telescope
 ```
 
 ### Library initialization
@@ -50,7 +50,7 @@ npm install cisco-opentelemetry-node
 #### javascript
 
 ```javascript
-const { ciscoTracing } = require('cisco-opentelemetry-node');
+const { ciscoTracing } = require('cisco-telescope');
 
 const userOptions = {
   serviceName: 'my-app-name',
@@ -63,7 +63,7 @@ await ciscoTracing.init(userOptions);
 #### typescript
 
 ```javascript
-import { ciscoTracing, Options } from 'cisco-opentelemetry-node';
+import { ciscoTracing, Options } from 'cisco-telescope';
 
 const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
@@ -83,7 +83,7 @@ await ciscoTracing.init(userOptions);
 > Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata(headers) injection:
 
 ```javascript
-const { ciscoTracing } = require('cisco-opentelemetry-node');
+const { ciscoTracing } = require('cisco-telescope');
 
 const userOptions = {
   serviceName: 'my-app-name',
@@ -212,7 +212,7 @@ Provided under the Apache 2.0. See LICENSE for details.
 
 Copyright 2022, Cisco
 
-[npm-url]: https://www.npmjs.com/package/cisco-opentelemetry-node
+[npm-url]: https://www.npmjs.com/package/cisco-telescope
 [npm-image]: https://img.shields.io/github/v/release/cisco-open/otel-js?include_prereleases&style=for-the-badge
 [license-url]: https://github.com/https://github.com/cisco-open/otel-js/blob/main/LICENSE
 [license-image]: https://img.shields.io/badge/license-Apache_2.0-green.svg?style=for-the-badge
