@@ -21,6 +21,7 @@ import { exporterFactory } from '../src/exporter-factory';
 import * as assert from 'assert';
 import * as utils from './utils';
 import { ExporterOptions } from '../src/options';
+import { Consts } from 'cisco-opentelemetry-specifications';
 
 describe('Tracing test', () => {
   beforeEach(() => {
@@ -43,7 +44,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.metadata?.get('authorization'), []);
+    assert.deepEqual(traceExporter.metadata?.get(Consts.TOKEN_HEADER_KEY), []);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
@@ -63,7 +64,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.headers['authorization'], undefined);
+    assert.deepEqual(traceExporter.headers[Consts.TOKEN_HEADER_KEY], undefined);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
@@ -88,7 +89,7 @@ describe('Tracing test', () => {
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
     assert.notEqual(
-      httpExporter.headers['authorization'],
+      httpExporter.headers[Consts.TOKEN_HEADER_KEY],
       userOptions.ciscoToken
     );
     assert.strictEqual(httpExporter.url, httpExporterOptions.collectorEndpoint);
@@ -97,7 +98,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.notEqual(grpcExporter.metadata?.get('authorization'), [
+    assert.notEqual(grpcExporter.metadata?.get(Consts.TOKEN_HEADER_KEY), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);
@@ -125,7 +126,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
-    assert.deepEqual(httpExporter.headers['authorization'], undefined);
+    assert.deepEqual(httpExporter.headers[Consts.TOKEN_HEADER_KEY], undefined);
     assert.deepEqual(
       httpExporter.headers['custom-http-header'],
       'custom-http-value'
@@ -137,7 +138,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('authorization'), []);
+    assert.deepEqual(grpcExporter.metadata?.get(Consts.TOKEN_HEADER_KEY), []);
     assert.deepEqual(grpcExporter.metadata?.get('custom-grpc-metadata'), [
       'custom-grpc-value',
     ]);
