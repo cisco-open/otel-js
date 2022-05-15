@@ -31,6 +31,7 @@ describe('Options tests', () => {
     utils.cleanEnvironmentVariables();
 
     logger = {
+      info: sinon.spy(),
       warn: sinon.spy(),
       error: sinon.spy(),
     };
@@ -69,12 +70,6 @@ describe('Options tests', () => {
       });
       sinon.assert.neverCalledWith(logger.error);
     });
-
-    it('should fail when no token were specified', () => {
-      const options = _configDefaultOptions(<Options>{});
-      assert.ok(!options);
-      sinon.assert.calledOnce(logger.error);
-    });
     it('should fail when no token and exporter were specified', () => {
       const options = _configDefaultOptions(<Options>{});
       assert.ok(!options);
@@ -105,6 +100,18 @@ describe('Options tests', () => {
       sinon.assert.neverCalledWith(logger.error);
     });
   });
+  it('should pass when token includes Bearer', () => {
+    const options = _configDefaultOptions(<Options>{
+      ciscoToken: 'Bearer my_token',
+    });
+    assert.ok(options);
+    sinon.assert.neverCalledWith(logger.error);
+    sinon.assert.calledOnce(logger.info);
+    assert.strictEqual(
+      options.exporters[0].customHeaders?.[Consts.TOKEN_HEADER_KEY],
+      'Bearer my_token'
+    );
+  });
 
   describe('user Options configuration', () => {
     it('should assign properly the user default configuration and not override', () => {
@@ -126,6 +133,7 @@ describe('Options tests', () => {
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
+      sinon.assert.calledOnce(logger.warn);
     });
   });
 
@@ -162,6 +170,7 @@ describe('Options tests', () => {
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
+      sinon.assert.neverCalledWith(logger.warn);
     });
   });
 });
