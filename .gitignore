@@ -6,3 +6,4 @@ lib/
 coverage/
 src/sami_tests/
 examples/my_examples/
+.DS_Store
