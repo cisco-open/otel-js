@@ -27,7 +27,7 @@ describe('Tracing test', () => {
     utils.cleanEnvironmentVariables();
   });
 
-  it('setup gRPC exporter', () => {
+  it('setup custom gRPC exporter', () => {
     const exporterOptions: ExporterOptions = {
       type: 'otlp-grpc',
       collectorEndpoint: 'some-collector:4317',
@@ -43,13 +43,11 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPGrpcTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(traceExporter.metadata?.get('authorization'), [
-      userOptions.ciscoToken,
-    ]);
+    assert.deepEqual(traceExporter.metadata?.get('authorization'), []);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
-  it('setup HTTP exporter', () => {
+  it('setup custom HTTP exporter', () => {
     const exporterOptions: ExporterOptions = {
       type: 'otlp-http',
       collectorEndpoint: 'some-collector:4317',
@@ -65,14 +63,11 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(traceExporter);
-    assert.deepEqual(
-      traceExporter.headers['authorization'],
-      userOptions.ciscoToken
-    );
+    assert.deepEqual(traceExporter.headers['authorization'], undefined);
     assert.strictEqual(traceExporter.url, exporterOptions.collectorEndpoint);
   });
 
-  it('setup both HTTP and gRPC exporters', () => {
+  it('setup both HTTP and gRPC custom exporters', () => {
     const httpExporterOptions: ExporterOptions = {
       type: 'otlp-http',
       collectorEndpoint: 'some-collector:4317',
@@ -92,7 +87,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
-    assert.deepEqual(
+    assert.notEqual(
       httpExporter.headers['authorization'],
       userOptions.ciscoToken
     );
@@ -102,7 +97,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('authorization'), [
+    assert.notEqual(grpcExporter.metadata?.get('authorization'), [
       userOptions.ciscoToken,
     ]);
     assert.strictEqual(grpcExporter.url, grpcExporterOptions.collectorEndpoint);
@@ -130,10 +125,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[0] as OTLPHttpTraceExporter;
     assert(httpExporter);
-    assert.deepEqual(
-      httpExporter.headers['authorization'],
-      userOptions.ciscoToken
-    );
+    assert.deepEqual(httpExporter.headers['authorization'], undefined);
     assert.deepEqual(
       httpExporter.headers['custom-http-header'],
       'custom-http-value'
@@ -145,9 +137,7 @@ describe('Tracing test', () => {
       <Options>userOptions
     )[1] as OTLPGrpcTraceExporter;
     assert(grpcExporter);
-    assert.deepEqual(grpcExporter.metadata?.get('authorization'), [
-      userOptions.ciscoToken,
-    ]);
+    assert.deepEqual(grpcExporter.metadata?.get('authorization'), []);
     assert.deepEqual(grpcExporter.metadata?.get('custom-grpc-metadata'), [
       'custom-grpc-value',
     ]);

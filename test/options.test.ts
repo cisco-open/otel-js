@@ -61,6 +61,9 @@ describe('Options tests', () => {
           <ExporterOptions>{
             type: Consts.DEFAULT_EXPORTER_TYPE,
             collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+            customHeaders: {
+              [Consts.TOKEN_HEADER_KEY]: `Bearer ${defaultToken}`,
+            },
           },
         ],
       });
@@ -71,6 +74,35 @@ describe('Options tests', () => {
       const options = _configDefaultOptions(<Options>{});
       assert.ok(!options);
       sinon.assert.calledOnce(logger.error);
+    });
+    it('should fail when no token and exporter were specified', () => {
+      const options = _configDefaultOptions(<Options>{});
+      assert.ok(!options);
+      sinon.assert.calledOnce(logger.error);
+    });
+    it('should pass when no token but exporter were specified', () => {
+      const options = _configDefaultOptions(<Options>{
+        exporters: [
+          <ExporterOptions>{
+            type: Consts.DEFAULT_EXPORTER_TYPE,
+            collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+          },
+        ],
+      });
+      assert.ok(options);
+      sinon.assert.neverCalledWith(logger.error);
+    });
+    it('should pass when token exporter were specified', () => {
+      const options = _configDefaultOptions(<Options>{
+        exporters: [
+          <ExporterOptions>{
+            type: Consts.DEFAULT_EXPORTER_TYPE,
+            collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+          },
+        ],
+      });
+      assert.ok(options);
+      sinon.assert.neverCalledWith(logger.error);
     });
   });
 
@@ -109,6 +141,9 @@ describe('Options tests', () => {
           <ExporterOptions>{
             type: 'otlp-http',
             collectorEndpoint: 'Not the default Endpoint',
+            customHeaders: {
+              [Consts.TOKEN_HEADER_KEY]: 'Bearer SomeToken',
+            },
           },
         ],
       };

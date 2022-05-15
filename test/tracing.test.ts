@@ -22,7 +22,6 @@ import { OTLPTraceExporter as OTLPHttpTraceExporter } from '@opentelemetry/expor
 import { diag } from '@opentelemetry/api';
 import { ciscoTracing, Options } from '../src';
 import * as utils from './utils';
-import { ExporterOptions } from '../src/options';
 import { Consts } from 'cisco-opentelemetry-specifications';
 
 describe('Tracing test', () => {
@@ -63,7 +62,7 @@ describe('Tracing test', () => {
       assert.equal(
         // eslint-disable-next-line no-prototype-builtins
         exporter?.headers?.[Consts.TOKEN_HEADER_KEY],
-        accessToken
+        `Bearer ${accessToken}`
       );
     }
   }
@@ -83,19 +82,11 @@ describe('Tracing test', () => {
   });
 
   it('setups tracing with defaults', async () => {
-    const exporterOptions: ExporterOptions = {
-      collectorEndpoint: '',
-    };
     const userOptions = {
       serviceName: '',
-      ciscoToken: '',
-      exporters: [exporterOptions],
+      ciscoToken: 'someToken',
     };
-    process.env.OTEL_COLLECTOR_ENDPOINT = exporterOptions.collectorEndpoint;
-    process.env.OTEL_SERVICE_NAME = userOptions.serviceName;
-    process.env.CISCO_TOKEN = userOptions.ciscoToken;
-
     await ciscoTracing.init(userOptions);
-    sinon.assert.notCalled(addSpanProcessorMock);
+    sinon.assert.calledOnce(addSpanProcessorMock);
   });
 });

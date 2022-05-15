@@ -43,9 +43,15 @@ export function _configDefaultOptions(
   options.ciscoToken =
     options.ciscoToken || process.env[Consts.CISCO_TOKEN_ENV] || '';
 
-  if (!options.ciscoToken) {
+  if (!options.ciscoToken && !options.exporters) {
     diag.error('Cisco token must be passed into initialization');
     return undefined;
+  }
+
+  if (options.ciscoToken && options.exporters) {
+    diag.warn(
+      'Custom exporters do not use cisco token, it can be passed as a custom header'
+    );
   }
 
   options.serviceName =
@@ -84,11 +90,22 @@ export function _configDefaultOptions(
             collectorEndpoint:
               process.env[Consts.OTEL_COLLECTOR_ENDPOINT] ||
               Consts.DEFAULT_COLLECTOR_ENDPOINT,
+            customHeaders: {
+              [Consts.TOKEN_HEADER_KEY]: verify_token(options.ciscoToken),
+            },
           },
         ];
 
   setInnerOptions(options);
   return <Options>options;
+}
+
+function verify_token(token: string): string {
+  if (token.startsWith('Bearer')) {
+    return token;
+  } else {
+    return `Bearer ${token}`;
+  }
 }
 
 function getEnvBoolean(key: string, defaultValue = true) {
