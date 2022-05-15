@@ -175,7 +175,7 @@ Advanced options can be configured as a parameter to the init() method:
 | ciscoToken      | CISCO_TOKEN            | string  | -             | Cisco account token                                                                                                                                                                                                              |
 | serviceName     | OTEL_SERVICE_NAME      | string  | `application` | Application name that will be set for traces                                                                                                                                                                                     |
 | debug           | CISCO_DEBUG            | string  | `false`       | Debug logs                                                                                                                                                                                                                       |
-| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `true`       | Whether the span should include paylaods or not according to [this list](https://github.com/epsagon/cisco-otel-distribution-specifications/blob/7594c0d2f6504e59e1b8c238426eba5171155b90/packages/js/src/payload_attributes.ts). |
+| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `true`        | Whether the span should include paylaods or not according to [this list](https://github.com/epsagon/cisco-otel-distribution-specifications/blob/7594c0d2f6504e59e1b8c238426eba5171155b90/packages/js/src/payload_attributes.ts). |
 
 Exporter options
 
