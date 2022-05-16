@@ -103,7 +103,7 @@ export function _configDefaultOptions(
 function verify_token(token: string): string {
   if (token.startsWith('Bearer')) {
     diag.info(
-      'Bearer was manually specified as part of the ciscoToken and recommended not to (Works either way).'
+      '\'Bearer\' prefix was attached to the provided cisco-token. We recommend using a "clean" token without the prefix'
     );
     return token;
   } else {

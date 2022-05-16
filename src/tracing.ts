@@ -18,7 +18,6 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { _configDefaultOptions, Options } from './options';
-// import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import {
   Resource,
   detectResources,
@@ -56,9 +55,6 @@ export async function init(userOptions: Partial<Options>) {
 
   const ciscoResource = new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
-    // TODO: temporarily this is 'application' duo to BC. rename after Cisco is ready
-    ['application']: options.serviceName,
-    // ['cisco.sdk.version']: getVersion(),
   });
 
   const provider = new NodeTracerProvider({
