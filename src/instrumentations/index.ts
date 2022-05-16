@@ -28,6 +28,7 @@ import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrum
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations({
+    '@opentelemetry/instrumentation-aws-lambda': { enabled: false },
     '@opentelemetry/instrumentation-grpc': { enabled: false },
   });
 
