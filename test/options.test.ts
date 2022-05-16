@@ -31,6 +31,7 @@ describe('Options tests', () => {
     utils.cleanEnvironmentVariables();
 
     logger = {
+      info: sinon.spy(),
       warn: sinon.spy(),
       error: sinon.spy(),
     };
@@ -61,17 +62,55 @@ describe('Options tests', () => {
           <ExporterOptions>{
             type: Consts.DEFAULT_EXPORTER_TYPE,
             collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+            customHeaders: {
+              [Consts.TOKEN_HEADER_KEY]: `Bearer ${defaultToken}`,
+            },
           },
         ],
       });
       sinon.assert.neverCalledWith(logger.error);
     });
-
-    it('should fail when no token were specified', () => {
+    it('should fail when no token and exporter were specified', () => {
       const options = _configDefaultOptions(<Options>{});
       assert.ok(!options);
       sinon.assert.calledOnce(logger.error);
     });
+    it('should pass when no token but exporter were specified', () => {
+      const options = _configDefaultOptions(<Options>{
+        exporters: [
+          <ExporterOptions>{
+            type: Consts.DEFAULT_EXPORTER_TYPE,
+            collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+          },
+        ],
+      });
+      assert.ok(options);
+      sinon.assert.neverCalledWith(logger.error);
+    });
+    it('should pass when token exporter were specified', () => {
+      const options = _configDefaultOptions(<Options>{
+        exporters: [
+          <ExporterOptions>{
+            type: Consts.DEFAULT_EXPORTER_TYPE,
+            collectorEndpoint: Consts.DEFAULT_COLLECTOR_ENDPOINT,
+          },
+        ],
+      });
+      assert.ok(options);
+      sinon.assert.neverCalledWith(logger.error);
+    });
+  });
+  it('should pass when token includes Bearer', () => {
+    const options = _configDefaultOptions(<Options>{
+      ciscoToken: 'Bearer my_token',
+    });
+    assert.ok(options);
+    sinon.assert.neverCalledWith(logger.error);
+    sinon.assert.calledOnce(logger.info);
+    assert.strictEqual(
+      options.exporters[0].customHeaders?.[Consts.TOKEN_HEADER_KEY],
+      'Bearer my_token'
+    );
   });
 
   describe('user Options configuration', () => {
@@ -94,6 +133,7 @@ describe('Options tests', () => {
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
+      sinon.assert.calledOnce(logger.warn);
     });
   });
 
@@ -109,6 +149,9 @@ describe('Options tests', () => {
           <ExporterOptions>{
             type: 'otlp-http',
             collectorEndpoint: 'Not the default Endpoint',
+            customHeaders: {
+              [Consts.TOKEN_HEADER_KEY]: 'Bearer SomeToken',
+            },
           },
         ],
       };
@@ -127,6 +170,7 @@ describe('Options tests', () => {
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
+      sinon.assert.neverCalledWith(logger.warn);
     });
   });
 });

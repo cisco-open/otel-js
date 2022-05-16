@@ -21,7 +21,6 @@ import { Metadata } from '@grpc/grpc-js';
 
 import { OTLPTraceExporter as GRPCTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { OTLPTraceExporter as HTTPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { Consts } from 'cisco-opentelemetry-specifications';
 import { diag } from '@opentelemetry/api';
 
 type SpanExporterFactory = (
@@ -34,7 +33,6 @@ function otlpGrpcSpanFactory(
   exporterOptions: ExporterOptions
 ): SpanExporter {
   const metadata = new Metadata();
-  metadata.set(Consts.TOKEN_HEADER_KEY, options.ciscoToken);
 
   for (const key in exporterOptions.customHeaders) {
     const value = exporterOptions.customHeaders[key];
@@ -55,13 +53,7 @@ function otlpHttpSpanFactory(
 ): SpanExporter {
   const collectorOptions = {
     url: exporterOptions.collectorEndpoint,
-    headers: Object.assign(
-      {},
-      {
-        [Consts.TOKEN_HEADER_KEY]: options.ciscoToken,
-      },
-      exporterOptions.customHeaders
-    ),
+    headers: exporterOptions.customHeaders,
   };
   return new HTTPTraceExporter(collectorOptions);
 }
