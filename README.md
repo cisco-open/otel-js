@@ -59,10 +59,6 @@ const userOptions = {
 };
 
 await ciscoTracing.init(userOptions);
-
-// The require of your instrumented library should go her, after the ciscoTracing.init()
-const express = require('express');
-const app = express();
 ```
 
 #### typescript
@@ -75,10 +71,6 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'cisco-token',
 };
 await ciscoTracing.init(userOptions);
-
-// The import of your instrumented library should go her, after the ciscoTracing.init()
-import * as express from 'express';
-const app = express();
 ```
 
 ### OpenTelemetry Collector Configuration
