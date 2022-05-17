@@ -44,9 +44,9 @@ npm install cisco-telescope
 
 ### Library initialization
 
-Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
+Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the `ciscoTracing.init()` has returned.
 
-To initizlize the library, you'll need a cisco-token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
+To initialize the library, you'll need a cisco-token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
 
 #### javascript
 
