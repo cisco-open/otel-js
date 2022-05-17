@@ -157,7 +157,7 @@ ciscoTracing.init(userOptions);
 const express = require('express');
 const app = express();
 
-// This code should be replaced with the relevant instrument 
+// This code should be replaced with the relevant library instrument 
 app.get('/', (req, res) => {
   res.send('Hello world');
 });
