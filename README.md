@@ -168,8 +168,6 @@ app.listen(8080, () => {
 
 ```
 
-To run on your framework please refer to [supported frameworks](#frameworks)
-
 ## Supported Runtimes
 
 | Platform Version | Supported |
