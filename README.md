@@ -59,6 +59,10 @@ const userOptions = {
 };
 
 await ciscoTracing.init(userOptions);
+
+// The instrument requires should be called after ciscoTracing init
+const express = require('express');
+const app = express();
 ```
 
 #### typescript
@@ -71,6 +75,10 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'cisco-token',
 };
 await ciscoTracing.init(userOptions);
+
+// The instrument requires should be called after ciscoTracing init
+import * as express from "express";
+const app = express();
 ```
 
 ### OpenTelemetry Collector Configuration
@@ -139,32 +147,6 @@ const collectorOptions = {
 };
 const httpExporter = new HTTPTraceExporter(collectorOptions);
 traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
-```
-
-### Calling the SDK
-
-```javascript
-const { ciscoTracing } = require('cisco-telescope');
-
-const userOptions = {
-  serviceName: 'my-app-name',
-  ciscoToken: 'sometoken',
-};
-
-ciscoTracing.init(userOptions);
-
-// The instrument requires should be called after ciscoTracing init
-const express = require('express');
-const app = express();
-
-// This code should be replaced with the relevant library instrument
-app.get('/', (req, res) => {
-  res.send('Hello world');
-});
-
-app.listen(8080, () => {
-  console.log(`Listening for requests on http://localhost:8080`);
-});
 ```
 
 ## Supported Runtimes
