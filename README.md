@@ -59,6 +59,10 @@ const userOptions = {
 };
 
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
+
+// The require of your instrumented library should go here, after the ciscoTracing.init()
+const express = require('express');
+const app = express();
 ```
 
 #### typescript
@@ -71,6 +75,10 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'cisco-token',
 };
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
+
+// The import of your instrumented library should go here, after the ciscoTracing.init()
+import * as express from "express";
+const app = express();
 ```
 
 ### OpenTelemetry Collector Configuration
