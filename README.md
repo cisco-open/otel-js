@@ -26,7 +26,6 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
       - [Configure custom OpenTelemetry collector to export trace data to Cisco Telescope's external collector.](#configure-custom-opentelemetry-collector-to-export-trace-data-to-cisco-telescopes-external-collector)
     - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
   - [Supported Runtimes](#supported-runtimes)
-  - [Frameworks](#frameworks)
   - [Supported Libraries](#supported-libraries)
   - [Configuration](#configuration)
   - [Getting Help](#getting-help)
@@ -45,7 +44,7 @@ npm install cisco-telescope
 
 ### Library initialization
 
-> Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
+Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
 
 To initizlize the library, you'll need a Telescope Token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
 
@@ -76,13 +75,13 @@ await ciscoTracing.init(userOptions);
 
 ### OpenTelemetry Collector Configuration
 
-> By default, Cisco OpenTelemetry Distribution exports data directly to [Cisco Telescope's](https://console.telescope.app/?utm_source=github) infrastructure backend.
+By default, Cisco OpenTelemetry Distribution exports data directly to [Cisco Telescope's](https://console.telescope.app/?utm_source=github) infrastructure backend.
 > **Existing** OpenTelemetery Collector is supported, the following configuration can be applied
 
 #### Configure custom trace exporter
 
-> Cisco OpenTelemetry Distribution supports configure multiple custom exporters. In that case, ciscoToken is ommited, and instead a custom header is given as described below:
-> Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata(headers) injection:
+Cisco OpenTelemetry Distribution supports configure multiple custom exporters. In that case, ciscoToken is sent via the custom headers as described below.
+Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata (headers) injection:
 
 ```javascript
 const { ciscoTracing } = require('cisco-telescope');
@@ -95,7 +94,7 @@ const userOptions = {
       collectorEndpoint: 'grpc://localhost:4317',
       customHeaders: {
         'someheader-to-inject': 'header value',
-        'authorization': <'<Your Telescope Token>'>
+        'authorization': 'Bearer <Your Telescope Token>'
       },
     },
   ],
@@ -126,7 +125,7 @@ service:
 ### Existing OpenTelemetry Instrumentation
 
 > Notice: Only relevant if interested in streaming existing OpenTelemetry workloads.
-> [Cisco Telescope](https://console.telescope.app/?utm_source=github). supports native OpenTelemetery traces.
+> [Cisco Telescope](https://console.telescope.app/?utm_source=github) supports native OpenTelemetery traces.
 
 ```typescript
 const traceProvider = new NodeTracerProvider({
@@ -149,10 +148,6 @@ traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 | Node.JS `v14`    | ✅        |
 | Node.JS `v12`    | ✅        |
 | Node.JS `v10`    | ✅        |
-
-## Frameworks
-
-> Cisco OpenTelemetry JS Distribution is extending Native OpenTelemetry, supported frameworks [available here](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations).
 
 ## Supported Libraries
 
@@ -184,7 +179,7 @@ Exporter options
 | Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                 |
 | ----------------- | ----------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector:80` | The address of the trace collector to send traces to                                                                                        |
-| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` are supported). Multiple exporter option available via init function see example below |
+| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` is supported). Multiple exporter option available via init function see example below |
 | customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                       |
 
 ## Getting Help
