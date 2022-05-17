@@ -110,9 +110,9 @@ collector.yaml ...
 
 exporters:
   otlphttp:
-    traces_endpoint: https://production.cisco-udp.com/trace-collector:80
+    traces_endpoint: https://production.cisco-udp.com/trace-collector
     headers:
-      authorization: <Your Telescope Token>
+      authorization: Bearer <Your Telescope Token>
     compression: gzip
 
 
@@ -132,9 +132,9 @@ const traceProvider = new NodeTracerProvider({
   resource: Resource(),
 });
 const collectorOptions = {
-  url: 'https://production.cisco-udp.com/trace-collector:80',
+  url: 'https://production.cisco-udp.com/trace-collector',
   headers: {
-    authorization: '<Your Cisco Token>',
+    authorization: 'Bearer <Your Cisco Token>',
   },
 };
 const httpExporter = new HTTPTraceExporter(collectorOptions);
