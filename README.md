@@ -47,6 +47,8 @@ npm install cisco-telescope
 
 > Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
 
+To initizlize the library, you'll need a Telescope Token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
+
 #### javascript
 
 ```javascript
@@ -54,7 +56,7 @@ const { ciscoTracing } = require('cisco-telescope');
 
 const userOptions = {
   serviceName: 'my-app-name',
-  ciscoToken: 'cisco-token',
+  ciscoToken: 'telescope-token',
 };
 
 await ciscoTracing.init(userOptions);
@@ -67,7 +69,7 @@ import { ciscoTracing, Options } from 'cisco-telescope';
 
 const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
-  ciscoToken: 'sometoken',
+  ciscoToken: 'telescope-token',
 };
 await ciscoTracing.init(userOptions);
 ```
@@ -79,7 +81,7 @@ await ciscoTracing.init(userOptions);
 
 #### Configure custom trace exporter
 
-> Cisco OpenTelemetry Distribution supports configure multiple custom exporters.
+> Cisco OpenTelemetry Distribution supports configure multiple custom exporters. In that case, ciscoToken is ommited, and instead a custom header is given as described below:
 > Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata(headers) injection:
 
 ```javascript
@@ -87,13 +89,13 @@ const { ciscoTracing } = require('cisco-telescope');
 
 const userOptions = {
   serviceName: 'my-app-name',
-  ciscoToken: 'cisco-token',
   exporters: [
     {
       type: 'otlp-grpc',
       collectorEndpoint: 'grpc://localhost:4317',
       customHeaders: {
         'someheader-to-inject': 'header value',
+        'authorization': <'<Your Telescope Token>'>
       },
     },
   ],
