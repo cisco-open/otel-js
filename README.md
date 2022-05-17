@@ -141,6 +141,35 @@ const httpExporter = new HTTPTraceExporter(collectorOptions);
 traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 ```
 
+### Calling the SDK
+
+```javascript
+const { ciscoTracing } = require('cisco-telescope');
+
+const userOptions = {
+  serviceName: 'my-app-name',
+  ciscoToken: 'sometoken',
+};
+
+ciscoTracing.init(userOptions);
+
+// The instrument requires should be called after ciscoTracing init
+const express = require('express');
+const app = express();
+
+// This code should be replaced with the relevant instrument 
+app.get('/', (req, res) => {
+  res.send('Hello world');
+});
+
+app.listen(8080, () => {
+  console.log(`Listening for requests on http://localhost:8080`);
+});
+
+```
+
+To run on your framework please refer to [supported frameworks](#frameworks)
+
 ## Supported Runtimes
 
 | Platform Version | Supported |
