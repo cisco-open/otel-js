@@ -76,6 +76,7 @@ await ciscoTracing.init(userOptions);
 ### OpenTelemetry Collector Configuration
 
 By default, Cisco OpenTelemetry Distribution exports data directly to [Cisco Telescope's](https://console.telescope.app/?utm_source=github) infrastructure backend.
+
 > **Existing** OpenTelemetery Collector is supported, the following configuration can be applied
 
 #### Configure custom trace exporter
@@ -94,7 +95,7 @@ const userOptions = {
       collectorEndpoint: 'grpc://localhost:4317',
       customHeaders: {
         'someheader-to-inject': 'header value',
-        'authorization': 'Bearer <Your Telescope Token>'
+        authorization: 'Bearer <Your Telescope Token>',
       },
     },
   ],
@@ -176,11 +177,11 @@ Advanced options can be configured as a parameter to the init() method:
 
 Exporter options
 
-| Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                 |
-| ----------------- | ----------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector:80` | The address of the trace collector to send traces to                                                                                        |
+| Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                |
+| ----------------- | ----------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector:80` | The address of the trace collector to send traces to                                                                                       |
 | type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` is supported). Multiple exporter option available via init function see example below |
-| customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                       |
+| customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                      |
 
 ## Getting Help
 
