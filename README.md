@@ -60,7 +60,7 @@ const userOptions = {
 
 await ciscoTracing.init(userOptions);
 
-// The instrument requires should be called after ciscoTracing init
+// The require of your instrumented library should go her, after the ciscoTracing.init()
 const express = require('express');
 const app = express();
 ```
@@ -76,7 +76,7 @@ const userOptions: Partial<Options> = {
 };
 await ciscoTracing.init(userOptions);
 
-// The instrument imports should be called after ciscoTracing init
+// The import of your instrumented library should go her, after the ciscoTracing.init()
 import * as express from 'express';
 const app = express();
 ```
