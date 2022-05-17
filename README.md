@@ -77,7 +77,7 @@ const userOptions: Partial<Options> = {
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 
 // The import of your instrumented library should go here, after the ciscoTracing.init()
-import * as express from "express";
+import * as express from 'express';
 const app = express();
 ```
 
