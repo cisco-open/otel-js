@@ -77,7 +77,7 @@ const userOptions: Partial<Options> = {
 await ciscoTracing.init(userOptions);
 
 // The instrument requires should be called after ciscoTracing init
-import * as express from "express";
+import * as express from 'express';
 const app = express();
 ```
 
