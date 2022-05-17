@@ -44,9 +44,9 @@ npm install cisco-telescope
 
 ### Library initialization
 
-Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the module is imported.
+Cisco OpenTelemetry Distribution is activated and instruments the supported libraries once the `ciscoTracing.init()` has returned.
 
-To initizlize the library, you'll need a cisco-token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
+To initialize the library, you'll need a cisco-token, which is taken from your [Account tab on the Telescope console Settings page](https://console.telescope.app/settings/account).
 
 #### javascript
 
@@ -58,7 +58,7 @@ const userOptions = {
   ciscoToken: 'cisco-token',
 };
 
-await ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
 
 #### typescript
@@ -70,7 +70,7 @@ const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
   ciscoToken: 'cisco-token',
 };
-await ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
 
 ### OpenTelemetry Collector Configuration
@@ -81,7 +81,7 @@ By default, Cisco OpenTelemetry Distribution exports data directly to [Cisco Tel
 
 #### Configure custom trace exporter
 
-Cisco OpenTelemetry Distribution supports configure multiple custom exporters. Note that you will need to handle your exporter authorization.
+Cisco OpenTelemetry Distribution supports the configuration of multiple custom exporters. Note that you will need to handle your exporter authorization.
 Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata (headers) injection:
 
 ```javascript
