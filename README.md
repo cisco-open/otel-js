@@ -58,7 +58,7 @@ const userOptions = {
   ciscoToken: 'cisco-token',
 };
 
-await ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
 
 #### typescript
@@ -70,7 +70,7 @@ const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
   ciscoToken: 'cisco-token',
 };
-await ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
 
 ### OpenTelemetry Collector Configuration
