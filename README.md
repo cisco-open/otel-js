@@ -25,6 +25,7 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
       - [Configure custom trace exporter](#configure-custom-trace-exporter)
       - [Configure custom OpenTelemetry collector to export trace data to Cisco Telescope's external collector.](#configure-custom-opentelemetry-collector-to-export-trace-data-to-cisco-telescopes-external-collector)
     - [Existing OpenTelemetry Instrumentation](#existing-opentelemetry-instrumentation)
+  - [Create spans manually](#create-spans-manually)
   - [Supported Runtimes](#supported-runtimes)
   - [Supported Libraries](#supported-libraries)
   - [Configuration](#configuration)
@@ -147,6 +148,19 @@ const collectorOptions = {
 };
 const httpExporter = new HTTPTraceExporter(collectorOptions);
 traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
+```
+
+## Create spans manually
+
+Together with using Cisco OpenTelemetry Distribution, you can send traces manually according the open telemetry API as in the following example:
+
+```typescript
+import { trace } from '@opentelemetry/api';
+const tracer = trace.getTracer('my-application', '0.1.0');
+
+const span = tracer.startSpan('my-span-name');
+span.setAttribute('manual-key', 'manual-value');
+span.end();
 ```
 
 ## Supported Runtimes
