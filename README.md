@@ -152,15 +152,30 @@ traceProvider.addSpanProcessor(new BatchSpanProcessor(httpExporter));
 
 ## Create spans manually
 
-Together with using Cisco OpenTelemetry Distribution, you can send traces manually according the open telemetry API as in the following example:
+Together with using Cisco OpenTelemetry Distribution, you can send traces manually according the open telemetry API. Here is an example of an http server which send a manual span when it gets a post . This span will appear in adition to the http span created automatically.
 
 ```typescript
 import { trace } from '@opentelemetry/api';
-const tracer = trace.getTracer('my-application', '0.1.0');
+import * as express from 'express';
 
-const span = tracer.startSpan('my-span-name');
-span.setAttribute('manual-key', 'manual-value');
-span.end();
+const tracer = trace.getTracer('my-application', '0.1.0');
+const app = express();
+
+app.post('/test_post', async (req, res) => {
+  const span = tracer.startSpan('my-span-name');
+  //do something and add attribute to your span
+  span.setAttribute('manual-key', 'manual-value');
+  span.end();
+
+  const body = 'my-response-body';
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.write(body);
+  res.end();
+});
+
+app.listen(8081, () => {
+  console.log('Listening for requests on http://localhost:8081');
+});
 ```
 
 ## Supported Runtimes
