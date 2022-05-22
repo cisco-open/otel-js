@@ -213,11 +213,11 @@ Advanced options can be configured as a parameter to the init() method:
 
 Exporter options
 
-| Parameter         | Env                     | Type                | Default                                               | Description                                                                                                                                |
-| ----------------- | ----------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Parameter         | Env                     | Type                | Default                                            | Description                                                                                                                                |
+| ----------------- | ----------------------- | ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | collectorEndpoint | OTEL_COLLECTOR_ENDPOINT | string              | `https://production.cisco-udp.com/trace-collector` | The address of the trace collector to send traces to                                                                                       |
-| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                           | The exporter type to use (Currently only `otlp-http` is supported). Multiple exporter option available via init function see example below |
-| customHeaders     | None                    | Map<string, string> | {}                                                    | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                      |
+| type              | OTEL_EXPORTER_TYPE      | string              | `otlp-http`                                        | The exporter type to use (Currently only `otlp-http` is supported). Multiple exporter option available via init function see example below |
+| customHeaders     | None                    | Map<string, string> | {}                                                 | Extra headers to inject to the exporter (in gRPC to the metadata, in http to Headers)                                                      |
 
 ## Getting Help
 
