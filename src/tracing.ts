@@ -27,6 +27,7 @@ import {
 import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { Consts } from 'cisco-opentelemetry-specifications';
 
 export async function init(userOptions: Partial<Options>) {
   const options = _configDefaultOptions(userOptions);
@@ -55,6 +56,7 @@ export async function init(userOptions: Partial<Options>) {
 
   const ciscoResource = new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
+    [Consts.CISCO_SDK_VERSION]: getCiscoVersion(),
   });
 
   const provider = new NodeTracerProvider({
@@ -67,4 +69,9 @@ export async function init(userOptions: Partial<Options>) {
 
   provider.register();
   diag.info('cisco-telescope agent is up!');
+}
+
+require('pkginfo')(module, 'version');
+export function getCiscoVersion() {
+  return module.exports.version;
 }
