@@ -8,6 +8,8 @@
   jobs:
     system-tests:
       runs-on: ubuntu-latest
+      env:
+        SPAN_SEARCH_ACCESS_TOKEN_PRODUCTION: ${{ secrets.SPAN_SEARCH_ACCESS_TOKEN_PRODUCTION }}
       steps:
       - name: Checkout
         uses: actions/checkout@v2
