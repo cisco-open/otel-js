@@ -18,7 +18,7 @@
             docker-compose --version;
             docker --version;
       - name: Test basic example
-        working-directory: system-tests/
+        working-directory: system-tests/express
         run: docker-compose -f docker-compose.yaml up --exit-code-from test-server
     unit-test:
       strategy:
