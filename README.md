@@ -63,6 +63,7 @@ const userOptions = {
 
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
+
 #### Run Your Application
 
 ```shell
@@ -82,6 +83,7 @@ const userOptions: Partial<Options> = {
 };
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
 ```
+
 #### Run Your Application
 
 ```shell
