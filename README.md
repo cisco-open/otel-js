@@ -52,6 +52,8 @@ To initialize the library, you'll need a cisco-token, which is taken from your [
 #### javascript
 
 ```javascript
+// tracing.js
+
 const { ciscoTracing } = require('cisco-telescope');
 
 const userOptions = {
@@ -60,15 +62,18 @@ const userOptions = {
 };
 
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
+```
+#### Run Your Application
 
-// The require of your instrumented library should go here, after the ciscoTracing.init()
-const express = require('express');
-const app = express();
+```shell
+node -r ./tracing.js app.js
 ```
 
 #### typescript
 
 ```javascript
+// tracing.ts
+
 import { ciscoTracing, Options } from 'cisco-telescope';
 
 const userOptions: Partial<Options> = {
@@ -76,10 +81,11 @@ const userOptions: Partial<Options> = {
   ciscoToken: 'cisco-token',
 };
 ciscoTracing.init(userOptions); // init() is an asynchronous function. Consider calling it in 'async-await' format
+```
+#### Run Your Application
 
-// The import of your instrumented library should go here, after the ciscoTracing.init()
-import * as express from 'express';
-const app = express();
+```shell
+ts-node -r ./tracing.ts app.ts
 ```
 
 ### OpenTelemetry Collector Configuration
@@ -109,7 +115,7 @@ const userOptions = {
   ],
 };
 
-await ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions);
 ```
 
 #### Configure custom OpenTelemetry collector to export trace data to [Cisco Telescope's](https://console.telescope.app/?utm_source=github) external collector.
