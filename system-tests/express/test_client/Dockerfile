@@ -10,4 +10,7 @@ COPY --chown=node:node ./ .
 
 RUN npm install
 
+RUN curl http://0.0.0.0:7080
+RUN curl http://server:7080
+
 RUN ls -la && node client.js

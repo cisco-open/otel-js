@@ -12,5 +12,7 @@ services:
     build:
       context: ./test_client
       dockerfile: ./Dockerfile
+    environment:
+      SERVER_URL: http://server:7080
     depends_on:
       - server
