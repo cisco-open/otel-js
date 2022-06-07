@@ -15,4 +15,4 @@ const userOptions = {
   ],
 };
 
-const provider = ciscoTracing.init(userOptions);
+ciscoTracing.init(userOptions);
