@@ -10,4 +10,4 @@ COPY --chown=node:node ./ .
 
 RUN npm install
 
-RUN ls -lR && node client.js
+RUN ls -la && node client.js
