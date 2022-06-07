@@ -1,4 +1,3 @@
-
 const { ciscoTracing } = require('cisco-telescope');
 const api = require('@opentelemetry/api');
 
