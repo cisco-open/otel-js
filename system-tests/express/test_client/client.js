@@ -1,7 +1,7 @@
 'use strict';
 
-const got = require('got')
-got("http://server:7080", {
+const got = require('got');
+got('http://server:7080', {
   retry: {
     errorCodes: ['ECONNREFUSED'],
     maxRetryAfter: 1000,
