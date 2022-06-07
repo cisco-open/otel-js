@@ -2,6 +2,7 @@
 
 const { ciscoTracing } = require('cisco-telescope');
 const api = require('@opentelemetry/api');
+
 api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.ALL);
 
 const userOptions = {
