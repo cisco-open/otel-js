@@ -8,6 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cisco-telescope": "file:../../../cisco-telescope-0.0.0-development.tgz",
     "express": "^4.17.1"
   }
 }

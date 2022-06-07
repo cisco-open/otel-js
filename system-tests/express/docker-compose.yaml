@@ -1,14 +1,16 @@
 version: '2'
 services:
-  test-server:
+  server:
     build:
-      context: ../../..
-      dockerfile: server/Dockerfile
+      context: ../../
+      dockerfile: system-tests/express/server/Dockerfile
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
     ports:
       - '7080:7080'
-  client:
+  test-client:
     build:
-      context: .
-      dockerfile: ./test_client/Dockerfile
+      context: ./test_client
+      dockerfile: ./Dockerfile
+    depends_on:
+      - server

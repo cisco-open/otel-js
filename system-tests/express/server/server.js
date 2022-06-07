@@ -5,6 +5,7 @@ const api = require('@opentelemetry/api');
 api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.ALL);
 
 const userOptions = {
+  debug: true,
   serviceName: 'my-app-name',
   ciscoToken: 'fso-token',
   exporters: [
@@ -15,7 +16,7 @@ const userOptions = {
   ],
 };
 
-ciscoTracing.init(userOptions);
+const provider = ciscoTracing.init(userOptions);
 
 require('http');
 const express = require('express');
@@ -30,6 +31,5 @@ app.get('/', (req, res) => {
   res.status(200).send('Hallo Worldz');
 });
 
-// Skip the actual server setup. Just make sure that our agent don't throw an exception
-// app.listen(PORT, HOST);
+app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
