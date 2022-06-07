@@ -14,4 +14,5 @@ RUN apt-get update; apt-get install curl
 RUN curl http://0.0.0.0:7080
 RUN curl http://server:7080
 
+
 RUN ls -la && node client.js
