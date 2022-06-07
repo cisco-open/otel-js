@@ -14,6 +14,8 @@ RUN npm run build
 
 RUN npm pack
 
-RUN cd system-tests/express/server && npm install && npm install ../../../cisco-telescope-0.0.0-development.tgz
+WORKDIR /home/node/app/system-tests/express/server
+
+RUN npm install && npm install ../../../cisco-telescope-0.0.0-development.tgz
 
 CMD ["npm", "run", "start"]
