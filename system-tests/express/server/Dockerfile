@@ -8,7 +8,6 @@ WORKDIR /home/node/app
 COPY --chown=node:node ["package*.json", "*.lock", "./"]
 COPY --chown=node:node ./ .
 
-RUN ls -la
 RUN npm install
 
 RUN npm run build
@@ -17,4 +16,4 @@ RUN npm pack
 
 RUN cd system-tests/express/server && npm install && npm install ../../../cisco-telescope-0.0.0-development.tgz
 
-RUN cd system-tests/express/server && ls -lR && node server.js
+CMD ["npm", "run", "start"]

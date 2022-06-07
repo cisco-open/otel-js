@@ -5,7 +5,7 @@
   "author": "First Last <first.last@example.com>",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node -r tracing.js server.js"
   },
   "dependencies": {
     "express": "^4.17.1"
