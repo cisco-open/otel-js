@@ -5,14 +5,8 @@ api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.ALL);
 
 const userOptions = {
   debug: true,
-  serviceName: 'my-app-name',
-  ciscoToken: 'fso-token',
-  exporters: [
-    {
-      collectorEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-      type: 'otlp-grpc',
-    },
-  ],
+  serviceName: 'Cisco OTel JS System tests',
+  ciscoToken: 'eps_1gNbIHO413YJNF9_ogur6lunYz5EuI17lUpib_2gmb0',
 };
 
 ciscoTracing.init(userOptions);
