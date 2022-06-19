@@ -56,6 +56,9 @@ export class PayloadHandler {
     payload: any,
     maxPayloadSize: number
   ) {
+    if (!payload) {
+      return;
+    }
     if (payload.length > maxPayloadSize) {
       PayloadHandler.addPayloadToSpan(
         span,

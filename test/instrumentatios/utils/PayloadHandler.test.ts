@@ -195,6 +195,18 @@ describe('PayloadHandler tests', () => {
       done();
     });
 
+    it('should failed try setPayload for undefined data object', done => {
+      const span = tracer.startSpan('HTTP UNDEF BODY - TEST');
+      PayloadHandler.setPayload(span, ATTR_PREFIX, undefined, 1337);
+      span.end();
+      const spans = memoryExporter.getFinishedSpans();
+
+      assert.equal(spans.length, 1);
+      assert.equal(spans[0].attributes[ATTR_PREFIX], undefined);
+      sinon.assert.neverCalledWith(logger.debug);
+      done();
+    });
+
     it('should capture data and set relevant span attr < maxPayloadSize', done => {
       const span = tracer.startSpan('TEST');
       const testBody = 'too long payloadyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
