@@ -25,16 +25,26 @@ import { configureAmqplibInstrumentation } from './extentions/amqplib';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
 import { configureRedisInstrumentation } from './extentions/redis';
 import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
+import { MongoDBInstrumentation } from '@opentelemetry/instrumentation-mongodb';
 
 export function getInstrumentations(options: Options): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations({
     '@opentelemetry/instrumentation-aws-lambda': { enabled: false },
     '@opentelemetry/instrumentation-grpc': { enabled: false },
+    '@opentelemetry/instrumentation-mongodb': { enabled: false },
   });
 
   instrumentations.push(new AwsInstrumentation());
   // TODO: update the package path after this was contributed to OTel
   instrumentations.push(new AmqplibInstrumentation());
+
+  if (options.payloadsEnabled) {
+    diag.debug('Adding Payloads to mongodb');
+    // TODO: if we support user instrumentation this will override the user default config
+    instrumentations.push(
+      new MongoDBInstrumentation({ enhancedDatabaseReporting: true })
+    );
+  }
 
   diag.debug('Adding Cisco grpc-js instrumentation');
   instrumentations.push(
