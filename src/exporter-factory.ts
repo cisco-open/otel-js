@@ -17,7 +17,7 @@ import { inspect } from 'util';
 
 import { SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { ExporterOptions, Options } from './options';
-import { Metadata } from '@grpc/grpc-js';
+import * as grpc from '@grpc/grpc-js';
 
 import { OTLPTraceExporter as GRPCTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { OTLPTraceExporter as HTTPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -32,7 +32,7 @@ function otlpGrpcSpanFactory(
   options: Options,
   exporterOptions: ExporterOptions
 ): SpanExporter {
-  const metadata = new Metadata();
+  const metadata = new grpc.Metadata();
 
   for (const key in exporterOptions.customHeaders) {
     const value = exporterOptions.customHeaders[key];
@@ -41,7 +41,7 @@ function otlpGrpcSpanFactory(
 
   const collectorOptions = {
     url: exporterOptions.collectorEndpoint,
-    metadata,
+    metadata: metadata,
   };
 
   return new GRPCTraceExporter(collectorOptions);

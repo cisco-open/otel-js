@@ -18,7 +18,6 @@ import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
