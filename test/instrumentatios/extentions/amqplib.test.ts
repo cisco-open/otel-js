@@ -15,7 +15,7 @@
  */
 
 // in order to these tests locally, run: docker run `export RUN_RABBITMQ_TESTS=1'; npm run rabbitmq`
-import { AmqplibInstrumentation } from 'opentelemetry-instrumentation-amqplib';
+import { AmqplibInstrumentation } from '@opentelemetry/instrumentation-amqplib';
 import {
   BasicTracerProvider,
   InMemorySpanExporter,
