@@ -35,8 +35,6 @@ export function getInstrumentations(options: Options): Instrumentation[] {
   });
 
   instrumentations.push(new AwsInstrumentation());
-  // TODO: update the package path after this was contributed to OTel
-  instrumentations.push(new AmqplibInstrumentation());
 
   if (options.payloadsEnabled) {
     diag.debug('Adding Payloads to mongodb');
@@ -67,7 +65,7 @@ export function getInstrumentations(options: Options): Instrumentation[] {
         diag.debug('Adding Cisco redis patching');
         configureRedisInstrumentation(instrumentation, options);
         break;
-      case 'opentelemetry-instrumentation-amqplib':
+      case '@opentelemetry/instrumentation-amqplib':
         diag.debug('Adding Cisco amqplib patching');
         configureAmqplibInstrumentation(instrumentation, options);
         break;
