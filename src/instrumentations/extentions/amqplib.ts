@@ -16,10 +16,10 @@
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../../options';
 import {
-  AmqplibConsumerCustomAttributeFunction,
+  AmqplibConsumeCustomAttributeFunction,
   AmqplibInstrumentationConfig,
   AmqplibPublishCustomAttributeFunction,
-} from 'opentelemetry-instrumentation-amqplib';
+} from '@opentelemetry/instrumentation-amqplib';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { addFlattenedObj, addAttribute } from '../utils/utils';
 import { PayloadHandler } from '../utils/PayloadHandler';
@@ -69,7 +69,7 @@ export function configureAmqplibInstrumentation(
 function createPublishHook(
   options: Options
 ): AmqplibPublishCustomAttributeFunction {
-  return (span, publishParams) => {
+  return (span, publishInfo) => {
     const spanContext = span.spanContext();
     if (!isSpanContextValid(spanContext)) {
       return;
@@ -77,18 +77,18 @@ function createPublishHook(
     addFlattenedObj(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER,
-      publishParams.options.headers
+      publishInfo?.options?.headers ?? {}
     );
     addAttribute(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE,
-      publishParams.content.length
+      publishInfo.content.length
     );
     // TODO: we need to separate the user Options from our using options
     PayloadHandler.setPayload(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD,
-      publishParams.content,
+      publishInfo.content,
       options.maxPayloadSize
     );
   };
@@ -96,7 +96,7 @@ function createPublishHook(
 
 function createConsumeHook(
   options: Options
-): AmqplibConsumerCustomAttributeFunction {
+): AmqplibConsumeCustomAttributeFunction {
   return (span, message) => {
     const spanContext = span.spanContext();
     if (!isSpanContextValid(spanContext)) {
@@ -106,18 +106,18 @@ function createConsumeHook(
     addFlattenedObj(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_MESSAGE_HEADER,
-      message.properties.headers
+      message.msg.properties.headers
     );
     addAttribute(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD_SIZE,
-      message.content.length
+      message.msg.content.length
     );
 
     PayloadHandler.setPayload(
       span,
       SemanticAttributes.MESSAGING_RABBITMQ_PAYLOAD,
-      message.content,
+      message.msg.content,
       options.maxPayloadSize
     );
   };
