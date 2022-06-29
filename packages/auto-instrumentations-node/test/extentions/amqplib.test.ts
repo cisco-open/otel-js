@@ -32,11 +32,11 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 import * as amqp from 'amqplib';
 import { Channel, ConfirmChannel } from 'amqplib/callback_api';
-import { configureAmqplibInstrumentation } from '../../../src/instrumentations/extentions/amqplib';
-import { assertExpectedObj, testOptions } from '../../utils';
+import { configureAmqplibInstrumentation } from '../../src/instrumentations/extentions/amqplib';
+import { assertExpectedObj, testOptions } from '../../../cisco-sdk-node/test/utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { addAttribute } from '../../../src/instrumentations/utils/utils';
-import { setInnerOptions } from '../../../src/inner-options';
+import { addAttribute } from '../../src/instrumentations/utils/utils';
+import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';

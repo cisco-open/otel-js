@@ -24,17 +24,17 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
-import { configureRedisInstrumentation } from '../../../src/instrumentations/extentions/redis';
+import { configureRedisInstrumentation } from '../../src/instrumentations/extentions/redis';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
-import { setInnerOptions } from '../../../src/inner-options';
+import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
 
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
 
 import * as redisTypes from 'redis';
-import { testOptions } from '../../utils';
+import { testOptions } from '../../../cisco-sdk-node/test/utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { addAttribute } from '../../../src/instrumentations/utils/utils';
+import { addAttribute } from '../../src/instrumentations/utils/utils';
 
 const memoryExporter = new InMemorySpanExporter();
 

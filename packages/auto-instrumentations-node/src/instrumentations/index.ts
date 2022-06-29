@@ -15,7 +15,6 @@
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
 
-import { Options } from '../options';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { diag } from '@opentelemetry/api';
@@ -26,7 +25,8 @@ import { configureRedisInstrumentation } from './extentions/redis';
 import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
 import { MongoDBInstrumentation } from '@opentelemetry/instrumentation-mongodb';
 
-export function getInstrumentations(options: Options): Instrumentation[] {
+// TODO: fillout the options
+export function getInstrumentations(): Instrumentation[] {
   const instrumentations = getNodeAutoInstrumentations({
     '@opentelemetry/instrumentation-aws-lambda': { enabled: false },
     '@opentelemetry/instrumentation-grpc': { enabled: false },
@@ -35,6 +35,8 @@ export function getInstrumentations(options: Options): Instrumentation[] {
 
   instrumentations.push(new AwsInstrumentation());
 
+  //TODO: add options
+  const options = {payloadsEnabled: true, maxPayloadSize: 1024}
   if (options.payloadsEnabled) {
     diag.debug('Adding Payloads to mongodb');
     // TODO: if we support user instrumentation this will override the user default config

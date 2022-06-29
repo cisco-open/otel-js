@@ -22,8 +22,8 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import * as assert from 'assert';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { configureAwsInstrumentation } from '../../../src/instrumentations/extentions/aws/aws_sdk';
-import { testOptions } from '../../utils';
+import { configureAwsInstrumentation } from '../../src/instrumentations/extentions/aws/aws_sdk';
+import { testOptions } from '../../../cisco-sdk-node/test/utils';
 const instrumentation = new AwsInstrumentation();
 instrumentation.enable();
 const memoryExporter = new InMemorySpanExporter();
@@ -34,7 +34,7 @@ import { SQS, SendMessageBatchCommandOutput } from '@aws-sdk/client-sqs';
 import * as nock from 'nock';
 import * as fs from 'fs';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { setInnerOptions } from '../../../src/inner-options';
+import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 instrumentation.setTracerProvider(provider);
 

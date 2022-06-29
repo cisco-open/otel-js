@@ -24,7 +24,8 @@ import {
   processDetector,
   envDetector,
 } from '@opentelemetry/resources';
-import { getInstrumentations } from './instrumentations';
+// TODO: add instrumentations
+// import { getInstrumentations } from './instrumentations';
 import { exporterFactory } from './exporter-factory';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Consts } from 'cisco-opentelemetry-specifications';
@@ -46,8 +47,9 @@ export async function init(userOptions: Partial<Options>) {
     return;
   }
 
+  // TODO: add instrumentations
   registerInstrumentations({
-    instrumentations: getInstrumentations(options),
+    // instrumentations: getInstrumentations(options),
   });
 
   const detectedResources = await detectResources({

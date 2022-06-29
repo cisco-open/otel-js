@@ -22,12 +22,12 @@ import {
   InMemorySpanExporter,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
-import { Options } from '../../../src';
+import { Options } from '../../../cisco-sdk-node/src';
 import * as assert from 'assert';
-import { _configDefaultOptions } from '../../../src/options';
-import { testOptions } from '../../utils';
+import { _configDefaultOptions } from '../../../cisco-sdk-node/src/options';
+import { testOptions } from '../../../cisco-sdk-node/test/utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { setInnerOptions } from '../../../src/inner-options';
+import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');

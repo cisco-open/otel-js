@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
@@ -11,6 +8,7 @@
     "module": "commonjs",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "pretty": true,
@@ -19,12 +17,9 @@
     "strictNullChecks": true,
     "target": "es2017",
     "incremental": true,
-    "rootDir": ".",
-    "outDir": "lib"
+    "newLine": "LF"
   },
-  "exclude": ["node_modules"],
-  "include": [
-    "packages/cisco-sdk-node/src/**/*.ts",
-    "packages/cisco-sdk-node/test/**/*.ts"
+  "exclude": [
+    "node_modules"
   ]
 }

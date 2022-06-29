@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*eslint sort-imports: ["error", { "ignoreDeclarationSort": true }]*/
-import { GrpcJsInstrumentation } from '../../../../src/instrumentations/static-instrumentations/grpc-js/instrumentation';
+import { GrpcJsInstrumentation } from '../../../src/instrumentations/static-instrumentations/grpc-js/instrumentation';
 import { SemanticAttributes as CiscoSemanticAttributes } from 'cisco-opentelemetry-specifications';
 const instrumentation = new GrpcJsInstrumentation('grpc-test-instrumentation', {
   maxPayloadSize: 10,
@@ -25,12 +25,12 @@ import {
   InMemorySpanExporter,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
-import * as utils from '../../../utils';
+import * as utils from '../../../../cisco-sdk-node/test/utils';
 import * as grpc from '@grpc/grpc-js';
 import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
-import { assertExpectedObj } from '../../../utils';
+import { assertExpectedObj } from '../../../../cisco-sdk-node/test/utils';
 import {
   REQUEST_MESSAGE,
   REQUEST_METADATA,
@@ -38,7 +38,7 @@ import {
   RESPONSE_METADATA,
 } from './consts';
 import assert = require('assert');
-import { setInnerOptions } from '../../../../src/inner-options';
+import { setInnerOptions } from '../../../../cisco-sdk-node/src/inner-options';
 
 const SERVER_PORT = 51051;
 
