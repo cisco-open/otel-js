@@ -25,7 +25,7 @@ import * as utils from './utils';
 import { Consts } from 'cisco-opentelemetry-specifications';
 
 describe('Tracing test', () => {
-  let addSpanProcessorMock;
+  let addSpanProcessorMock: any;
   const createLoggerStub = sinon.fake();
 
   beforeEach(() => {

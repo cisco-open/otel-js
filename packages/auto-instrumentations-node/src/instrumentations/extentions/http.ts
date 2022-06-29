@@ -23,7 +23,7 @@ import {
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage } from 'packages/cisco-sdk-node/src/instrumentations/extentions/http';
+import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
 import { addFlattenedObj } from '../utils/utils';
@@ -34,7 +34,7 @@ export function configureHttpInstrumentation(
 ) {
   if (
     typeof instrumentation['setConfig'] !== 'function' ||
-    typeof instrumentation['_getConfig'] !== 'function'
+    typeof instrumentation['getConfig'] !== 'function'
   ) {
     return;
   }

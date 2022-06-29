@@ -7,3 +7,4 @@ coverage/
 packages/cisco-sdk-node/src/sami_tests/
 examples/my_examples/
 .DS_Store
+lerna-debug.log
