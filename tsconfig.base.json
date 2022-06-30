@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
@@ -8,7 +11,6 @@
     "module": "commonjs",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "pretty": true,
@@ -17,9 +19,9 @@
     "strictNullChecks": true,
     "target": "es2017",
     "incremental": true,
-    "newLine": "LF"
+    "rootDir": ".",
+    "outDir": "lib"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
