@@ -22,10 +22,8 @@
       strategy:
         fail-fast: false
         matrix:
-          container: [ "node:10", "node:12", "node:14" ]
+          node: [ "10", "12", "14" ]
       runs-on: ubuntu-latest
-      container:
-        image: ${{ matrix.container }}
       services:
         rabbitmq:
           image: rabbitmq:3
@@ -53,13 +51,15 @@
         RUN_AWS_TESTS: 1
       steps:
         - name: Checkout
-          uses: actions/checkout@v1
+          uses: actions/checkout@v3
         - name: Cache Dependencies
-          uses: actions/cache@v2
+          uses: actions/cache@v3
           with:
             path: |
               node_modules
               package-lock.json
+              packages/*/node_modules
+              packages/*/package-lock.json
             key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
