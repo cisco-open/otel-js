@@ -72,7 +72,7 @@
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
         - name: Bootstrap Dependencies
-          run: npx lerna bootstrap --no-ci --hoist --nohoist='zone.js' --nohoist='mocha' --nohoist='ts-mocha'
+          run: npx lerna bootstrap --no-ci
         - name: Unit tests
           run: npm run test:ci:changed
         - name: Upload coverage to Codecov
