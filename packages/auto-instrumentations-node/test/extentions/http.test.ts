@@ -27,7 +27,10 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../../../cisco-sdk-node/test/utils';
 import * as assert from 'assert';
-import { assertExpectedObj, testOptions } from '../../../cisco-sdk-node/test/utils';
+import {
+  assertExpectedObj,
+  testOptions,
+} from '../../../cisco-sdk-node/test/utils';
 import { _configDefaultOptions } from '../../../cisco-sdk-node/src/options';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { addAttribute } from '../../src/instrumentations/utils/utils';

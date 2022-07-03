@@ -24,7 +24,7 @@ import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
 import { configureRedisInstrumentation } from './extentions/redis';
 import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
 import { MongoDBInstrumentation } from '@opentelemetry/instrumentation-mongodb';
-import {Options} from '../options';
+import { Options } from '../options';
 
 // TODO: fillout the options
 export function getInstrumentations(options: Options): Instrumentation[] {

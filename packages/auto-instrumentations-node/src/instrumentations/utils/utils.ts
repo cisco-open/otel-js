@@ -26,7 +26,7 @@ export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
       continue;
     }
     //TODO: add options
-    const options = {payloadsEnabled: true}
+    const options = { payloadsEnabled: true };
     if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
     // we don't call our addAttribute() bacuase it checks again if the key is payload or not
     span.setAttribute(`${attrPrefix}.${key.toLocaleLowerCase()}`, value);
@@ -39,7 +39,7 @@ export function addFlattenedArr(
   arr: Array<any>
 ) {
   //TODO: add options
-  const options = {payloadsEnabled: true}
+  const options = { payloadsEnabled: true };
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   for (const index in arr) {
     // we don't call our addAttribute() bacuase it checks again if the key is payload or not
@@ -61,7 +61,7 @@ export function addAttribute(
   value: SpanAttributeValue
 ) {
   //TODO: add options
-  const options = {payloadsEnabled: true}
+  const options = { payloadsEnabled: true };
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   span.setAttribute(attrPrefix, value);
 }
