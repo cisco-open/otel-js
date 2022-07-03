@@ -26,9 +26,7 @@ export const cleanEnvironmentVariables = () => {
   });
 };
 
-export const testOptions = <Options>(
-  _configDefaultOptions({ ciscoToken: 'some_token' })
-);
+export const testOptions = <Options>_configDefaultOptions({});
 
 export function assertExpectedObj(
   span: ReadableSpan,

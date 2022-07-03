@@ -16,6 +16,7 @@
     "lint": "eslint . --ext .ts",
     "lint:commits": "commitlint",
     "build": "tsc -p .",
+    "prepare": "npm run build",
     "test": "nyc ts-mocha -p tsconfig.json 'test/static-instrumentations/**/*.test.ts'",
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
     "semantic-release": "semantic-release",

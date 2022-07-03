@@ -16,8 +16,9 @@
     "lint:commits": "commitlint",
     "build": "tsc -p .",
     "test": "lerna run test",
+    "test:ci:changed": "lerna run test --since origin/main",
     "codecov": "lerna run codecov",
-    "semantic-release": "semantic-release"
+    "semantic-release": "lerna run semantic-release"
   },
   "release": {
     "branches": [
