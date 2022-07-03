@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Span, Attributes, AttributeValue } from "@opentelemetry/api";
-import { PayloadAttributes } from "cisco-opentelemetry-specifications";
-import { getInnerOptions } from "../../inner-options";
+import { Span, Attributes, AttributeValue } from '@opentelemetry/api';
+import { PayloadAttributes } from 'cisco-opentelemetry-specifications';
+import { getInnerOptions } from '../../inner-options';
 
 /** Add Object to Span as flattened labels */
 export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
