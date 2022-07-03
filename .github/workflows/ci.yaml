@@ -22,7 +22,7 @@
       strategy:
         fail-fast: false
         matrix:
-          node: [ "10", "12", "14" ]
+          node: [ "10", "12", "14", "16"]
       runs-on: ubuntu-latest
       services:
         rabbitmq:
@@ -52,6 +52,8 @@
       steps:
         - name: Checkout
           uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
         - name: Cache Dependencies
           uses: actions/cache@v3
           with:
@@ -61,6 +63,9 @@
               packages/*/node_modules
               packages/*/package-lock.json
             key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
+        - name: Legacy Peer Dependencies for npm 7
+          if: matrix.node == '16'
+          run: npm config set legacy-peer-deps=true
         - name: Install Root Dependencies
           run: npm install --ignore-scripts
         - name: Bootstrap Dependencies
