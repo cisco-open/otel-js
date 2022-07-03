@@ -29,11 +29,11 @@
             --health-retries 5
       env:
         RUN_RABBITMQ_TESTS: 1
-        TEST_RABBITMQ_HOST: "rabbitmq"
+        TEST_RABBITMQ_HOST: localhost
         TEST_RABBITMQ_PORT: 5672
 
         RUN_REDIS_TESTS: 1
-        REDIS_HOST: redis
+        REDIS_HOST: localhost
         REDIS_PORT: 6379
 
         RUN_AWS_TESTS: 1
