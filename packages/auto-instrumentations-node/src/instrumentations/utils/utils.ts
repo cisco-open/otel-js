@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Span, SpanAttributes, SpanAttributeValue } from '@opentelemetry/api';
-//TODO: add options
+import { Span, Attributes, AttributeValue } from '@opentelemetry/api';
 import { PayloadAttributes } from 'cisco-opentelemetry-specifications';
+import { getInnerOptions } from '../../inner-options';
 
 /** Add Object to Span as flattened labels */
 export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
@@ -25,10 +25,9 @@ export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
     if (value === undefined) {
       continue;
     }
-    //TODO: add options
-    const options = { payloadsEnabled: true };
+    const options = getInnerOptions();
     if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
-    // we don't call our addAttribute() bacuase it checks again if the key is payload or not
+    // we don't call our addAttribute() because it checks again if the key is payload or not
     span.setAttribute(`${attrPrefix}.${key.toLocaleLowerCase()}`, value);
   }
 }
@@ -39,16 +38,16 @@ export function addFlattenedArr(
   arr: Array<any>
 ) {
   //TODO: add options
-  const options = { payloadsEnabled: true };
+  const options = getInnerOptions();
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   for (const index in arr) {
-    // we don't call our addAttribute() bacuase it checks again if the key is payload or not
+    // we don't call our addAttribute() because it checks again if the key is payload or not
     span.setAttribute(`${attrPrefix}.${index}`, JSON.stringify(arr[index]));
   }
 }
 
 /** Wrapper for native setAttributes */
-export function addAttributes(span: Span, attributes: SpanAttributes) {
+export function addAttributes(span: Span, attributes: Attributes) {
   for (const att in attributes) {
     addAttribute(span, att, JSON.stringify(attributes[att]));
   }
@@ -58,7 +57,7 @@ export function addAttributes(span: Span, attributes: SpanAttributes) {
 export function addAttribute(
   span: Span,
   attrPrefix: string,
-  value: SpanAttributeValue
+  value: AttributeValue
 ) {
   //TODO: add options
   const options = { payloadsEnabled: true };

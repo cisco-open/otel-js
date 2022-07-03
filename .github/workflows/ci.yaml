@@ -34,7 +34,7 @@
 
         RUN_REDIS_TESTS: 1
         REDIS_HOST: localhost
-        REDIS_PORT: 6379
+        REDIS_PORT: 63790
 
         RUN_AWS_TESTS: 1
       steps:
