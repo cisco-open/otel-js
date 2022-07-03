@@ -73,6 +73,7 @@
         - name: Unit tests
           run: npm run test:ci:changed
         - name: Upload coverage to Codecov
+          if: matrix.node == '14'
           uses: codecov/codecov-action@v2
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
