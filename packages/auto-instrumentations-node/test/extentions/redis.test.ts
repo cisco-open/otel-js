@@ -26,13 +26,13 @@ import * as assert from 'assert';
 import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { configureRedisInstrumentation } from '../../src/instrumentations/extentions/redis';
 import { RedisResponseCustomAttributeFunction } from '@opentelemetry/instrumentation-redis/build/src/types';
-import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
+import { setInnerOptions } from '../../src/inner-options';
 
 const instrumentation = new RedisInstrumentation();
 instrumentation.enable();
 
 import * as redisTypes from 'redis';
-import { testOptions } from '../../../cisco-sdk-node/test/utils';
+import { testOptions } from '../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { addAttribute } from '../../src/instrumentations/utils/utils';
 

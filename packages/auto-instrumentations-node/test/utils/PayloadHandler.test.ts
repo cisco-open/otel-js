@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PayloadHandler } from '../../../src/instrumentations/utils/PayloadHandler';
+import { PayloadHandler } from '../../src/instrumentations/utils/PayloadHandler';
 import * as sinon from 'sinon';
 import * as api from '@opentelemetry/api';
 import {
@@ -22,10 +22,10 @@ import {
   InMemorySpanExporter,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
-import { Options } from '../../../cisco-sdk-node/src';
+import { Options } from '../../src/options';
 import * as assert from 'assert';
-import { _configDefaultOptions } from '../../../cisco-sdk-node/src/options';
-import { testOptions } from '../../../cisco-sdk-node/test/utils';
+import { _configDefaultOptions } from '../../src/options';
+import { testOptions } from '../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
 

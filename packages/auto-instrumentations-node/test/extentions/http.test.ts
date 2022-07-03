@@ -25,7 +25,7 @@ import {
 const instrumentation = new HttpInstrumentation();
 instrumentation.enable();
 import * as http from 'http';
-import * as utils from '../../../cisco-sdk-node/test/utils';
+import * as utils from '../utils';
 import * as assert from 'assert';
 import {
   assertExpectedObj,

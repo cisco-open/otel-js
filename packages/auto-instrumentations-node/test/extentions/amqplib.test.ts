@@ -36,10 +36,10 @@ import { configureAmqplibInstrumentation } from '../../src/instrumentations/exte
 import {
   assertExpectedObj,
   testOptions,
-} from '../../../cisco-sdk-node/test/utils';
+} from '../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { addAttribute } from '../../src/instrumentations/utils/utils';
-import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
+import { setInnerOptions } from '../../src/inner-options';
 
 const TEST_RABBITMQ_HOST = process.env.TEST_RABBITMQ_HOST || '127.0.0.1';
 const TEST_RABBITMQ_PASS = process.env.TEST_RABBITMQ_PASS || 'password';
