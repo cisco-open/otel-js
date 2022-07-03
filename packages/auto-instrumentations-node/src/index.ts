@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * as ciscoTracing from './tracing';
+export { getInstrumentations } from './instrumentations';
 export { Options } from './options';
