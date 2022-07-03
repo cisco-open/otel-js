@@ -66,9 +66,7 @@
         - name: Bootstrap Dependencies
           run: npx lerna bootstrap
         - name: Unit tests
-          run: lerna run test --since origin/main
-        - name: Generate code coverage
-          run: lerna run codecov
+          run: npm run test --since origin/main
         - name: Upload coverage to Codecov
           uses: codecov/codecov-action@v2
           with:
