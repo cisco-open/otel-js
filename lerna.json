@@ -3,6 +3,7 @@
   "packages": [
     "packages/*"
   ],
+  "version": "independent",
   "command": {
     "version": {
       "conventionalCommit": true,
