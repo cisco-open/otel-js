@@ -37,7 +37,6 @@ export function addFlattenedArr(
   attrPrefix: string,
   arr: Array<any>
 ) {
-  //TODO: add options
   const options = getInnerOptions();
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   for (const index in arr) {
@@ -59,8 +58,7 @@ export function addAttribute(
   attrPrefix: string,
   value: AttributeValue
 ) {
-  //TODO: add options
-  const options = { payloadsEnabled: true };
+  const options = getInnerOptions();
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
   span.setAttribute(attrPrefix, value);
 }
