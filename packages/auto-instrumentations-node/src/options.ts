@@ -48,7 +48,6 @@ export function _configDefaultOptions(
       Consts.DEFAULT_PAYLOADS_ENABLED
     );
 
-
   setInnerOptions(options);
   return <Options>options;
 }
