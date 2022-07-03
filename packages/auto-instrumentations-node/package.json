@@ -12,6 +12,7 @@
     "url": "https://github.com/epsagon/otel-js.git"
   },
   "scripts": {
+    "clean": "tsc --build --clean tsconfig.json",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "lint": "eslint . --ext .ts",
     "lint:commits": "commitlint",

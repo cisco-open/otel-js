@@ -10,6 +10,7 @@
     "url": "https://github.com/epsagon/otel-js.git"
   },
   "scripts": {
+    "clean": "lerna run clean",
     "prepare": "husky install",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "lint": "eslint . --ext .ts",
