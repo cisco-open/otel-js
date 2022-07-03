@@ -25,12 +25,12 @@ import {
   InMemorySpanExporter,
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
-import * as utils from '../../../../cisco-sdk-node/test/utils';
+import * as utils from '../../utils';
 import * as grpc from '@grpc/grpc-js';
 import { server } from './server';
 import { HelloRequest } from './generated_proto/hello_pb';
 import { GreeterClient } from './generated_proto/hello_grpc_pb';
-import { assertExpectedObj } from '../../../../cisco-sdk-node/test/utils';
+import { assertExpectedObj } from '../../utils';
 import {
   REQUEST_MESSAGE,
   REQUEST_METADATA,
@@ -38,7 +38,7 @@ import {
   RESPONSE_METADATA,
 } from './consts';
 import assert = require('assert');
-import { setInnerOptions } from '../../../../cisco-sdk-node/src/inner-options';
+import { setInnerOptions } from '../../../src/inner-options';
 
 const SERVER_PORT = 51051;
 

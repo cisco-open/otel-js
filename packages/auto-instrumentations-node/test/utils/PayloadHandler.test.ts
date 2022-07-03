@@ -27,7 +27,7 @@ import * as assert from 'assert';
 import { _configDefaultOptions } from '../../src/options';
 import { testOptions } from '../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
+import { setInnerOptions } from '../../src/inner-options';
 
 const provider = new BasicTracerProvider();
 const tracer = provider.getTracer('test-payload-handler');

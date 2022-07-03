@@ -27,14 +27,10 @@ instrumentation.enable();
 import * as http from 'http';
 import * as utils from '../utils';
 import * as assert from 'assert';
-import {
-  assertExpectedObj,
-  testOptions,
-} from '../../../cisco-sdk-node/test/utils';
-import { _configDefaultOptions } from '../../../cisco-sdk-node/src/options';
+import { assertExpectedObj, testOptions } from '../utils';
 import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 import { addAttribute } from '../../src/instrumentations/utils/utils';
-import { setInnerOptions } from '../../../cisco-sdk-node/src/inner-options';
+import { setInnerOptions } from '../../src/inner-options';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
