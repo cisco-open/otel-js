@@ -24,6 +24,9 @@ jobs:
 
       - name: "Version and publish" # Interesting step
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx lerna run semantic-release
+        run: |
+          npx lerna version --conventional-commits --yes
+
+          npx lerna publish from-git --yes
