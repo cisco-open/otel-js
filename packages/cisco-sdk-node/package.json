@@ -1,6 +1,6 @@
 {
   "name": "cisco-telescope",
-  "version": "2.1.0",
+  "version": "2.0.0",
   "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
