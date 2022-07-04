@@ -52,11 +52,6 @@ describe('Options tests', () => {
       });
       sinon.assert.neverCalledWith(logger.error);
     });
-    it('should fail when no token and exporter were specified', () => {
-      const options = _configDefaultOptions(<Options>{});
-      assert.ok(!options);
-      sinon.assert.calledOnce(logger.error);
-    });
   });
 
   describe('user Options configuration', () => {
