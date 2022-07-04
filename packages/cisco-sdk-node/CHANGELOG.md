@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/epsagon/otel-js/compare/cisco-telescope@0.1.1...cisco-telescope@2.1.0) (2022-07-04)
+
+
+### Features
+
+* **lerna:** alinging packages versions ([d979024](https://github.com/epsagon/otel-js/commit/d9790244f1f928364eaf3811cd670f4bbf41dce6))
+* **subpackages:** updated getCiscoAutoInstrumentations API ([9f50dd8](https://github.com/epsagon/otel-js/commit/9f50dd84ae57de18b294009ca53bd50f91c57c6b))
+
+
+
+
+
 # 0.1.0 (2022-07-03)
 
 ### Features
