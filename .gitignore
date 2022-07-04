@@ -4,6 +4,11 @@ lib/
 .idea/
 .nyc_output/
 coverage/
-src/sami_tests/
+packages/cisco-sdk-node/src/sami_tests/
 examples/my_examples/
 .DS_Store
+lerna-debug.log
+
+# lock files
+package-lock.json
+packages/**/package-lock.json
