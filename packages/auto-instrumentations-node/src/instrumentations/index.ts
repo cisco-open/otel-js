@@ -52,13 +52,6 @@ export function getCiscoNodeAutoInstrumentations(
 
   instrumentations.push(new AwsInstrumentation());
 
-  instrumentations.push(
-    getCiscoGrpcJSInstrumentation(
-      instrumentations['@opentelemetry/instrumentation-grpc'],
-      options
-    )
-  );
-
   for (const instrumentation of instrumentations) {
     switch (instrumentation.instrumentationName) {
       case '@opentelemetry/instrumentation-http':
@@ -87,6 +80,14 @@ export function getCiscoNodeAutoInstrumentations(
             instrumentation.setConfig(userConfig);
           }
         }
+        break;
+      case '@opentelemetry/instrumentation-grpc':
+        instrumentations.push(
+          getCiscoGrpcJSInstrumentation(
+            instrumentation as GrpcInstrumentation,
+            options
+          )
+        );
         break;
     }
   }
