@@ -65,7 +65,6 @@ describe('Options tests', () => {
       assert.ok(options);
       assert.deepStrictEqual(options, userOptions);
       sinon.assert.neverCalledWith(logger.error);
-      sinon.assert.calledOnce(logger.warn);
     });
   });
 
