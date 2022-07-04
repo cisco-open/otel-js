@@ -15,41 +15,48 @@
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
 
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import {
+  getNodeAutoInstrumentations,
+  InstrumentationConfigMap,
+} from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
+import { setInnerOptions } from '../inner-options'
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
 import { configureRedisInstrumentation } from './extentions/redis';
-import { GrpcJsInstrumentation } from './static-instrumentations/grpc-js/instrumentation';
-import { MongoDBInstrumentation } from '@opentelemetry/instrumentation-mongodb';
+import {
+  GrpcJsInstrumentation,
+  GrpcInstrumentationConfig,
+} from './static-instrumentations/grpc-js';
+import { MongoDBInstrumentationConfig } from '@opentelemetry/instrumentation-mongodb';
 import { Options } from '../options';
+import { GrpcInstrumentation } from '@opentelemetry/instrumentation-grpc';
 
 // TODO: fillout the options
-export function getInstrumentations(options: Options): Instrumentation[] {
-  const instrumentations = getNodeAutoInstrumentations({
+export function getCiscoNodeAutoInstrumentations(
+  configMap: InstrumentationConfigMap = {},
+  options: Options
+): Instrumentation[] {
+  // Extra Cisco config
+  const ciscoConfigMap = {
     '@opentelemetry/instrumentation-aws-lambda': { enabled: false },
     '@opentelemetry/instrumentation-grpc': { enabled: false },
-    '@opentelemetry/instrumentation-mongodb': { enabled: false },
-  });
+  };
+  const mergedConfig = Object.assign({}, configMap, ciscoConfigMap);
+  const instrumentations = getNodeAutoInstrumentations(mergedConfig);
+  // TODO: once we have package per instrumentation, we will have to remove this
+  //       because we will want to give the user option to config every instrumentation by itself.
+  setInnerOptions(options);
 
   instrumentations.push(new AwsInstrumentation());
 
-  //TODO: add options
-  if (options.payloadsEnabled) {
-    diag.debug('Adding Payloads to mongodb');
-    // TODO: if we support user instrumentation this will override the user default config
-    instrumentations.push(
-      new MongoDBInstrumentation({ enhancedDatabaseReporting: true })
-    );
-  }
-
-  diag.debug('Adding Cisco grpc-js instrumentation');
   instrumentations.push(
-    new GrpcJsInstrumentation('cisco-opentelemetry-instrumentation-grpc', {
-      maxPayloadSize: options.maxPayloadSize,
-    })
+    getCiscoGrpcJSInstrumentation(
+      instrumentations['@opentelemetry/instrumentation-grpc'],
+      options
+    )
   );
 
   for (const instrumentation of instrumentations) {
@@ -70,7 +77,38 @@ export function getInstrumentations(options: Options): Instrumentation[] {
         diag.debug('Adding Cisco amqplib patching');
         configureAmqplibInstrumentation(instrumentation, options);
         break;
+      case '@opentelemetry/instrumentation-mongodb':
+        if (options.payloadsEnabled) {
+          diag.debug('Adding Payloads to mongodb');
+          const userConfig =
+            instrumentation.getConfig() as MongoDBInstrumentationConfig;
+          if (!userConfig.enhancedDatabaseReporting === undefined) {
+            userConfig.enhancedDatabaseReporting = true;
+            instrumentation.setConfig(userConfig);
+          }
+        }
+        break;
     }
   }
   return instrumentations;
+}
+
+/**
+ * replace the Grpc JS instrumentation with cisco telescope instrumentation and
+ * copy the config from the OTel to the Telescope one.
+ */
+function getCiscoGrpcJSInstrumentation(
+  origGrpcInstrumentation: GrpcInstrumentation,
+  options: Options
+): GrpcJsInstrumentation {
+  const grpcInstrumentationConfig =
+    origGrpcInstrumentation.getConfig() as GrpcInstrumentationConfig;
+  grpcInstrumentationConfig.maxPayloadSize = options.maxPayloadSize;
+  grpcInstrumentationConfig.payloadsEnabled = options.payloadsEnabled;
+  grpcInstrumentationConfig.enabled = true;
+  diag.debug('Adding Cisco grpc-js instrumentation');
+  return new GrpcJsInstrumentation(
+    'cisco-grpc-instrumentation',
+    grpcInstrumentationConfig
+  );
 }

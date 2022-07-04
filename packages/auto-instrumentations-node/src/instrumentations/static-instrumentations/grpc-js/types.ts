@@ -23,4 +23,5 @@ export interface GrpcInstrumentationConfig extends InstrumentationConfig {
    */
   ignoreGrpcMethods?: IgnoreMatcher[];
   maxPayloadSize: number;
+  payloadsEnabled: boolean;
 }

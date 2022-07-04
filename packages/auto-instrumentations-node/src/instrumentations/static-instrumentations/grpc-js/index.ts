@@ -13,6 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export { getCiscoNodeAutoInstrumentations } from './instrumentations';
-export { Options } from './options';
+export { GrpcJsInstrumentation } from './instrumentation';
+export { GrpcInstrumentationConfig } from './types';
