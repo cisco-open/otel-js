@@ -20,7 +20,7 @@ import {
   InstrumentationConfigMap,
 } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { setInnerOptions } from '../inner-options'
+import { setInnerOptions } from '../inner-options';
 import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
