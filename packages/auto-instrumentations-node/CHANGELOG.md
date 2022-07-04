@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/epsagon/otel-js/compare/@cisco-telescope/auto-instrumentations-node@0.1.1...@cisco-telescope/auto-instrumentations-node@1.1.0) (2022-07-04)
+
+
+### Features
+
+* **subpackages:** added option tests ([5bbfad3](https://github.com/epsagon/otel-js/commit/5bbfad3fef9e6ca4c1ea54fd0badc1ff07b4d83e))
+* **subpackages:** added option tests ([efa0806](https://github.com/epsagon/otel-js/commit/efa0806298d1129867fb6f815ff9bc34863fddaa))
+* **subpackages:** added option tests ([b5e387d](https://github.com/epsagon/otel-js/commit/b5e387de00e623a6764d9ba016e94f3ca8d20039))
+* **subpackages:** added option tests ([fb08daa](https://github.com/epsagon/otel-js/commit/fb08daa04956bfaab9a20167fce12087f8fcf562))
+* **subpackages:** updated getCiscoAutoInstrumentations API ([9f50dd8](https://github.com/epsagon/otel-js/commit/9f50dd84ae57de18b294009ca53bd50f91c57c6b))
+
+
+
+
+
 # 0.1.0 (2022-07-03)
 
 ### Features
