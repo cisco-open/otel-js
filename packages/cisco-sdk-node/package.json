@@ -1,15 +1,15 @@
 {
-  "name": "cisco-telescope",
+  "name": "@cisco-telescope/cisco-sdk-node",
   "version": "2.0.0",
   "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
-  "homepage": "https://github.com/epsagon/otel-js#readme",
+  "homepage": "https://github.com/cisco-open/otel-js#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/epsagon/otel-js.git"
+    "url": "https://github.com/cisco-open/otel-js.git"
   },
   "scripts": {
     "clean": "tsc --build --clean tsconfig.json",
