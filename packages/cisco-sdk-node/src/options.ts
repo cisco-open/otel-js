@@ -101,6 +101,9 @@ export function _configDefaultOptions(
 }
 
 function verify_token(token: string): string {
+  if (token.indexOf('cisco') != -1 || token.indexOf('token') != -1) {
+    diag.error(`Invalid token provided: ${token}, checkout your token here: https://console.telescope.app/settings/account`)
+  }
   if (token.startsWith('Bearer')) {
     diag.info(
       '\'Bearer\' prefix was attached to the provided cisco-token. We recommend using a "clean" token without the prefix'
