@@ -32,4 +32,5 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor}}@users.noreply.github.com"
 
-          npx lerna publish from-git --no-push --no-verify-access --yes
+          npx lerna version --no-push --no-git-tag-version --conventional-commits --yes
+#          npx lerna publish from-git --no-push --no-verify-access --yes
