@@ -9,7 +9,7 @@
   "homepage": "https://github.com/cisco-open/otel-js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cisco-open/otel-js.git"
+    "url": "https://github.com/cisco-open/otel-js.git"
   },
   "publishConfig": {
     "access": "public"
