@@ -20,8 +20,7 @@ import {
   InstrumentationConfigMap,
 } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { setInnerOptions } from '../inner-options';
-import { diag } from '@opentelemetry/api';
+import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
@@ -31,13 +30,13 @@ import {
   GrpcInstrumentationConfig,
 } from './static-instrumentations/grpc-js';
 import { MongoDBInstrumentationConfig } from '@opentelemetry/instrumentation-mongodb';
-import { Options } from '../options';
+import { _configDefaultOptions, Options } from '../options';
 import { GrpcInstrumentation } from '@opentelemetry/instrumentation-grpc';
 
 // TODO: fillout the options
 export function getCiscoNodeAutoInstrumentations(
   configMap: InstrumentationConfigMap = {},
-  options: Options
+  userOptions: Partial<Options>
 ): Instrumentation[] {
   // Extra Cisco config
   const ciscoConfigMap = {
@@ -48,7 +47,11 @@ export function getCiscoNodeAutoInstrumentations(
   const instrumentations = getNodeAutoInstrumentations(mergedConfig);
   // TODO: once we have package per instrumentation, we will have to remove this
   //       because we will want to give the user option to config every instrumentation by itself.
-  setInnerOptions(options);
+  const options = _configDefaultOptions(userOptions);
+
+  if (options.debug) {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+  }
 
   instrumentations.push(new AwsInstrumentation());
 

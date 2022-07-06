@@ -75,6 +75,13 @@ describe('Options tests', () => {
       assert.ok(!options);
       sinon.assert.calledOnce(logger.error);
     });
+    it('should fail token has not set properly', () => {
+      const options = _configDefaultOptions(<Options>{
+        ciscoToken: '<cisco-token>',
+      });
+      assert.ok(!options);
+      sinon.assert.calledOnce(logger.error);
+    });
     it('should pass when no token but exporter were specified', () => {
       const options = _configDefaultOptions(<Options>{
         exporters: [
