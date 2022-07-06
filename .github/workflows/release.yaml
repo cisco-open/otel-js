@@ -21,6 +21,11 @@ jobs:
           npm install
           npx lerna bootstrap
 
+      - name: Setup npm
+        run: |
+          npm set @epsagon:registry=https://npm.pkg.github.com
+          npm set "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
+
       - name: Version and publish # Interesting step
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
