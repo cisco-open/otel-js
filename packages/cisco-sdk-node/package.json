@@ -12,7 +12,8 @@
     "url": "https://github.com/cisco-open/otel-js.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "clean": "tsc --build --clean tsconfig.json",
