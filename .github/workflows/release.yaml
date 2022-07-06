@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.ref }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -33,5 +33,5 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor}}@users.noreply.github.com"
 
-          npx lerna version --no-push --no-git-tag-version --conventional-commits --yes
+          npx lerna version --no-push --conventional-commits --create-release github --yes
 #          npx lerna publish from-git --no-push --no-verify-access --yes
