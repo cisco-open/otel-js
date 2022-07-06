@@ -40,7 +40,7 @@ This package provides OpenTelemetry-compliant tracing to Javascript applications
 To install Cisco OpenTelemetry Distribution simply run:
 
 ```sh
-npm install cisco-telescope
+npm install @cisco-telescope/cisco-sdk-node
 ```
 
 ### Library initialization
@@ -54,7 +54,7 @@ To initialize the library, you'll need a cisco-token, which is taken from your [
 ```javascript
 // tracing.js
 
-const { ciscoTracing } = require('cisco-telescope');
+const { ciscoTracing } = require('@cisco-telescope/cisco-sdk-node');
 
 const userOptions = {
   serviceName: 'my-app-name',
@@ -75,7 +75,7 @@ node -r ./tracing.js app.js
 ```javascript
 // tracing.ts
 
-import { ciscoTracing, Options } from 'cisco-telescope';
+import { ciscoTracing, Options } from '@cisco-telescope/cisco-sdk-node';
 
 const userOptions: Partial<Options> = {
   serviceName: 'my-app-name',
@@ -102,7 +102,7 @@ Cisco OpenTelemetry Distribution supports the configuration of multiple custom e
 Example for create OtlpGrpc Span exporter to local OpenTelemetry collector including metadata (headers) injection:
 
 ```javascript
-const { ciscoTracing } = require('cisco-telescope');
+const { ciscoTracing } = require('@cisco-telescope/cisco-sdk-node');
 
 const userOptions = {
   serviceName: 'my-app-name',
