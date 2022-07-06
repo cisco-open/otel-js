@@ -1,6 +1,6 @@
 {
   "name": "@cisco-telescope/auto-instrumentations-node",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Cisco auto instrumentations for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
@@ -9,10 +9,11 @@
   "homepage": "https://github.com/cisco-open/otel-js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cisco-open/otel-js.git"
+    "url": "https://github.com/cisco-open/otel-js.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "clean": "tsc --build --clean tsconfig.json",
