@@ -109,14 +109,14 @@ describe('Options tests', () => {
   });
   it('should pass when token includes Bearer', () => {
     const options = _configDefaultOptions(<Options>{
-      ciscoToken: 'Bearer my_token',
+      ciscoToken: 'Bearer testTok',
     });
     assert.ok(options);
     sinon.assert.neverCalledWith(logger.error);
     sinon.assert.calledOnce(logger.info);
     assert.strictEqual(
       options.exporters[0].customHeaders?.[Consts.TOKEN_HEADER_KEY],
-      'Bearer my_token'
+      'Bearer testTok'
     );
   });
 

@@ -21,7 +21,7 @@
     "lint:commits": "commitlint",
     "build": "tsc -p .",
     "prepare": "npm run build",
-    "test": "nyc ts-mocha -p tsconfig.json 'test/**/tracing.test.ts'",
+    "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
     "semantic-release": "semantic-release"
   },
