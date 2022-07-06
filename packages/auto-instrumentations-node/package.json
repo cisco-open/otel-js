@@ -23,7 +23,7 @@
     "build": "tsc -p .",
     "prepare": "npm run build",
     "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
-    "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
+    "codecov": "nyc report --reporter=json",
     "semantic-release": "semantic-release",
     "rabbitmq": "docker run -p 5672:5672 --env RABBITMQ_DEFAULT_USER=username --env RABBITMQ_DEFAULT_PASS=password rabbitmq:3",
     "redis": "docker run -p 6379:6379 redis"

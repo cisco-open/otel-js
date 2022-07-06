@@ -65,9 +65,11 @@
           run: npx lerna bootstrap --no-ci --hoist --nohoist='zone.js' --nohoist='mocha' --nohoist='ts-mocha'
         - name: Unit tests
           run: npm run test:ci:changed
+        - name: Generate codecov
+          if: matrix.node == '14'
+          run: npx lerna run codecov
         - name: Upload coverage to Codecov
           if: matrix.node == '14'
           uses: codecov/codecov-action@v2
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
-            directory: ./coverage
