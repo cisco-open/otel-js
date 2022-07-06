@@ -26,7 +26,7 @@ jobs:
       - name: Build Packages
         run: |
           npm install
-          npx lerna bootstrap --no-ci --hoist --nohoist=‘zone.js’ --nohoist=‘mocha’ --nohoist=‘ts-mocha’
+          npx lerna bootstrap --no-ci
 
       - name: Setup npm
         run: |
