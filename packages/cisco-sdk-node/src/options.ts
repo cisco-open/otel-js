@@ -77,6 +77,20 @@ export function _configDefaultOptions(
       Consts.DEFAULT_PAYLOADS_ENABLED
     );
 
+  const verified_token = verify_token(options.ciscoToken);
+
+  if (!verified_token) {
+    let token_source = '';
+    if (!process.env[Consts.CISCO_TOKEN_ENV]) {
+      token_source = 'provided in tracing.init() function';
+    } else {
+      token_source = 'provided via environment variable';
+    }
+    diag.error(
+      `Invalid token provided: ${options.ciscoToken}, ${token_source}, checkout your token here: https://console.telescope.app/settings/account`
+    );
+    return undefined;
+  }
   options.exporters =
     options.exporters &&
     options.exporters[0].collectorEndpoint &&
@@ -91,7 +105,7 @@ export function _configDefaultOptions(
               process.env[Consts.OTEL_COLLECTOR_ENDPOINT] ||
               Consts.DEFAULT_COLLECTOR_ENDPOINT,
             customHeaders: {
-              [Consts.TOKEN_HEADER_KEY]: verify_token(options.ciscoToken),
+              [Consts.TOKEN_HEADER_KEY]: verified_token,
             },
           },
         ];
@@ -100,7 +114,9 @@ export function _configDefaultOptions(
   return <Options>options;
 }
 
-function verify_token(token: string): string {
+function verify_token(token: string): string | undefined {
+  if (token.indexOf('cisco') != -1 || token.indexOf('token') != -1)
+    return undefined;
   if (token.startsWith('Bearer')) {
     diag.info(
       '\'Bearer\' prefix was attached to the provided cisco-token. We recommend using a "clean" token without the prefix'

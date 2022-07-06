@@ -68,7 +68,10 @@ export async function init(userOptions: Partial<Options>) {
   }
 
   provider.register();
-  diag.info('cisco-telescope agent is up!');
+  diag.info(
+    'cisco-telescope agent is running and collecting data…\n' +
+      'View your data here: https://console.telescope.app/spans'
+  );
 }
 
 require('pkginfo')(module, 'version');
