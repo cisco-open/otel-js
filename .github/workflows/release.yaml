@@ -13,8 +13,6 @@ jobs:
         run: | 
           echo ${{ github.head_ref }}
           git checkout ${{ github.head_ref }}
-        with:
-          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
