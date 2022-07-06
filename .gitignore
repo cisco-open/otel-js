@@ -10,5 +10,3 @@ examples/my_examples/
 lerna-debug.log
 
 # lock files
-package-lock.json
-packages/**/package-lock.json

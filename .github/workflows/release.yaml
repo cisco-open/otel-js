@@ -1,5 +1,6 @@
 name: Release
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -8,8 +9,13 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+        if: github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/checkout@v2
+        if: github.event_name == 'push'
         with:
           fetch-depth: 0
       - name: Setup Node.js
@@ -20,7 +26,7 @@ jobs:
       - name: Build Packages
         run: |
           npm install
-          npx lerna bootstrap --no-ci
+          npx lerna bootstrap
 
       - name: "Version and publish" # Interesting step
         env:
@@ -32,4 +38,4 @@ jobs:
           git config user.email "${{ github.actor}}@users.noreply.github.com"
 
           npx lerna version --no-push --conventional-commits --create-release github --yes
-          npx lerna publish from-git --no-push --no-verify-access --yes
+#          npx lerna publish from-git --no-push --no-verify-access --yes
