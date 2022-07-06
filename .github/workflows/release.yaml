@@ -1,6 +1,5 @@
 name: Release
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -38,4 +37,4 @@ jobs:
           git config user.email "${{ github.actor}}@users.noreply.github.com"
 
           npx lerna version --no-push --conventional-commits --create-release github --yes
-#          npx lerna publish from-git --no-push --no-verify-access --yes
+          npx lerna publish from-git --no-push --no-verify-access --yes
