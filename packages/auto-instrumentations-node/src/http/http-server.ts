@@ -21,7 +21,7 @@ const userOptions = {
   // ciscoToken: 'eps_dXHR9PlWuKtHEQe0-38YlUtjKIK3new4aEa0SShiYt8',
   payloadsEnabled: true,
   debug: true,
-  maxPayloadSize: 1000
+  maxPayloadSize: 1000,
   // exporters: [
   //   {
   //     collectorEndpoint: 'https://opentelemetry.tc.epsagon.com/traces',
@@ -36,9 +36,11 @@ const userOptions = {
 
 import { getCiscoNodeAutoInstrumentations } from '../instrumentations';
 // import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base';
-const { SimpleSpanProcessor } = require( "@opentelemetry/sdk-trace-base");
-const { registerInstrumentations } = require( '@opentelemetry/instrumentation');
-const { OTLPTraceExporter } = require( '@opentelemetry/exporter-trace-otlp-http');
+const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+const {
+  OTLPTraceExporter,
+} = require('@opentelemetry/exporter-trace-otlp-http');
 const api = require('@opentelemetry/api');
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import {
@@ -68,9 +70,8 @@ const collectorOptions = {
 };
 
 async function asyncCall() {
-
   registerInstrumentations({
-    instrumentations: instrumentations
+    instrumentations: instrumentations,
   });
 
   const detectedResources = await detectResources({
@@ -85,7 +86,9 @@ async function asyncCall() {
     resource: ciscoResource.merge(detectedResources),
   });
 
-  provider.addSpanProcessor(new SimpleSpanProcessor(new OTLPTraceExporter(collectorOptions)));
+  provider.addSpanProcessor(
+    new SimpleSpanProcessor(new OTLPTraceExporter(collectorOptions))
+  );
   provider.register();
 
   const express = require('express');
@@ -97,12 +100,12 @@ async function asyncCall() {
   });
 
   app.post('/test_post_end', (req: any, res: any) => {
-  //   const span = tracer.startSpan('my-span-name');
-  //   const ctx = trace.setSpan(context.active(), span);
-  //   const user = await context.with(ctx, getUser);
-  //   console.log(user);
-  //   span.setAttribute('manual-prefix', 'manual-value');
-  //   span.end();
+    //   const span = tracer.startSpan('my-span-name');
+    //   const ctx = trace.setSpan(context.active(), span);
+    //   const user = await context.with(ctx, getUser);
+    //   console.log(user);
+    //   span.setAttribute('manual-prefix', 'manual-value');
+    //   span.end();
 
     const body = 'response body'; //JSON.stringify(req.body);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -124,7 +127,6 @@ async function asyncCall() {
   //   span.end();
   //   return user;
   // }
-
 }
 
 asyncCall();

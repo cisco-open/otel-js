@@ -24,7 +24,7 @@ import {
   HttpResponseCustomAttributeFunction,
   // HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage} from 'http';
+import { IncomingMessage } from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
 import { addFlattenedObj } from '../utils/utils';
@@ -106,7 +106,7 @@ export function configureHttpInstrumentation(
 //     }
 // }
 
-function responseFunction(span, response, options){
+function responseFunction(span, response, options) {
   const spanContext = span.spanContext();
 
   if (!isSpanContextValid(spanContext)) {
@@ -136,9 +136,8 @@ function responseFunction(span, response, options){
       bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
       response.removeListener('data', listener);
     });
-  }
-  else {
-    console.log('********* response is of type: **************', typeof(response));
+  } else {
+    console.log('** response is of type: *****', typeof response);
   }
 }
 
@@ -162,7 +161,6 @@ function responseFunction(span, response, options){
 //     requestFunction(span,request,options);
 //   }
 // }
-
 
 function createHttpResponseHook(
   options: Options

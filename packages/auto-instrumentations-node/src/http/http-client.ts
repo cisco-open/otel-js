@@ -21,24 +21,26 @@ const userOptions = {
   ciscoToken: 'eps_dXHR9PlWuKtHEQe0-38YlUtjKIK3new4aEa0SShiYt8',
   payloadsEnabled: true,
   debug: true,
-  maxPayloadSize: 1000
-//   exporters: [
-//     {
-//       collectorEndpoint: 'https://opentelemetry.tc.epsagon.com/traces',
-//       type: 'otlp-http',
-//       customHeaders: {
-//         'x-epsagon-token': '3f9032c7-18f7-4951-be8c-f1738f504afc',
-//       },
-//     },
-//   ],
+  maxPayloadSize: 1000,
+  //   exporters: [
+  //     {
+  //       collectorEndpoint: 'https://opentelemetry.tc.epsagon.com/traces',
+  //       type: 'otlp-http',
+  //       customHeaders: {
+  //         'x-epsagon-token': '3f9032c7-18f7-4951-be8c-f1738f504afc',
+  //       },
+  //     },
+  //   ],
 };
 // ciscoTracing.init(userOptions);
 
 import { getCiscoNodeAutoInstrumentations } from '../instrumentations';
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base';
-const { SimpleSpanProcessor } = require( "@opentelemetry/sdk-trace-base");
-const { registerInstrumentations } = require( '@opentelemetry/instrumentation');
-const { OTLPTraceExporter } = require( '@opentelemetry/exporter-trace-otlp-http');
+const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+const {
+  OTLPTraceExporter,
+} = require('@opentelemetry/exporter-trace-otlp-http');
 const api = require('@opentelemetry/api');
 api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.ALL);
 
@@ -51,10 +53,12 @@ const collectorOptions = {
   },
 };
 
-provider.addSpanProcessor(new SimpleSpanProcessor(new OTLPTraceExporter(collectorOptions)));
+provider.addSpanProcessor(
+  new SimpleSpanProcessor(new OTLPTraceExporter(collectorOptions))
+);
 
 registerInstrumentations({
-  instrumentations: instrumentations
+  instrumentations: instrumentations,
 });
 provider.register();
 
@@ -67,12 +71,12 @@ async function asyncCall() {
 
   const POST_REQUEST_DATA = JSON.stringify({ test: 'request body' });
 
-  let response = await utils.httpRequest.post(
+  const response = await utils.httpRequest.post(
     {
       host: 'localhost',
       port: PORT,
       path: '/test_post_end',
-      headers: {'content-type': 'application/json'}
+      headers: { 'content-type': 'application/json' },
     },
     POST_REQUEST_DATA
   );
