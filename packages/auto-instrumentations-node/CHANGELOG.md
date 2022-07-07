@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.1.0...@cisco-telescope/auto-instrumentations-node@2.2.2) (2022-07-07)
+
+
+### Bug Fixes
+
+* **codecov:** trying add lerna run codecov ([fd339fa](https://github.com/cisco-open/otel-js/commit/fd339faf232b4e7dbcf1cbb923f3bb3e63c227cb))
+* **release:** update release.yaml ([9af24c2](https://github.com/cisco-open/otel-js/commit/9af24c2b1a5448bf96f66254fadc58461c6d30b7))
+* **test-release:** test commit ([b8c01b0](https://github.com/cisco-open/otel-js/commit/b8c01b0e0b4fb8e54828b25192f93beb5054a661))
+* **test-release:** updated version in package.json ([69098f8](https://github.com/cisco-open/otel-js/commit/69098f88f3fa7b448dd7a1e0f1584c62e4871e96))
+
+
+
+
+
 # [2.1.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.0.2...@cisco-telescope/auto-instrumentations-node@2.1.0) (2022-07-07)
 
 
