@@ -27,12 +27,12 @@ jobs:
 
       - name: Version and publish
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          git config user.name "osherv"
-          git config user.email "osherv@cisco.com"
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor}}@users.noreply.github.com"
 
-          npx lerna version --conventional-commits --create-release github --yes
-          npx lerna publish --no-verify-access --yes
+          npx lerna version --amend --conventional-commits --create-release github --yes
+          npx lerna publish from-git --no-push --no-verify-access --yes
