@@ -20,10 +20,11 @@ import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 import {
   HttpInstrumentationConfig,
+  // HttpCustomAttributeFunction,
   HttpResponseCustomAttributeFunction,
-  HttpRequestCustomAttributeFunction,
+  // HttpRequestCustomAttributeFunction,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage } from 'http';
+import { IncomingMessage} from 'http';
 import { isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
 import { addFlattenedObj } from '../utils/utils';
@@ -56,88 +57,117 @@ export function configureHttpInstrumentation(
     };
   }
 
-  const requestHook = createHttpRequestHook(options);
-  if (config.requestHook === undefined) {
-    config.requestHook = requestHook;
-  } else {
-    const original = config.requestHook;
-    config.requestHook = function (this: unknown, span, request) {
-      requestHook(span, request);
-      original.call(this, span, request);
-    };
-  }
+  // const requestHook = createHttpRequestHook(options);
+  // if (config.requestHook === undefined) {
+  //   config.requestHook = requestHook;
+  // } else {
+  //   const original = config.requestHook;
+  //   config.requestHook = function (this: unknown, span, request) {
+  //     requestHook(span, request);
+  //     original.call(this, span, request);
+  //   };
+  // }
+
+  // config.applyCustomAttributesOnSpan = createCustomAttributesOnSpan(options);
   instrumentation.setConfig(config);
 }
 
-function createHttpRequestHook(
-  options: Options
-): HttpRequestCustomAttributeFunction {
-  return (span, request) => {
-    const spanContext = span.spanContext();
+// function requestFunction(span, request, options){
+//   const spanContext = span.spanContext();
 
-    if (!isSpanContextValid(spanContext)) {
-      return;
-    }
+//     if (!isSpanContextValid(spanContext)) {
+//       return;
+//     }
 
-    const headers =
-      request instanceof IncomingMessage
-        ? request.headers
-        : request.getHeaders();
+//     const headers =
+//       request instanceof IncomingMessage
+//         ? request.headers
+//         : request.getHeaders();
 
-    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
+//     addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
 
-    const bodyHandler = new PayloadHandler(
-      options,
-      headers['content-encoding'] as string
-    );
-    if (request instanceof IncomingMessage) {
-      // request body capture
-      const listener = (chunk: any) => {
-        bodyHandler.addChunk(chunk);
-      };
+//     const bodyHandler = new PayloadHandler(
+//       options,
+//       headers['content-encoding'] as string
+//     );
+//     if (request instanceof IncomingMessage) {
+//       // request body capture
+//       const listener = (chunk: any) => {
+//         bodyHandler.addChunk(chunk);
+//       };
 
-      request.on('data', listener);
-      request.once('end', () => {
-        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
-        request.removeListener('data', listener);
-      });
-    }
-  };
+//       request.on('data', listener);
+//       request.once('end', async () => {
+//         await bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
+//         request.removeListener('data', listener);
+//       });
+//     } else {
+//       console.log('********* response is of type: **************', typeof(request));
+//     }
+// }
+
+function responseFunction(span, response, options){
+  const spanContext = span.spanContext();
+
+  if (!isSpanContextValid(spanContext)) {
+    return;
+  }
+
+  const headers =
+    response instanceof IncomingMessage
+      ? response.headers
+      : response.getHeaders();
+
+  addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER, headers);
+
+  const bodyHandler = new PayloadHandler(
+    options,
+    headers['content-encoding'] as string
+  );
+
+  // request body capture
+  if (response instanceof IncomingMessage) {
+    const listener = (chunk: any) => {
+      bodyHandler.addChunk(chunk);
+    };
+
+    response.on('data', listener);
+    response.prependOnceListener('end', () => {
+      bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
+      response.removeListener('data', listener);
+    });
+  }
+  else {
+    console.log('********* response is of type: **************', typeof(response));
+  }
 }
+
+// function createCustomAttributesOnSpan(options: Options) : HttpCustomAttributeFunction {
+//   return (span,
+//     request: ClientRequest | IncomingMessage,
+//     response: IncomingMessage | ServerResponse) => {
+//       console.log(span);
+//       console.log(request);
+//       console.log(response);
+
+//       requestFunction(span,request,options);
+//       // responseFunction(span, response, options);
+//   }
+// }
+
+// function createHttpRequestHook(
+//   options: Options
+// ): HttpRequestCustomAttributeFunction {
+//   return (span, request) => {
+//     requestFunction(span,request,options);
+//   }
+// }
+
 
 function createHttpResponseHook(
   options: Options
 ): HttpResponseCustomAttributeFunction {
   return (span, response) => {
-    const spanContext = span.spanContext();
-
-    if (!isSpanContextValid(spanContext)) {
-      return;
-    }
-
-    const headers =
-      response instanceof IncomingMessage
-        ? response.headers
-        : response.getHeaders();
-
-    addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER, headers);
-
-    const bodyHandler = new PayloadHandler(
-      options,
-      headers['content-encoding'] as string
-    );
-
-    // request body capture
-    if (response instanceof IncomingMessage) {
-      const listener = (chunk: any) => {
-        bodyHandler.addChunk(chunk);
-      };
-
-      response.on('data', listener);
-      response.once('end', () => {
-        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
-        response.removeListener('data', listener);
-      });
-    }
+    responseFunction(span, response, options);
   };
 }
