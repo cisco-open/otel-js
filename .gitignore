@@ -9,3 +9,6 @@ examples/my_examples/
 .DS_Store
 lerna-debug.log
 
+# lock files
+package-lock.json
+packages/**/package-lock.json
