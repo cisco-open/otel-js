@@ -1,6 +1,5 @@
 name: Release
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -10,12 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        if: github.event_name == 'pull_request'
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/checkout@v2
-        if: github.event_name == 'push'
         with:
           fetch-depth: 0
       - name: Setup Node.js
@@ -38,8 +31,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor}}@users.noreply.github.com"
-
           npx lerna version --conventional-commits --create-release github --yes
           npx lerna publish from-package --no-verify-access --yes
