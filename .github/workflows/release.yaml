@@ -31,8 +31,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor}}@users.noreply.github.com"
+          git config user.name "osherv"
+          git config user.email "osherv@cisco.com"
 
           npx lerna version --conventional-commits --create-release github --yes
           npx lerna publish --no-verify-access --yes
