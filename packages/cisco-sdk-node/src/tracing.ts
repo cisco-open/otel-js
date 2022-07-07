@@ -24,7 +24,6 @@ import {
   processDetector,
   envDetector,
 } from '@opentelemetry/resources';
-
 import { getCiscoNodeAutoInstrumentations } from '@cisco-telescope/auto-instrumentations-node';
 import { exporterFactory } from './exporter-factory';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
