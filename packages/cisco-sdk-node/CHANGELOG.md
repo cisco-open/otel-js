@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.2...@cisco-telescope/cisco-sdk-node@2.4.3) (2022-07-07)
+
+
+### Bug Fixes
+
+* **test-release:** test commit ([e24bb14](https://github.com/cisco-open/otel-js/commit/e24bb14936ce7a21ea0615061e248db1cb7f5a49))
+
+
+
+
+
 ## [2.4.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.1...@cisco-telescope/cisco-sdk-node@2.4.2) (2022-07-07)
 
 
