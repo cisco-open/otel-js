@@ -20,7 +20,7 @@ import {
   InstrumentationConfigMap,
 } from '@opentelemetry/auto-instrumentations-node';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
-import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+import { diag } from '@opentelemetry/api';
 import { configureHttpInstrumentation } from './extentions/http';
 import { configureAmqplibInstrumentation } from './extentions/amqplib';
 import { configureAwsInstrumentation } from './extentions/aws/aws_sdk';
@@ -48,11 +48,6 @@ export function getCiscoNodeAutoInstrumentations(
   // TODO: once we have package per instrumentation, we will have to remove this
   //       because we will want to give the user option to config every instrumentation by itself.
   const options = _configDefaultOptions(userOptions);
-
-  if (options.debug) {
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-  }
-
   instrumentations.push(new AwsInstrumentation());
 
   for (const instrumentation of instrumentations) {

@@ -46,7 +46,6 @@ describe('Options tests', () => {
       const options = _configDefaultOptions(<Options>{});
       assert.ok(options);
       assert.deepStrictEqual(options, <Options>{
-        debug: Consts.DEFAULT_CISCO_DEBUG,
         maxPayloadSize: Consts.DEFAULT_MAX_PAYLOAD_SIZE,
         payloadsEnabled: Consts.DEFAULT_PAYLOADS_ENABLED,
       });
@@ -57,7 +56,6 @@ describe('Options tests', () => {
   describe('user Options configuration', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
-        debug: true,
         maxPayloadSize: 10000,
         payloadsEnabled: true,
       };
@@ -71,12 +69,10 @@ describe('Options tests', () => {
   describe('user Options Env vars configuration', () => {
     it('should assign properly the user default configuration and not override', () => {
       const userOptions = <Options>{
-        debug: true,
         maxPayloadSize: 10000,
         payloadsEnabled: true,
       };
 
-      process.env.CISCO_DEBUG = String(userOptions.debug);
       process.env.CISCO_PAYLOADS_ENABLED = String(userOptions.payloadsEnabled);
       process.env.CISCO_MAX_PAYLOAD_SIZE = String(userOptions.maxPayloadSize);
 
