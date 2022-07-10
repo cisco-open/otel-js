@@ -9,14 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        if: github.event_name == 'pull_request'
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/checkout@v2
-        if: github.event_name == 'push'
-        with:
-          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -25,7 +20,7 @@ jobs:
       - name: Build Packages
         run: |
           npm install
-          npx lerna bootstrap
+          npx lerna bootstrap --no-ci
 
       - name: Setup npm
         run: |
@@ -33,12 +28,11 @@ jobs:
 
       - name: Version and publish
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor}}@users.noreply.github.com"
-
-          npx lerna version --no-push --conventional-commits --create-release github --yes
-          npx lerna publish --no-push --no-verify-access --yes
+          npx lerna version --conventional-commits --create-release github --yes
+          npx lerna publish from-package --no-verify-access --yes

@@ -15,6 +15,7 @@
  */
 import { Consts } from 'cisco-opentelemetry-specifications';
 import { setInnerOptions } from './inner-options';
+
 export interface Options {
   debug: boolean;
   maxPayloadSize: number;

@@ -3,6 +3,58 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.4](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.3...@cisco-telescope/auto-instrumentations-node@2.2.4) (2022-07-07)
+
+
+### Bug Fixes
+
+* **test-release:** updated .gitignore ([785c846](https://github.com/cisco-open/otel-js/commit/785c8465be5c1094736c5e360ba023a63d1b37ee))
+
+
+
+
+
+## [2.2.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.2...@cisco-telescope/auto-instrumentations-node@2.2.3) (2022-07-07)
+
+
+### Bug Fixes
+
+* **test-release:** test commit ([683cf09](https://github.com/cisco-open/otel-js/commit/683cf09487ed3b6e6208552d3b29daedd76d3c2d))
+
+
+
+
+
+## [2.2.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.1.0...@cisco-telescope/auto-instrumentations-node@2.2.2) (2022-07-07)
+
+
+### Bug Fixes
+
+* **codecov:** trying add lerna run codecov ([fd339fa](https://github.com/cisco-open/otel-js/commit/fd339faf232b4e7dbcf1cbb923f3bb3e63c227cb))
+* **release:** update release.yaml ([9af24c2](https://github.com/cisco-open/otel-js/commit/9af24c2b1a5448bf96f66254fadc58461c6d30b7))
+* **test-release:** test commit ([b8c01b0](https://github.com/cisco-open/otel-js/commit/b8c01b0e0b4fb8e54828b25192f93beb5054a661))
+* **test-release:** updated version in package.json ([69098f8](https://github.com/cisco-open/otel-js/commit/69098f88f3fa7b448dd7a1e0f1584c62e4871e96))
+
+
+
+
+
+# [2.1.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.0.2...@cisco-telescope/auto-instrumentations-node@2.1.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **publish:** updated release.yaml ([c9b0086](https://github.com/cisco-open/otel-js/commit/c9b00869888847091d283ce45e1d555dfb21445c))
+
+
+### Features
+
+* **logs:** added some readable deabug logs ([97a073f](https://github.com/cisco-open/otel-js/commit/97a073ffc05031fe7684e53b4c797ea91b81ddf8))
+
+
+
+
+
 # [2.1.0](https://github.com/epsagon/otel-js/compare/@cisco-telescope/auto-instrumentations-node@0.1.1...@cisco-telescope/auto-instrumentations-node@2.1.0) (2022-07-04)
 
 

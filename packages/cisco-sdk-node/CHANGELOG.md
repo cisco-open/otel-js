@@ -3,6 +3,80 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.2...@cisco-telescope/cisco-sdk-node@2.4.3) (2022-07-07)
+
+
+### Bug Fixes
+
+* **test-release:** test commit ([e24bb14](https://github.com/cisco-open/otel-js/commit/e24bb14936ce7a21ea0615061e248db1cb7f5a49))
+
+
+
+
+
+## [2.4.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.1...@cisco-telescope/cisco-sdk-node@2.4.2) (2022-07-07)
+
+
+### Bug Fixes
+
+* **test-release:** updated .gitignore ([785c846](https://github.com/cisco-open/otel-js/commit/785c8465be5c1094736c5e360ba023a63d1b37ee))
+* **test-release:** updated release ([a41a489](https://github.com/cisco-open/otel-js/commit/a41a48915d6a4703a6a3297f430d731a11c4bc73))
+
+
+
+
+
+## [2.4.1](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.0...@cisco-telescope/cisco-sdk-node@2.4.1) (2022-07-07)
+
+**Note:** Version bump only for package @cisco-telescope/cisco-sdk-node
+
+
+
+
+
+# [2.4.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.1.0...@cisco-telescope/cisco-sdk-node@2.4.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **codecov:** trying add lerna run codecov ([fd339fa](https://github.com/cisco-open/otel-js/commit/fd339faf232b4e7dbcf1cbb923f3bb3e63c227cb))
+* **release:** test commit ([8c15959](https://github.com/cisco-open/otel-js/commit/8c1595921c92ab4ee4b265c460e0af2c70551c04))
+* **release:** update release.yaml ([9af24c2](https://github.com/cisco-open/otel-js/commit/9af24c2b1a5448bf96f66254fadc58461c6d30b7))
+* **test-commit:** test commit ([5c7e8c5](https://github.com/cisco-open/otel-js/commit/5c7e8c51260db9c5c9bb32b78915680dcda3f6cf))
+* **test-release:** test commit ([b8c01b0](https://github.com/cisco-open/otel-js/commit/b8c01b0e0b4fb8e54828b25192f93beb5054a661))
+* **test-release:** test commit ([8ef9abd](https://github.com/cisco-open/otel-js/commit/8ef9abd7edbea5e168dc0876e03ef398a9228c59))
+* **test-release:** updated version in package.json ([69098f8](https://github.com/cisco-open/otel-js/commit/69098f88f3fa7b448dd7a1e0f1584c62e4871e96))
+
+
+### Features
+
+* **test-pr:** test commit ([5c6fde3](https://github.com/cisco-open/otel-js/commit/5c6fde359fbee4bf3562d268d421c2f37230818a))
+
+
+
+
+
+# [2.1.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.0.2...@cisco-telescope/cisco-sdk-node@2.1.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **publish:** teset commit ([f268be0](https://github.com/cisco-open/otel-js/commit/f268be055b9b39a579d3b95e58ea1f152da9c7d8))
+* **publish:** test commit ([5ad3e45](https://github.com/cisco-open/otel-js/commit/5ad3e45f60d3f0b771a44db5c82a3e824a310fc5))
+* **publish:** test commit ([92c99cc](https://github.com/cisco-open/otel-js/commit/92c99cc6c1a67569fbc88bf8bdb54dcbe17b97da))
+* **publish:** updated release.yaml ([c9b0086](https://github.com/cisco-open/otel-js/commit/c9b00869888847091d283ce45e1d555dfb21445c))
+
+
+### Features
+
+* **info:** add some info logging ([6fdc9ef](https://github.com/cisco-open/otel-js/commit/6fdc9eff2099b8891c79eb1404ebe0d0f8271d9d))
+* **logs:** added some readable deabug logs ([97a073f](https://github.com/cisco-open/otel-js/commit/97a073ffc05031fe7684e53b4c797ea91b81ddf8))
+* **logs:** fixed option tests ([2ae2814](https://github.com/cisco-open/otel-js/commit/2ae28142264bcc6913d6f229b6b32b480b5973e6))
+
+
+
+
+
 # [2.1.0](https://github.com/epsagon/otel-js/compare/cisco-telescope@0.1.1...cisco-telescope@2.1.0) (2022-07-04)
 
 
