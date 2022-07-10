@@ -16,5 +16,5 @@
 
 export default function getVersion(): string {
   // manually updated until we solve this issue
-  return '0.1.0';
+  return '2.4.4';
 }
