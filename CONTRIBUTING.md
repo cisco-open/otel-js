@@ -40,7 +40,7 @@ To run all tests:
 lerna run test
 ```
 
-After set up the repo you will be able to work with every scope package individually (using the familiar npm commands)
+After setting up the repo you will be able to work with every scope package individually (using the familiar npm commands)
 
 #### Conventional commit
 
@@ -53,4 +53,4 @@ You will receive the following error :
 ✖   type must be one of [ci, feat, fix, docs, style, refactor, perf, test, revert, chore] [type-enum]
 ```
 
-Here an example that will pass the verification: `git commit -s -am "chore(cisco-telescope): update deps"`
+Here's an example that will pass the verification: `git commit -s -am "chore(cisco-telescope): update deps"`
