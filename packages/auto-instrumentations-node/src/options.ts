@@ -17,7 +17,6 @@ import { Consts } from 'cisco-opentelemetry-specifications';
 import { setInnerOptions } from './inner-options';
 
 export interface Options {
-  debug: boolean;
   maxPayloadSize: number;
   payloadsEnabled: boolean;
 }
@@ -29,10 +28,6 @@ export interface Options {
  * @param options Option received from the User
  */
 export function _configDefaultOptions(options: Partial<Options>): Options {
-  options.debug =
-    options.debug ||
-    getEnvBoolean(Consts.CISCO_DEBUG_ENV, Consts.DEFAULT_CISCO_DEBUG);
-
   options.maxPayloadSize =
     options.maxPayloadSize ||
     getEnvNumber(
