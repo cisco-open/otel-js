@@ -24,7 +24,9 @@ git merge upstream/main
 ```
 
 #### Setup repo
+
 After the clone you will want to install all repo deps, run:
+
 ```bash
 npm install
 lerna bootstrap
@@ -33,6 +35,7 @@ lerna bootstrap
 This will install the main package deps and then all the scope packages deps (and also will build the sub packages)
 
 To run all tests:
+
 ```bash
 lerna run test
 ```

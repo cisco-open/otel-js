@@ -1,9 +1,9 @@
 # Cisco SDK Node
+
 [![NPM Published Version][npm-image]][npm-url]
 [![Apache License][license-image]][license-image]
 
 This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.app/?utm_source=github).
-
 
 ## Installation
 
