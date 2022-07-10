@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.3...@cisco-telescope/cisco-sdk-node@2.5.0) (2022-07-10)
+
+
+### Features
+
+* **docs:** added contrib file ([e74b787](https://github.com/cisco-open/otel-js/commit/e74b787fc508632de6bd45bc1a6ba82485d8352b))
+* **docs:** added contrib file ([e97f8e2](https://github.com/cisco-open/otel-js/commit/e97f8e2ce8d8b955a5dd9019ebc68ffa76de2e7a))
+* **README:** fixed codecov to generate always reports ([15a7f68](https://github.com/cisco-open/otel-js/commit/15a7f68a909983f625d85b3b276e63816319e982))
+
+
+
+
+
 ## [2.4.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.2...@cisco-telescope/cisco-sdk-node@2.4.3) (2022-07-07)
 
 

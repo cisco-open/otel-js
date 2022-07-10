@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.4...@cisco-telescope/auto-instrumentations-node@2.3.0) (2022-07-10)
+
+
+### Features
+
+* **docs:** added auto instrumentations node README ([54df4bd](https://github.com/cisco-open/otel-js/commit/54df4bd976e1ad5c937eed0b0f902682146977cb))
+* **docs:** removed debug option from auto-ints package ([741cb85](https://github.com/cisco-open/otel-js/commit/741cb858cb5457311b7150d04f1f90b6abde5739))
+* **README:** fixed codecov to generate always reports ([15a7f68](https://github.com/cisco-open/otel-js/commit/15a7f68a909983f625d85b3b276e63816319e982))
+
+
+
+
+
 ## [2.2.4](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.3...@cisco-telescope/auto-instrumentations-node@2.2.4) (2022-07-07)
 
 
