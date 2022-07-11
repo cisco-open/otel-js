@@ -20,12 +20,11 @@ import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
 
 import {
   HttpInstrumentationConfig,
-  // HttpCustomAttributeFunction,
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
   ResponseEndArgs,
 } from '@opentelemetry/instrumentation-http';
-import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { AttributeValue, isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
 import { addAttribute, addFlattenedObj } from '../utils/utils';
@@ -68,7 +67,6 @@ export function configureHttpInstrumentation(
       original.call(this, span, request);
     };
   }
-
   instrumentation.setConfig(config);
 }
 
@@ -94,8 +92,7 @@ function createHttpRequestHook(
       headers['content-encoding'] as string
     );
     if (
-      request instanceof IncomingMessage ||
-      request instanceof ClientRequest
+      request instanceof IncomingMessage
     ) {
       // request body capture
       const listener = (chunk: any) => {
@@ -103,7 +100,7 @@ function createHttpRequestHook(
       };
 
       request.on('data', listener);
-      request.prependOnceListener('end', () => {
+      request.once('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         request.removeListener('data', listener);
       });

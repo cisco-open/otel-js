@@ -16,8 +16,6 @@
 import { Span, Attributes, AttributeValue } from '@opentelemetry/api';
 import { PayloadAttributes } from 'cisco-opentelemetry-specifications';
 import { getInnerOptions } from '../../inner-options';
-// import { trace } from '@opentelemetry/api';
-// const tracer = trace.getTracer('my-application', '0.1.0');
 
 /** Add Object to Span as flattened labels */
 export function addFlattenedObj(span: Span, attrPrefix: string, obj: Object) {
@@ -62,14 +60,5 @@ export function addAttribute(
 ) {
   const options = getInnerOptions();
   if (!options.payloadsEnabled && PayloadAttributes.has(attrPrefix)) return;
-  //if span=ended, create new span as a child. attrPrefix = name of the span
-  // if(!span.isRecording()){
-  //   tracer.startActiveSpan(`${attrPrefix}`, span => {
-  //     span.setAttribute(attrPrefix, value);
-  //     span.end();
-  //   });
-  // }
-  // else{
   span.setAttribute(attrPrefix, value);
-  // }
 }
