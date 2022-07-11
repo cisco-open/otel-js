@@ -5,84 +5,53 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [2.3.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.4...@cisco-telescope/auto-instrumentations-node@2.3.0) (2022-07-10)
 
-
 ### Features
 
-* **docs:** added auto instrumentations node README ([54df4bd](https://github.com/cisco-open/otel-js/commit/54df4bd976e1ad5c937eed0b0f902682146977cb))
-* **docs:** removed debug option from auto-ints package ([741cb85](https://github.com/cisco-open/otel-js/commit/741cb858cb5457311b7150d04f1f90b6abde5739))
-* **README:** fixed codecov to generate always reports ([15a7f68](https://github.com/cisco-open/otel-js/commit/15a7f68a909983f625d85b3b276e63816319e982))
-
-
-
-
+- **docs:** added auto instrumentations node README ([54df4bd](https://github.com/cisco-open/otel-js/commit/54df4bd976e1ad5c937eed0b0f902682146977cb))
+- **docs:** removed debug option from auto-ints package ([741cb85](https://github.com/cisco-open/otel-js/commit/741cb858cb5457311b7150d04f1f90b6abde5739))
+- **README:** fixed codecov to generate always reports ([15a7f68](https://github.com/cisco-open/otel-js/commit/15a7f68a909983f625d85b3b276e63816319e982))
 
 ## [2.2.4](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.3...@cisco-telescope/auto-instrumentations-node@2.2.4) (2022-07-07)
 
-
 ### Bug Fixes
 
-* **test-release:** updated .gitignore ([785c846](https://github.com/cisco-open/otel-js/commit/785c8465be5c1094736c5e360ba023a63d1b37ee))
-
-
-
-
+- **test-release:** updated .gitignore ([785c846](https://github.com/cisco-open/otel-js/commit/785c8465be5c1094736c5e360ba023a63d1b37ee))
 
 ## [2.2.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.2...@cisco-telescope/auto-instrumentations-node@2.2.3) (2022-07-07)
 
-
 ### Bug Fixes
 
-* **test-release:** test commit ([683cf09](https://github.com/cisco-open/otel-js/commit/683cf09487ed3b6e6208552d3b29daedd76d3c2d))
-
-
-
-
+- **test-release:** test commit ([683cf09](https://github.com/cisco-open/otel-js/commit/683cf09487ed3b6e6208552d3b29daedd76d3c2d))
 
 ## [2.2.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.1.0...@cisco-telescope/auto-instrumentations-node@2.2.2) (2022-07-07)
 
-
 ### Bug Fixes
 
-* **codecov:** trying add lerna run codecov ([fd339fa](https://github.com/cisco-open/otel-js/commit/fd339faf232b4e7dbcf1cbb923f3bb3e63c227cb))
-* **release:** update release.yaml ([9af24c2](https://github.com/cisco-open/otel-js/commit/9af24c2b1a5448bf96f66254fadc58461c6d30b7))
-* **test-release:** test commit ([b8c01b0](https://github.com/cisco-open/otel-js/commit/b8c01b0e0b4fb8e54828b25192f93beb5054a661))
-* **test-release:** updated version in package.json ([69098f8](https://github.com/cisco-open/otel-js/commit/69098f88f3fa7b448dd7a1e0f1584c62e4871e96))
-
-
-
-
+- **codecov:** trying add lerna run codecov ([fd339fa](https://github.com/cisco-open/otel-js/commit/fd339faf232b4e7dbcf1cbb923f3bb3e63c227cb))
+- **release:** update release.yaml ([9af24c2](https://github.com/cisco-open/otel-js/commit/9af24c2b1a5448bf96f66254fadc58461c6d30b7))
+- **test-release:** test commit ([b8c01b0](https://github.com/cisco-open/otel-js/commit/b8c01b0e0b4fb8e54828b25192f93beb5054a661))
+- **test-release:** updated version in package.json ([69098f8](https://github.com/cisco-open/otel-js/commit/69098f88f3fa7b448dd7a1e0f1584c62e4871e96))
 
 # [2.1.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.0.2...@cisco-telescope/auto-instrumentations-node@2.1.0) (2022-07-07)
 
-
 ### Bug Fixes
 
-* **publish:** updated release.yaml ([c9b0086](https://github.com/cisco-open/otel-js/commit/c9b00869888847091d283ce45e1d555dfb21445c))
-
+- **publish:** updated release.yaml ([c9b0086](https://github.com/cisco-open/otel-js/commit/c9b00869888847091d283ce45e1d555dfb21445c))
 
 ### Features
 
-* **logs:** added some readable deabug logs ([97a073f](https://github.com/cisco-open/otel-js/commit/97a073ffc05031fe7684e53b4c797ea91b81ddf8))
-
-
-
-
+- **logs:** added some readable deabug logs ([97a073f](https://github.com/cisco-open/otel-js/commit/97a073ffc05031fe7684e53b4c797ea91b81ddf8))
 
 # [2.1.0](https://github.com/epsagon/otel-js/compare/@cisco-telescope/auto-instrumentations-node@0.1.1...@cisco-telescope/auto-instrumentations-node@2.1.0) (2022-07-04)
 
-
 ### Features
 
-* **lerna:** alinging packages versions ([d979024](https://github.com/epsagon/otel-js/commit/d9790244f1f928364eaf3811cd670f4bbf41dce6))
-* **subpackages:** added option tests ([5bbfad3](https://github.com/epsagon/otel-js/commit/5bbfad3fef9e6ca4c1ea54fd0badc1ff07b4d83e))
-* **subpackages:** added option tests ([efa0806](https://github.com/epsagon/otel-js/commit/efa0806298d1129867fb6f815ff9bc34863fddaa))
-* **subpackages:** added option tests ([b5e387d](https://github.com/epsagon/otel-js/commit/b5e387de00e623a6764d9ba016e94f3ca8d20039))
-* **subpackages:** added option tests ([fb08daa](https://github.com/epsagon/otel-js/commit/fb08daa04956bfaab9a20167fce12087f8fcf562))
-* **subpackages:** updated getCiscoAutoInstrumentations API ([9f50dd8](https://github.com/epsagon/otel-js/commit/9f50dd84ae57de18b294009ca53bd50f91c57c6b))
-
-
-
-
+- **lerna:** alinging packages versions ([d979024](https://github.com/epsagon/otel-js/commit/d9790244f1f928364eaf3811cd670f4bbf41dce6))
+- **subpackages:** added option tests ([5bbfad3](https://github.com/epsagon/otel-js/commit/5bbfad3fef9e6ca4c1ea54fd0badc1ff07b4d83e))
+- **subpackages:** added option tests ([efa0806](https://github.com/epsagon/otel-js/commit/efa0806298d1129867fb6f815ff9bc34863fddaa))
+- **subpackages:** added option tests ([b5e387d](https://github.com/epsagon/otel-js/commit/b5e387de00e623a6764d9ba016e94f3ca8d20039))
+- **subpackages:** added option tests ([fb08daa](https://github.com/epsagon/otel-js/commit/fb08daa04956bfaab9a20167fce12087f8fcf562))
+- **subpackages:** updated getCiscoAutoInstrumentations API ([9f50dd8](https://github.com/epsagon/otel-js/commit/9f50dd84ae57de18b294009ca53bd50f91c57c6b))
 
 # 0.1.0 (2022-07-03)
 
