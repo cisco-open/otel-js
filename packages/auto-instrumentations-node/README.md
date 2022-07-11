@@ -1,7 +1,7 @@
 # Cisco Auto Node Instrumentations
+
 [![NPM Published Version][npm-image]][npm-url]
 [![Apache License][license-image]][license-image]
-
 
 This module provides a simple way to initialize multiple Node instrumentations,
 and to get all Cisco additional payloads
@@ -22,15 +22,18 @@ Custom configuration for each of the instrumentations can be passed to the funct
 
 Also, user can also config the Telescope data collection behavior by passing Options (see [Configuration](#configuration)).
 
-
 ```javascript
 // tracing.js
 
 const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { getCiscoNodeAutoInstrumentations } = require('@cisco-telescope/auto-instrumentations-node');
+const {
+  getCiscoNodeAutoInstrumentations,
+} = require('@cisco-telescope/auto-instrumentations-node');
 const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
 const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
+const {
+  SemanticResourceAttributes,
+} = require('@opentelemetry/semantic-conventions');
 const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
@@ -45,32 +48,32 @@ provider.register();
 
 registerInstrumentations({
   instrumentations: [
-    getCiscoNodeAutoInstrumentations({
-      // load custom configuration for http instrumentation
-      '@opentelemetry/instrumentation-http': {
-        applyCustomAttributesOnSpan: (span) => {
-          span.setAttribute('foo2', 'bar2');
+    getCiscoNodeAutoInstrumentations(
+      {
+        // load custom configuration for http instrumentation
+        '@opentelemetry/instrumentation-http': {
+          applyCustomAttributesOnSpan: span => {
+            span.setAttribute('foo2', 'bar2');
+          },
         },
       },
-    },
-    // config Telecope payloads config (All have default values)
-    {
-      maxPayloadSize: 1337,
-    }),
+      // config Telecope payloads config (All have default values)
+      {
+        maxPayloadSize: 1337,
+      }
+    ),
   ],
 });
-
 ```
 
 ## Configuration
 
 Advanced options can be configured as a parameter to the init() method:
 
-| Parameter       | Env                    | Type    | Default       | Description                                                                                                                                                                                                                      |
-| --------------- | ---------------------- | ------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `true`        | Whether the span should include paylaods or not according to [this list](https://github.com/epsagon/cisco-otel-distribution-specifications/blob/7594c0d2f6504e59e1b8c238426eba5171155b90/packages/js/src/payload_attributes.ts). |
-| maxPayloadSize  | MAX_PAYLOAD_SIZE       | int |  1024        | Max payload size to collect per attribute |
-
+| Parameter       | Env                    | Type    | Default | Description                                                                                                                                                                                                                      |
+| --------------- | ---------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| payloadsEnabled | CISCO_PAYLOADS_ENABLED | boolean | `true`  | Whether the span should include paylaods or not according to [this list](https://github.com/epsagon/cisco-otel-distribution-specifications/blob/7594c0d2f6504e59e1b8c238426eba5171155b90/packages/js/src/payload_attributes.ts). |
+| maxPayloadSize  | MAX_PAYLOAD_SIZE       | int     | 1024    | Max payload size to collect per attribute                                                                                                                                                                                        |
 
 ## License
 
