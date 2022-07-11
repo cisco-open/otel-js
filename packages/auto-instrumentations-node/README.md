@@ -27,7 +27,7 @@ Also, user can also config the Telescope data collection behavior by passing Opt
 // tracing.js
 
 const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { getNodeAutoInstrumentations } = require('@cisco-telescope/auto-instrumentations-node');
+const { getCiscoNodeAutoInstrumentations } = require('@cisco-telescope/auto-instrumentations-node');
 const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
@@ -45,7 +45,7 @@ provider.register();
 
 registerInstrumentations({
   instrumentations: [
-    getNodeAutoInstrumentations({
+    getCiscoNodeAutoInstrumentations({
       // load custom configuration for http instrumentation
       '@opentelemetry/instrumentation-http': {
         applyCustomAttributesOnSpan: (span) => {

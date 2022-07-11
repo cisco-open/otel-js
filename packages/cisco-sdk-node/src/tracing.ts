@@ -30,6 +30,8 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import { Consts } from 'cisco-opentelemetry-specifications';
 
 export async function init(userOptions: Partial<Options>) {
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+
   const options = _configDefaultOptions(userOptions);
 
   if (!options) {
