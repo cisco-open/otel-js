@@ -91,9 +91,7 @@ function createHttpRequestHook(
       options,
       headers['content-encoding'] as string
     );
-    if (
-      request instanceof IncomingMessage
-    ) {
+    if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
