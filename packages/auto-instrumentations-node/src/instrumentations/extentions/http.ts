@@ -69,12 +69,14 @@ export function configureHttpInstrumentation(
     };
   }
 
-  // config.applyCustomAttributesOnSpan = createCustomAttributesOnSpan(options);
   instrumentation.setConfig(config);
 }
 
-function requestFunction(span, request, options) {
-  const spanContext = span.spanContext();
+function createHttpRequestHook(
+  options: Options
+): HttpRequestCustomAttributeFunction {
+  return (span, request) => {
+    const spanContext = span.spanContext();
 
   if (!isSpanContextValid(spanContext)) {
     return;
@@ -100,13 +102,15 @@ function requestFunction(span, request, options) {
       bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
       request.removeListener('data', listener);
     });
-  } else {
-    console.log('********* request is of type: **************', typeof request);
   }
+  };
 }
 
-function responseFunction(span, response, options) {
-  const spanContext = span.spanContext();
+function createHttpResponseHook(
+  options: Options
+): HttpResponseCustomAttributeFunction {
+  return (span, response) => {
+    const spanContext = span.spanContext();
 
   if (!isSpanContextValid(spanContext)) {
     return;
@@ -123,20 +127,9 @@ function responseFunction(span, response, options) {
     options,
     headers['content-encoding'] as string
   );
-  const listener = (chunk: any) => {
-    bodyHandler.addChunk(chunk);
-  };
-  response.on('data', listener);
 
+  //add http.response.body for the server response msg
   if (response instanceof ServerResponse) {
-    const originalWrite = response.write;
-    response.write = function (chunk: any, callback) {
-      response.write = originalWrite;
-      bodyHandler.addChunk(chunk);
-      return originalWrite.call(this, chunk, callback);
-      // return response.write.apply(this, chunk);
-    };
-
     const originalEnd = response.end;
     response.end = function (..._args: ResponseEndArgs) {
       response.end = originalEnd;
@@ -150,47 +143,17 @@ function responseFunction(span, response, options) {
     };
   }
 
+  //add http.response.body for the client incoming msg
   if (response instanceof IncomingMessage) {
-    //solution for client
     const listener = (chunk: any) => {
       bodyHandler.addChunk(chunk);
     };
-
     response.on('data', listener);
+
     response.prependOnceListener('end', () => {
       bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
       response.removeListener('data', listener);
     });
-  } else {
-    console.log('** response is of type: *****', typeof response);
   }
-}
-
-// function createCustomAttributesOnSpan(options: Options) : HttpCustomAttributeFunction {
-//   return (span,
-//     request: ClientRequest | IncomingMessage,
-//     response: IncomingMessage | ServerResponse) => {
-//       console.log(span);
-//       console.log(request);
-//       console.log(response);
-
-//       requestFunction(span,request,options);
-//       // responseFunction(span, response, options);
-//   }
-// }
-
-function createHttpRequestHook(
-  options: Options
-): HttpRequestCustomAttributeFunction {
-  return (span, request) => {
-    requestFunction(span, request, options);
-  };
-}
-
-function createHttpResponseHook(
-  options: Options
-): HttpResponseCustomAttributeFunction {
-  return (span, response) => {
-    responseFunction(span, response, options);
   };
 }
