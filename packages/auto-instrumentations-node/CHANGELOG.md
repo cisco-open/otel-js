@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.0...@cisco-telescope/auto-instrumentations-node@2.3.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* **logger:** added default info logger to console ([2f960b3](https://github.com/cisco-open/otel-js/commit/2f960b3b6dc71c18b084088cc5721125ab776594))
+
+
+
+
+
 # [2.3.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.2.4...@cisco-telescope/auto-instrumentations-node@2.3.0) (2022-07-10)
 
 
