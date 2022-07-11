@@ -73,38 +73,36 @@ export function configureHttpInstrumentation(
   instrumentation.setConfig(config);
 }
 
-function requestFunction(span, request, options){
+function requestFunction(span, request, options) {
   const spanContext = span.spanContext();
 
-    if (!isSpanContextValid(spanContext)) {
-      return;
-    }
+  if (!isSpanContextValid(spanContext)) {
+    return;
+  }
 
-    const headers =
-      request instanceof IncomingMessage
-        ? request.headers
-        : request.getHeaders();
+  const headers =
+    request instanceof IncomingMessage ? request.headers : request.getHeaders();
 
-    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
+  addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
 
-    const bodyHandler = new PayloadHandler(
-      options,
-      headers['content-encoding'] as string
-    );
-    if (request instanceof IncomingMessage || request instanceof ClientRequest) {
-      // request body capture
-      const listener = (chunk: any) => {
-        bodyHandler.addChunk(chunk);
-      };
+  const bodyHandler = new PayloadHandler(
+    options,
+    headers['content-encoding'] as string
+  );
+  if (request instanceof IncomingMessage || request instanceof ClientRequest) {
+    // request body capture
+    const listener = (chunk: any) => {
+      bodyHandler.addChunk(chunk);
+    };
 
-      request.on('data', listener);
-      request.prependOnceListener('end', () => {
-        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
-        request.removeListener('data', listener);
-      });
-    } else {
-      console.log('********* request is of type: **************', typeof(request));
-    }
+    request.on('data', listener);
+    request.prependOnceListener('end', () => {
+      bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
+      request.removeListener('data', listener);
+    });
+  } else {
+    console.log('********* request is of type: **************', typeof request);
+  }
 }
 
 function responseFunction(span, response, options) {
@@ -130,27 +128,30 @@ function responseFunction(span, response, options) {
   };
   response.on('data', listener);
 
-  if(response instanceof ServerResponse){
+  if (response instanceof ServerResponse) {
     const originalWrite = response.write;
     response.write = function (chunk: any, callback) {
       response.write = originalWrite;
       bodyHandler.addChunk(chunk);
       return originalWrite.call(this, chunk, callback);
       // return response.write.apply(this, chunk);
-    }
+    };
 
     const originalEnd = response.end;
-    response.end = function (
-      ..._args: ResponseEndArgs
-    ) {
+    response.end = function (..._args: ResponseEndArgs) {
       response.end = originalEnd;
       bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
-      addAttribute(span, SemanticAttributes.HTTP_RESPONSE_BODY, _args[0] as AttributeValue);
+      addAttribute(
+        span,
+        SemanticAttributes.HTTP_RESPONSE_BODY,
+        _args[0] as AttributeValue
+      );
       return response.end.apply(this, arguments as never);
-    }
+    };
   }
 
-  if (response instanceof IncomingMessage) {//solution for client
+  if (response instanceof IncomingMessage) {
+    //solution for client
     const listener = (chunk: any) => {
       bodyHandler.addChunk(chunk);
     };
@@ -161,7 +162,7 @@ function responseFunction(span, response, options) {
       response.removeListener('data', listener);
     });
   } else {
-    console.log('** response is of type: *****', typeof(response));
+    console.log('** response is of type: *****', typeof response);
   }
 }
 
@@ -182,8 +183,8 @@ function createHttpRequestHook(
   options: Options
 ): HttpRequestCustomAttributeFunction {
   return (span, request) => {
-    requestFunction(span,request,options);
-  }
+    requestFunction(span, request, options);
+  };
 }
 
 function createHttpResponseHook(

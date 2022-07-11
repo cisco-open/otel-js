@@ -103,14 +103,14 @@ async function asyncCall() {
     //   span.setAttribute('manual-prefix', 'manual-value');
     //   span.end();
     // const body = `${JSON.stringify(req.test)}`;
-    
+
     // const body = 'response body';
     // res.writeHead(200, { 'Content-Type': 'application/json' });
     // res.end(body);
 
     const body = 'response body';
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(body)
+    res.write(body);
     res.end();
   });
 
