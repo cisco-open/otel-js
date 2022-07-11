@@ -78,31 +78,36 @@ function createHttpRequestHook(
   return (span, request) => {
     const spanContext = span.spanContext();
 
-  if (!isSpanContextValid(spanContext)) {
-    return;
-  }
+    if (!isSpanContextValid(spanContext)) {
+      return;
+    }
 
-  const headers =
-    request instanceof IncomingMessage ? request.headers : request.getHeaders();
+    const headers =
+      request instanceof IncomingMessage
+        ? request.headers
+        : request.getHeaders();
 
-  addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_REQUEST_HEADER, headers);
 
-  const bodyHandler = new PayloadHandler(
-    options,
-    headers['content-encoding'] as string
-  );
-  if (request instanceof IncomingMessage || request instanceof ClientRequest) {
-    // request body capture
-    const listener = (chunk: any) => {
-      bodyHandler.addChunk(chunk);
-    };
+    const bodyHandler = new PayloadHandler(
+      options,
+      headers['content-encoding'] as string
+    );
+    if (
+      request instanceof IncomingMessage ||
+      request instanceof ClientRequest
+    ) {
+      // request body capture
+      const listener = (chunk: any) => {
+        bodyHandler.addChunk(chunk);
+      };
 
-    request.on('data', listener);
-    request.prependOnceListener('end', () => {
-      bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
-      request.removeListener('data', listener);
-    });
-  }
+      request.on('data', listener);
+      request.prependOnceListener('end', () => {
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
+        request.removeListener('data', listener);
+      });
+    }
   };
 }
 
@@ -112,48 +117,48 @@ function createHttpResponseHook(
   return (span, response) => {
     const spanContext = span.spanContext();
 
-  if (!isSpanContextValid(spanContext)) {
-    return;
-  }
+    if (!isSpanContextValid(spanContext)) {
+      return;
+    }
 
-  const headers =
-    response instanceof IncomingMessage
-      ? response.headers
-      : response.getHeaders();
+    const headers =
+      response instanceof IncomingMessage
+        ? response.headers
+        : response.getHeaders();
 
-  addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER, headers);
+    addFlattenedObj(span, SemanticAttributes.HTTP_RESPONSE_HEADER, headers);
 
-  const bodyHandler = new PayloadHandler(
-    options,
-    headers['content-encoding'] as string
-  );
+    const bodyHandler = new PayloadHandler(
+      options,
+      headers['content-encoding'] as string
+    );
 
-  //add http.response.body for the server response msg
-  if (response instanceof ServerResponse) {
-    const originalEnd = response.end;
-    response.end = function (..._args: ResponseEndArgs) {
-      response.end = originalEnd;
-      bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
-      addAttribute(
-        span,
-        SemanticAttributes.HTTP_RESPONSE_BODY,
-        _args[0] as AttributeValue
-      );
-      return response.end.apply(this, arguments as never);
-    };
-  }
+    //add http.response.body for the server response msg
+    if (response instanceof ServerResponse) {
+      const originalEnd = response.end;
+      response.end = function (..._args: ResponseEndArgs) {
+        response.end = originalEnd;
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
+        addAttribute(
+          span,
+          SemanticAttributes.HTTP_RESPONSE_BODY,
+          _args[0] as AttributeValue
+        );
+        return response.end.apply(this, arguments as never);
+      };
+    }
 
-  //add http.response.body for the client incoming msg
-  if (response instanceof IncomingMessage) {
-    const listener = (chunk: any) => {
-      bodyHandler.addChunk(chunk);
-    };
-    response.on('data', listener);
+    //add http.response.body for the client incoming msg
+    if (response instanceof IncomingMessage) {
+      const listener = (chunk: any) => {
+        bodyHandler.addChunk(chunk);
+      };
+      response.on('data', listener);
 
-    response.prependOnceListener('end', () => {
-      bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
-      response.removeListener('data', listener);
-    });
-  }
+      response.prependOnceListener('end', () => {
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
+        response.removeListener('data', listener);
+      });
+    }
   };
 }
