@@ -70,21 +70,21 @@ describe('Tracing test', () => {
   it('setups tracing with custom options', async () => {
     const userOptions: Partial<Options> = {
       serviceName: 'my-app-name',
-      ciscoToken: 'cisco-token',
+      ciscoToken: 'testme',
       debug: false,
     };
     await ciscoTracing.init(userOptions);
     assertTracingPipeline(
       Consts.DEFAULT_COLLECTOR_ENDPOINT,
       'my-app-name',
-      'cisco-token'
+      'testme'
     );
   });
 
   it('setups tracing with defaults', async () => {
     const userOptions = {
       serviceName: '',
-      ciscoToken: 'someToken',
+      ciscoToken: 'testme',
     };
     await ciscoTracing.init(userOptions);
     sinon.assert.calledOnce(addSpanProcessorMock);

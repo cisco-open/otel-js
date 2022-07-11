@@ -1,6 +1,6 @@
 {
   "name": "@cisco-telescope/cisco-sdk-node",
-  "version": "2.0.1",
+  "version": "2.5.0",
   "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
@@ -12,7 +12,8 @@
     "url": "https://github.com/cisco-open/otel-js.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "clean": "tsc --build --clean tsconfig.json",
@@ -22,7 +23,7 @@
     "build": "tsc -p .",
     "prepare": "npm run build",
     "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
-    "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p .",
+    "codecov": "npm run test && nyc report --reporter=json",
     "semantic-release": "semantic-release"
   },
   "release": {
@@ -41,7 +42,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@cisco-telescope/auto-instrumentations-node": "^2.0.1",
+    "@cisco-telescope/auto-instrumentations-node": "^2.3.0",
     "@grpc/grpc-js": "^1.6.7",
     "@opentelemetry/api": "^1.0.4",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.29.2",

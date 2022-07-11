@@ -24,7 +24,6 @@ import {
   processDetector,
   envDetector,
 } from '@opentelemetry/resources';
-
 import { getCiscoNodeAutoInstrumentations } from '@cisco-telescope/auto-instrumentations-node';
 import { exporterFactory } from './exporter-factory';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
@@ -69,7 +68,10 @@ export async function init(userOptions: Partial<Options>) {
   }
 
   provider.register();
-  diag.info('cisco-telescope agent is up!');
+  diag.info(
+    'cisco-telescope agent is running and collecting data…\n' +
+      'View your data here: https://console.telescope.app/spans'
+  );
 }
 
 require('pkginfo')(module, 'version');
