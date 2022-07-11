@@ -63,10 +63,6 @@ const collectorOptions = {
   headers: {
     authorization: 'Bearer eps_dXHR9PlWuKtHEQe0-38YlUtjKIK3new4aEa0SShiYt8',
   },
-  // url: 'https://opentelemetry.tc.epsagon.com/traces',
-  // headers: {
-  //   'X-Epsagon-Token': '3f9032c7-18f7-4951-be8c-f1738f504afc',
-  // },
 };
 
 async function asyncCall() {
@@ -106,10 +102,16 @@ async function asyncCall() {
     //   console.log(user);
     //   span.setAttribute('manual-prefix', 'manual-value');
     //   span.end();
+    // const body = `${JSON.stringify(req.test)}`;
+    
+    // const body = 'response body';
+    // res.writeHead(200, { 'Content-Type': 'application/json' });
+    // res.end(body);
 
-    const body = 'response body'; //JSON.stringify(req.body);
+    const body = 'response body';
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(body);
+    res.write(body)
+    res.end();
   });
 
   app.listen(parseInt(PORT, 10), () => {

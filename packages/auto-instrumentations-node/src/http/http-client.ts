@@ -17,8 +17,6 @@
 // import { ciscoTracing } from '..';
 
 const userOptions = {
-  serviceName: 'my-http-client',
-  ciscoToken: 'eps_dXHR9PlWuKtHEQe0-38YlUtjKIK3new4aEa0SShiYt8',
   payloadsEnabled: true,
   debug: true,
   maxPayloadSize: 1000,
@@ -69,7 +67,7 @@ async function asyncCall() {
   const PORT = process.env.PORT || '8081';
   // const app = express();
 
-  const POST_REQUEST_DATA = JSON.stringify({ test: 'request body' });
+  const POST_REQUEST_DATA = JSON.stringify({ test: 'client body' });
 
   const response = await utils.httpRequest.post(
     {

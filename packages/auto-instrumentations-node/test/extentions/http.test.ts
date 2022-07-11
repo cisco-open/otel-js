@@ -39,7 +39,7 @@ provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
 const SERVER_PORT = 12234;
 
-describe('Capturing HTTP Headers/Bodies', () => {
+xdescribe('Capturing HTTP Headers/Bodies', () => {
   const REQUEST_HEADERS = {
     'content-type': 'application/json',
     'extra-spam-header-request': 'spam-value from the request',
