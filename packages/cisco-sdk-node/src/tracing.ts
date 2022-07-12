@@ -19,10 +19,10 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { _configDefaultOptions, Options } from './options';
 import {
-  Resource,
   detectResources,
-  processDetector,
   envDetector,
+  processDetector,
+  Resource,
 } from '@opentelemetry/resources';
 import { getCiscoNodeAutoInstrumentations } from '@cisco-telescope/auto-instrumentations-node';
 import { exporterFactory } from './exporter-factory';
@@ -30,7 +30,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import { Consts } from 'cisco-opentelemetry-specifications';
 
 export async function init(userOptions: Partial<Options>) {
-  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+  setConsoleLogger(DiagLogLevel.INFO);
 
   const options = _configDefaultOptions(userOptions);
 
@@ -40,7 +40,7 @@ export async function init(userOptions: Partial<Options>) {
   }
 
   if (options.debug) {
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+    setConsoleLogger(DiagLogLevel.DEBUG);
   }
 
   const exporters = exporterFactory(options);
@@ -74,6 +74,20 @@ export async function init(userOptions: Partial<Options>) {
     'cisco-telescope agent is running and collecting data…\n' +
       'View your data here: https://console.telescope.app/spans'
   );
+}
+
+/**
+ * Set and if needed, overrides the default global OTel
+ * Logger without Exception throw up (Which is the default behavior)
+ * @param logLevel: The new Log level
+ */
+function setConsoleLogger(logLevel: DiagLogLevel) {
+  try {
+    diag.setLogger(new DiagConsoleLogger(), logLevel);
+    // Exception means the original Logger have been override
+  } catch (e) {
+    diag.debug('Override the default Logger');
+  }
 }
 
 require('pkginfo')(module, 'version');
