@@ -82,12 +82,12 @@ export function _configDefaultOptions(
   if (!verified_token) {
     let token_source = '';
     if (!process.env[Consts.CISCO_TOKEN_ENV]) {
-      token_source = 'provided in tracing.init() function';
+      token_source = "provided in 'tracing.init()' function";
     } else {
       token_source = 'provided via environment variable';
     }
     diag.error(
-      `Invalid token provided: ${options.ciscoToken}, ${token_source}, checkout your token here: https://console.telescope.app/settings/account`
+      `Invalid token provided: '${options.ciscoToken}', ${token_source}, checkout your token here: https://console.telescope.app/settings/account`
     );
     return undefined;
   }

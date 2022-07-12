@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.1...@cisco-telescope/cisco-sdk-node@2.5.2) (2022-07-12)
+
+
+### Bug Fixes
+
+* **logger:** suppressed logger override exception ([bda6a4a](https://github.com/cisco-open/otel-js/commit/bda6a4a739933d2b68134e75952c8f3a8d5f5b2a))
+
+
+
+
+
+## [2.5.1](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.0...@cisco-telescope/cisco-sdk-node@2.5.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* **logger:** added default info logger to console ([2f960b3](https://github.com/cisco-open/otel-js/commit/2f960b3b6dc71c18b084088cc5721125ab776594))
+
+
+
+
+
 # [2.5.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.4.3...@cisco-telescope/cisco-sdk-node@2.5.0) (2022-07-10)
 
 ### Features
