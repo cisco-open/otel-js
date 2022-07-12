@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.2...@cisco-telescope/cisco-sdk-node@2.5.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **http.body:** a first working solution with prependOnceListener ([baf18b2](https://github.com/cisco-open/otel-js/commit/baf18b2998c4ecf8663feb023011efe90d35694c))
+* **http.body:** fix package-lock conflict ([d3ce77f](https://github.com/cisco-open/otel-js/commit/d3ce77f6569a747c740c1170b56bbef434dee3d0))
+* **http.body:** remove request and response Functions - lint ([44bcdc9](https://github.com/cisco-open/otel-js/commit/44bcdc982d13125cb2725e1fbacc93acfba1420c))
+
+
+
+
+
 ## [2.5.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.1...@cisco-telescope/cisco-sdk-node@2.5.2) (2022-07-12)
 
 

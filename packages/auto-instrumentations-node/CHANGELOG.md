@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.1...@cisco-telescope/auto-instrumentations-node@2.3.2) (2022-07-12)
+
+
+### Bug Fixes
+
+* **http.body:** a first working solution with prependOnceListener ([28d6a8b](https://github.com/cisco-open/otel-js/commit/28d6a8b4784abeb809c32a788ce2e1e57f11321a))
+* **http.body:** a first working solution with prependOnceListener ([baf18b2](https://github.com/cisco-open/otel-js/commit/baf18b2998c4ecf8663feb023011efe90d35694c))
+* **http.body:** fix package-lock conflict ([d3ce77f](https://github.com/cisco-open/otel-js/commit/d3ce77f6569a747c740c1170b56bbef434dee3d0))
+* **http.body:** fix README conflict ([a8ef8c1](https://github.com/cisco-open/otel-js/commit/a8ef8c1064fa3d56195b9b01b1513a0fbace0b7a))
+* **http.body:** fix README conflict ([7ca79f5](https://github.com/cisco-open/otel-js/commit/7ca79f535b289f060cdd18e6736ddd9a37fc8f89))
+* **http.body:** remove http local files for testing ([c55154a](https://github.com/cisco-open/otel-js/commit/c55154a89790bf6067aaa89a895be91a0d2b5d18))
+* **http.body:** remove request and response Functions ([e7612da](https://github.com/cisco-open/otel-js/commit/e7612daaf4ecfc2360c1e7f02dd806516fcec3d0))
+* **http.body:** remove request and response Functions - lint ([44bcdc9](https://github.com/cisco-open/otel-js/commit/44bcdc982d13125cb2725e1fbacc93acfba1420c))
+* **http.body:** remove request and response Functions - lint ([c7d3b2c](https://github.com/cisco-open/otel-js/commit/c7d3b2c838850d979af3ffea5e975cf7e24c3b4f))
+* **http.body:** remove request and response Functions - lint ([68b2a2d](https://github.com/cisco-open/otel-js/commit/68b2a2de659e3a3dc0acf01df51299906b2f2c0a))
+* **http.body:** remove xdescribe from http test ([7f55177](https://github.com/cisco-open/otel-js/commit/7f551774d9c19fc0e1f225beb7cee95f715125e8))
+* **http.body:** try to solve http.boty  for serverResponse ([02a15fd](https://github.com/cisco-open/otel-js/commit/02a15fdd1eaac0ed8e3a511752c28854e72b06a1))
+* **http.body:** try to solve http.boty in the server side for serverResponse ([d94c103](https://github.com/cisco-open/otel-js/commit/d94c103c76bb20d6663213dea20febb1121bbed3))
+
+
+
+
+
 ## [2.3.1](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.0...@cisco-telescope/auto-instrumentations-node@2.3.1) (2022-07-11)
 
 
