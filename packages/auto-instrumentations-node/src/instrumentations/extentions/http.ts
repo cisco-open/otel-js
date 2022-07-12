@@ -22,11 +22,12 @@ import {
   HttpInstrumentationConfig,
   HttpResponseCustomAttributeFunction,
   HttpRequestCustomAttributeFunction,
+  ResponseEndArgs,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage } from 'http';
-import { isSpanContextValid } from '@opentelemetry/api';
+import { IncomingMessage, ServerResponse } from 'http';
+import { AttributeValue, isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
-import { addFlattenedObj } from '../utils/utils';
+import { addAttribute, addFlattenedObj } from '../utils/utils';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -127,14 +128,29 @@ function createHttpResponseHook(
       headers['content-encoding'] as string
     );
 
-    // request body capture
+    //add http.response.body for the server response msg
+    if (response instanceof ServerResponse) {
+      const originalEnd = response.end;
+      response.end = function (..._args: ResponseEndArgs) {
+        response.end = originalEnd;
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
+        addAttribute(
+          span,
+          SemanticAttributes.HTTP_RESPONSE_BODY,
+          _args[0] as AttributeValue
+        );
+        return response.end.apply(this, arguments as never);
+      };
+    }
+
+    //add http.response.body for the client incoming msg
     if (response instanceof IncomingMessage) {
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
       };
-
       response.on('data', listener);
-      response.once('end', () => {
+
+      response.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         response.removeListener('data', listener);
       });
