@@ -48,11 +48,7 @@ provider.register();
 
 registerInstrumentations({
   instrumentations: [
-<<<<<<< HEAD
-    getNodeAutoInstrumentations(
-=======
     getCiscoNodeAutoInstrumentations(
->>>>>>> 60ca34f0485db98bf4cf3c0f46d54070100513d9
       {
         // load custom configuration for http instrumentation
         '@opentelemetry/instrumentation-http': {
