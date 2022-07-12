@@ -1,6 +1,6 @@
 {
   "name": "@cisco-telescope/cisco-sdk-node",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
