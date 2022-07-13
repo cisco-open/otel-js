@@ -8,10 +8,11 @@ WORKDIR /home/node/app
 COPY --chown=node:node ["package.json", "./"]
 COPY --chown=node:node ./ .
 
+RUN npm install --ignore-scripts
+RUN npx lerna bootstrap --no-ci --hoist --nohoist='zone.js' --nohoist='mocha' --nohoist='ts-mocha'
+
 WORKDIR /home/node/app/packages/cisco-sdk-node
 
-RUN npm install
-RUN npm run build
 RUN mv `npm pack` /tmp/cisco-sdk-node.tgz
 
 RUN cd system-tests/server && npm install && npm install /tmp/cisco-sdk-node.tgz
