@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Packages
         run: |
-          npm install
+          npm install --no-package-lock
           npx lerna bootstrap --no-ci
 
       - name: Setup npm
