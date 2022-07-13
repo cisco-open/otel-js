@@ -6,7 +6,10 @@
     "version": {
       "conventionalCommit": true,
       "message": "chore(release): publish",
-      "ignore": "package-lock.json"
+      "ignore": ["package-lock.json"]
+    },
+    "publish": {
+      "ignore": ["package-lock.json"]
     }
   }
 }
