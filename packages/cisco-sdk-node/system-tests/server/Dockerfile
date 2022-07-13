@@ -7,8 +7,7 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node ["package*.json", "*.lock", "./"]
 COPY --chown=node:node ./ .
-
-RUN cd packages/cisco-sdk-node
+WORKDIR /home/node/app/packages/cisco-sdk-node
 
 RUN ls -la
 RUN npm install
