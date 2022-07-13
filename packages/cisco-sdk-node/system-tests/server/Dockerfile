@@ -7,11 +7,11 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node ["package*.json", "*.lock", "./"]
 COPY --chown=node:node ./ .
-RUN npm install
-RUN npx run lerna bootstrap
 
 RUN cd packages/cisco-sdk-node
 
+RUN npm install
+RUN npm run build
 RUN npm pack
 RUN mv `npm pack` /tmp/cisco-sdk-node.tgz
 
