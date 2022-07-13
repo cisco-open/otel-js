@@ -9,7 +9,7 @@ COPY --chown=node:node ["package*.json", "*.lock", "./"]
 COPY --chown=node:node ./ .
 RUN npm install
 RUN ls -la
-RUN npm lerna bootstrap
+RUN lerna bootstrap
 
 RUN cd packages/cisco-sdk-node
 
