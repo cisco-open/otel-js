@@ -43,7 +43,6 @@ export function _configDefaultOptions(options: Partial<Options>): Options {
     );
 
   setInnerOptions(options);
-
   return <Options>options;
 }
 
