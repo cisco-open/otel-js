@@ -12,7 +12,6 @@ RUN cd packages/cisco-sdk-node
 
 RUN npm install
 RUN npm run build
-RUN npm pack
 RUN mv `npm pack` /tmp/cisco-sdk-node.tgz
 
 RUN cd system-tests/server && npm install && npm install /tmp/cisco-sdk-node.tgz
