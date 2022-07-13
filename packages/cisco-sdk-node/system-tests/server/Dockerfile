@@ -7,6 +7,7 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node ["package.json", "./"]
 COPY --chown=node:node ./ .
+
 WORKDIR /home/node/app/packages/cisco-sdk-node
 
 RUN ls -la
