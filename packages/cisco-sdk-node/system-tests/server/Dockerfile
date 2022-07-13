@@ -5,7 +5,7 @@ RUN npm install -g npm
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-COPY --chown=node:node ["package*.json", "*.lock", "./"]
+COPY --chown=node:node ["package.json", "./"]
 COPY --chown=node:node ./ .
 WORKDIR /home/node/app/packages/cisco-sdk-node
 
