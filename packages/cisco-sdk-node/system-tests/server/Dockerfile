@@ -10,6 +10,7 @@ COPY --chown=node:node ./ .
 
 RUN cd packages/cisco-sdk-node
 
+RUN ls -la
 RUN npm install
 RUN npm run build
 RUN mv `npm pack` /tmp/cisco-sdk-node.tgz
