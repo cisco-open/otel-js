@@ -8,6 +8,7 @@ WORKDIR /home/node/app
 COPY --chown=node:node ["package.json", "./"]
 COPY --chown=node:node ./ .
 
+RUN ls -laR
 RUN npm install --ignore-scripts
 RUN npx lerna bootstrap --no-ci --hoist --nohoist='zone.js' --nohoist='mocha' --nohoist='ts-mocha'
 
