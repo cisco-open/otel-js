@@ -2,7 +2,7 @@
 
 We'd love your help!
 
-### Env
+### Env Prerequisites
 
 Make sure you have the following env versions:
 
