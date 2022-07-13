@@ -12,7 +12,8 @@ RUN npm install
 RUN npm run build
 
 RUN npm pack
+RUN mv `npm pack` /tmp/cisco-sdk-node.tgz
 
-RUN cd system-tests/server && npm install && npm install ../../cisco-telescope-0.0.0-development.tgz
+RUN cd system-tests/server && npm install && npm install /tmp/cisco-sdk-node.tgz
 
 RUN cd system-tests/server && ls -lR && node server.js

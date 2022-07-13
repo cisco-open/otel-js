@@ -1,6 +1,6 @@
 'use strict';
 
-const { ciscoTracing } = require('cisco-telescope');
+const { ciscoTracing } = require('@cisco-telescope/cisco-sdk-node');
 const api = require('@opentelemetry/api');
 api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.ALL);
 
