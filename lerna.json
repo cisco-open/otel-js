@@ -2,6 +2,7 @@
   "npmClient": "npm",
   "packages": ["packages/*"],
   "version": "independent",
+  "granularPathspec": false,
   "command": {
     "version": {
       "conventionalCommit": true,
