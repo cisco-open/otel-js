@@ -1,6 +1,6 @@
 {
   "name": "@cisco-telescope/auto-instrumentations-node",
-  "version": "2.3.2",
+  "version": "2.3.4",
   "description": "Cisco auto instrumentations for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",

@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.4](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.3...@cisco-telescope/auto-instrumentations-node@2.3.4) (2022-07-14)
+
+
+### Bug Fixes
+
+* **http.body:** add support for res.write(body) ([1b6628a](https://github.com/cisco-open/otel-js/commit/1b6628ada21bde54bed475c5d6bda19f7bcfcae9))
+
+
+
+
+
+## [2.3.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.2...@cisco-telescope/auto-instrumentations-node@2.3.3) (2022-07-14)
+
+
+### Bug Fixes
+
+* **release:** removed lock files ([afc0bef](https://github.com/cisco-open/otel-js/commit/afc0befe8f0088312d4c87210641e583baca7e58))
+* **release:** test commit ([8383ead](https://github.com/cisco-open/otel-js/commit/8383ead8359dba3fa6bca33f520a1f5572f1170e))
+* **test-branch:** test commit ([a71f30d](https://github.com/cisco-open/otel-js/commit/a71f30d8e864bec93a08692e0fab4f53f666f23a))
+
+
+
+
+
 ## [2.3.2](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.1...@cisco-telescope/auto-instrumentations-node@2.3.2) (2022-07-12)
 
 
