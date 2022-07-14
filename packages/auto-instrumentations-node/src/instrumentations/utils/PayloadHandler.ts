@@ -23,17 +23,21 @@ export class PayloadHandler {
   private currentBodySize: number; // The size in bytes of the current stream capture size
   // TODO: maybe add content encoding parsing in the future
   private totalChunks: any[];
+  private isBufferString: boolean;
 
   constructor(options: Options, contentEncoding?: string) {
     this.maxPayloadSize = options.maxPayloadSize;
     this.currentBodySize = 0;
     this.totalChunks = [];
+    this.isBufferString = false;
   }
 
   addChunk(chunk: any) {
     if (!chunk) {
       return;
     }
+    this.isBufferString = typeof chunk === 'string';
+
     const chunkSize = chunk.length;
     if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
       this.totalChunks.push(chunk);
@@ -43,11 +47,19 @@ export class PayloadHandler {
   }
 
   setPayload(span: Span, attrPrefix: string) {
-    PayloadHandler.addPayloadToSpan(
-      span,
-      attrPrefix,
-      Buffer.concat(this.totalChunks)
-    );
+    if (this.isBufferString) {
+      const body = this.totalChunks.join('');
+      PayloadHandler.addPayloadToSpan(span, attrPrefix, body);
+    } else {
+      try {
+        let buf = Buffer.concat(this.totalChunks);
+        PayloadHandler.addPayloadToSpan(span, attrPrefix, buf);
+      } catch (error) {
+        diag.warn(
+          `Could not concat the chunk array: ${this.totalChunks}, An error occurred: ${error}`
+        );
+      }
+    }
   }
 
   static setPayload(

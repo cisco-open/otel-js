@@ -130,6 +130,13 @@ function createHttpResponseHook(
 
     //add http.response.body for the server response msg
     if (response instanceof ServerResponse) {
+      const originalWrite = response.write;
+      response.write = function (chunk: any, callback) {
+        response.write = originalWrite;
+        bodyHandler.addChunk(chunk);
+        return originalWrite.call(this, chunk, callback);
+      };
+
       const originalEnd = response.end;
       response.end = function (..._args: ResponseEndArgs) {
         response.end = originalEnd;
