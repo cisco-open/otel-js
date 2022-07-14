@@ -52,7 +52,7 @@ export class PayloadHandler {
       PayloadHandler.addPayloadToSpan(span, attrPrefix, body);
     } else {
       try {
-        let buf = Buffer.concat(this.totalChunks);
+        const buf = Buffer.concat(this.totalChunks);
         PayloadHandler.addPayloadToSpan(span, attrPrefix, buf);
       } catch (error) {
         diag.warn(
