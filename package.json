@@ -22,7 +22,8 @@
     "test": "lerna run test",
     "test:ci:changed": "lerna run test --since origin/main",
     "codecov": "lerna run codecov",
-    "semantic-release": "lerna run semantic-release"
+    "semantic-release": "lerna run semantic-release",
+    "version": "rm -rf packages/*/package-lock.json"
   },
   "release": {
     "branches": [
