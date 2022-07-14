@@ -6,10 +6,10 @@
     "version": {
       "conventionalCommit": true,
       "message": "chore(release): publish",
-      "ignoreChanges": ["package-lock.json"]
+      "ignoreChanges": ["package-lock.json", "packages/**/package-lock.json"]
     },
     "publish": {
-      "ignoreChanges": ["package-lock.json"]
+      "ignoreChanges": ["package-lock.json", "packages/**/package-lock.json"]
     }
   }
 }
