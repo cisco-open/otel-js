@@ -36,7 +36,7 @@ export class PayloadHandler {
     if (!chunk) {
       return;
     }
-    this.isBufferString = (typeof chunk === 'string');
+    this.isBufferString = typeof chunk === 'string';
 
     const chunkSize = chunk.length;
     if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
@@ -47,16 +47,17 @@ export class PayloadHandler {
   }
 
   setPayload(span: Span, attrPrefix: string) {
-    if(this.isBufferString){
+    if (this.isBufferString) {
       const body = this.totalChunks.join('');
-      PayloadHandler.addPayloadToSpan(span,attrPrefix,body);        
-    }
-    else{
+      PayloadHandler.addPayloadToSpan(span, attrPrefix, body);
+    } else {
       try {
         let buf = Buffer.concat(this.totalChunks);
-        PayloadHandler.addPayloadToSpan(span,attrPrefix,buf);        
+        PayloadHandler.addPayloadToSpan(span, attrPrefix, buf);
       } catch (error) {
-        diag.warn(`Could not concat the chunk array: ${this.totalChunks}, An error occurred: ${error}`); 
+        diag.warn(
+          `Could not concat the chunk array: ${this.totalChunks}, An error occurred: ${error}`
+        );
       }
     }
   }
