@@ -2,8 +2,8 @@ version: '2'
 services:
   test-server:
     build:
-      context: ../
-      dockerfile: system-tests/server/Dockerfile
+      context: ../../../
+      dockerfile: packages/cisco-sdk-node/system-tests/server/Dockerfile
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
     ports:
