@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.4](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.3...@cisco-telescope/cisco-sdk-node@2.5.4) (2022-07-14)
+
+
+### Bug Fixes
+
+* **system-tests:** moved the repo ([26d330d](https://github.com/cisco-open/otel-js/commit/26d330db4ebc947afb178a7e61e7f3ffc3c9f191))
+* **system-tests:** try to re add cisco system tests ([71c8c32](https://github.com/cisco-open/otel-js/commit/71c8c32b00e27527fd2b30886da2f81e9de11b99))
+* **system-tests:** try to re add cisco system tests ([eb81529](https://github.com/cisco-open/otel-js/commit/eb81529457add9fa4b66f2a80ec5cd7445d5830e))
+* **system-tests:** try to re add cisco system tests ([38e7587](https://github.com/cisco-open/otel-js/commit/38e75876dcc4bfdb141742145ecbc103aaa4d08b))
+* **system-tests:** try to re add cisco system tests ([82750a8](https://github.com/cisco-open/otel-js/commit/82750a80bcfe1733134f8bed9bc214bb0109f238))
+* **system-tests:** try to re add cisco system tests ([a2f45a7](https://github.com/cisco-open/otel-js/commit/a2f45a7c391e3d7b9ce28a20335246449f37f554))
+* **system-tests:** try to re add cisco system tests ([2d8671a](https://github.com/cisco-open/otel-js/commit/2d8671af50fa598d0ef1cd92a1944a4d2f4ea433))
+* **system-tests:** try to re add cisco system tests ([fac1b8c](https://github.com/cisco-open/otel-js/commit/fac1b8c6f141f248f448b4e346481b6919bcf298))
+* **system-tests:** try to re add cisco system tests ([8a8e98a](https://github.com/cisco-open/otel-js/commit/8a8e98a1fd56ec010b1457c9ac3e698f803504a7))
+* **system-tests:** try to re add cisco system tests ([d347cee](https://github.com/cisco-open/otel-js/commit/d347ceedc26478d6cca12e4c87846b1096a60af9))
+* **system-tests:** try to re add cisco system tests ([99f859d](https://github.com/cisco-open/otel-js/commit/99f859d611a1ac4f298fa48bcf79b4e1ec0acf3e))
+* **system-tests:** try to re add cisco system tests ([fc37fc5](https://github.com/cisco-open/otel-js/commit/fc37fc582712dd7c4130b3323a04f549b2463b19))
+* **system-tests:** try to re add cisco system tests ([a900fa0](https://github.com/cisco-open/otel-js/commit/a900fa079106e43078278917786c99a86faf3c80))
+* **system-tests:** try to re add cisco system tests ([9f4b568](https://github.com/cisco-open/otel-js/commit/9f4b568419b91f21db2c3469cdb112744edcdd8a))
+* **system-tests:** try to re add cisco system tests ([272ffea](https://github.com/cisco-open/otel-js/commit/272ffea3ab107aa99b193f5a167390af4485c892))
+* **system-tests:** try to re add cisco system tests ([6365c94](https://github.com/cisco-open/otel-js/commit/6365c94b3ae47684875d2d4f6a2f4d6788bbb36a))
+* **system-tests:** try to re add cisco system tests ([f595a07](https://github.com/cisco-open/otel-js/commit/f595a07f7b6e46aa328ef2037c688f8041d3066f))
+* **system-tests:** try to re add cisco system tests ([300796d](https://github.com/cisco-open/otel-js/commit/300796da006c1352698c0f7094267889979d5433))
+* **system-tests:** try to re add cisco system tests ([e1d5df7](https://github.com/cisco-open/otel-js/commit/e1d5df7893910ebddc9867f48e7b3c0a455e1901))
+* **system-tests:** try to re add cisco system tests ([f30091a](https://github.com/cisco-open/otel-js/commit/f30091a744c83c1f8ee6e55802cbda495cc056a7))
+* **system-tests:** try to re add cisco system tests ([7361625](https://github.com/cisco-open/otel-js/commit/7361625f314ca9db9eb55db2a75fdb81cf0c1a21))
+* **system-tests:** try to re add cisco system tests ([c762d29](https://github.com/cisco-open/otel-js/commit/c762d29711a7e136a714852a909df8a69373f616))
+
+
+
+
+
 ## [2.5.3](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.2...@cisco-telescope/cisco-sdk-node@2.5.3) (2022-07-12)
 
 
