@@ -139,7 +139,7 @@ function createHttpResponseHook(
       const originalEnd = response.end;
       response.end = function (..._args: ResponseEndArgs) {
         //return the 'write()' function to be the originalOne
-        //only after the end() funciton is called.
+        //only after the end() function is called.
         response.write = originalWrite;
         response.end = originalEnd;
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
