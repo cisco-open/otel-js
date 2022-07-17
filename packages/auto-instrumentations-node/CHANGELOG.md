@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.6](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.5...@cisco-telescope/auto-instrumentations-node@2.3.6) (2022-07-17)
+
+
+### Bug Fixes
+
+* **write function:** handle the case of calling twice to write ([b9ee921](https://github.com/cisco-open/otel-js/commit/b9ee9219ff9ff4a9f9ab2bccf3a95df7510b494a))
+
+
+
+
+
 ## [2.3.5](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.4...@cisco-telescope/auto-instrumentations-node@2.3.5) (2022-07-14)
 
 

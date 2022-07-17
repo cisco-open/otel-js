@@ -1,6 +1,6 @@
 {
   "name": "@cisco-telescope/cisco-sdk-node",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "description": "Cisco Distribution for OpenTelemetry",
   "author": "Cisco Epsagon Team <support@epsagon.com>",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@cisco-telescope/auto-instrumentations-node": "^2.3.5",
+    "@cisco-telescope/auto-instrumentations-node": "^2.3.6",
     "@grpc/grpc-js": "^1.6.7",
     "@opentelemetry/api": "^1.0.4",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.29.2",
