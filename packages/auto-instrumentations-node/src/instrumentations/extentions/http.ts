@@ -132,13 +132,15 @@ function createHttpResponseHook(
     if (response instanceof ServerResponse) {
       const originalWrite = response.write;
       response.write = function (chunk: any, callback) {
-        response.write = originalWrite;
         bodyHandler.addChunk(chunk);
         return originalWrite.call(this, chunk, callback);
       };
 
       const originalEnd = response.end;
       response.end = function (..._args: ResponseEndArgs) {
+        //return the 'write()' function to be the originalOne
+        //only after the end() function is called.
+        response.write = originalWrite;
         response.end = originalEnd;
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         addAttribute(
