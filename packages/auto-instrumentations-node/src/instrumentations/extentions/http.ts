@@ -91,8 +91,8 @@ function createHttpRequestHook(
       options,
       headers['content-encoding'] as string
     );
-    
-    if(request instanceof ClientRequest) {
+
+    if (request instanceof ClientRequest) {
       const originalWrite = request.write;
       request.write = function (chunk: any, callback) {
         bodyHandler.addChunk(chunk);
@@ -113,9 +113,7 @@ function createHttpRequestHook(
         );
         return request.end.apply(this, arguments as never);
       };
-    }
-
-    else if (request instanceof IncomingMessage) {
+    } else if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
