@@ -81,4 +81,23 @@ export const httpRequest = {
       return req;
     });
   },
+  postUsingEndFunction: (options: http.ClientRequestArgs, body?: unknown) => {
+    options.method = 'POST';
+    return new Promise((resolve, reject) => {
+      const req = http.request(options, resp => {
+        let data = '';
+        resp.on('data', chunk => {
+          data += chunk;
+        });
+        resp.on('end', () => {
+          resolve(data);
+        });
+        resp.on('error', err => {
+          reject(err);
+        });
+      });
+      req.end(body);
+      return req;
+    });
+  },
 };

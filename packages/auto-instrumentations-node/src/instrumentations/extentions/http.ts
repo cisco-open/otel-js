@@ -24,7 +24,7 @@ import {
   HttpRequestCustomAttributeFunction,
   ResponseEndArgs,
 } from '@opentelemetry/instrumentation-http';
-import { IncomingMessage, ServerResponse } from 'http';
+import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { AttributeValue, isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
 import { addAttribute, addFlattenedObj } from '../utils/utils';
@@ -91,14 +91,37 @@ function createHttpRequestHook(
       options,
       headers['content-encoding'] as string
     );
-    if (request instanceof IncomingMessage) {
+    
+    if(request instanceof ClientRequest) {
+      const originalWrite = request.write;
+      request.write = function (chunk: any, callback) {
+        bodyHandler.addChunk(chunk);
+        return originalWrite.call(this, chunk, callback);
+      };
+
+      const originalEnd = request.end;
+      request.end = function (..._args: ResponseEndArgs) {
+        //return the 'write()' function to be the originalOne
+        //only after the end() function is called.
+        request.write = originalWrite;
+        request.end = originalEnd;
+        bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
+        addAttribute(
+          span,
+          SemanticAttributes.HTTP_REQUEST_BODY,
+          _args[0] as AttributeValue
+        );
+        return request.end.apply(this, arguments as never);
+      };
+    }
+
+    else if (request instanceof IncomingMessage) {
       // request body capture
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
       };
-
       request.on('data', listener);
-      request.once('end', () => {
+      request.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         request.removeListener('data', listener);
       });
@@ -139,7 +162,7 @@ function createHttpResponseHook(
       const originalEnd = response.end;
       response.end = function (..._args: ResponseEndArgs) {
         //return the 'write()' function to be the originalOne
-        //only after the end() funciton is called.
+        //only after the end() function is called.
         response.write = originalWrite;
         response.end = originalEnd;
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
