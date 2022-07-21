@@ -7,17 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @cisco-telescope/cisco-sdk-node
 
-
-
-
-
 ## [2.5.6](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.5...@cisco-telescope/cisco-sdk-node@2.5.6) (2022-07-14)
 
 **Note:** Version bump only for package @cisco-telescope/cisco-sdk-node
-
-
-
-
 
 ## [2.5.5](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.4...@cisco-telescope/cisco-sdk-node@2.5.5) (2022-07-14)
 
