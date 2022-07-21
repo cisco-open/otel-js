@@ -92,33 +92,35 @@ function createHttpRequestHook(
       headers['content-encoding'] as string
     );
 
-    if (request instanceof ClientRequest) {
-      const originalWrite = request.write;
-      request.write = function (chunk: any, callback) {
+    if (request.constructor.name === 'ClientRequest') {
+      const clientRequest = request as ClientRequest;
+      //replace write function
+      const originalWrite = clientRequest.write;
+      clientRequest.write = function (chunk: any, callback) {
         bodyHandler.addChunk(chunk);
         return originalWrite.call(this, chunk, callback);
       };
-
-      const originalEnd = request.end;
-      request.end = function (..._args: ResponseEndArgs) {
-        //return the 'write()' function to be the originalOne
-        //only after the end() function is called.
-        request.write = originalWrite;
-        request.end = originalEnd;
+      //replace end function
+      const originalEnd = clientRequest.end;
+      clientRequest.end = function (..._args: ResponseEndArgs) {
+        //rollback 'write()' only after the end() function is called.
+        clientRequest.write = originalWrite;
+        clientRequest.end = originalEnd;
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         addAttribute(
           span,
           SemanticAttributes.HTTP_REQUEST_BODY,
           _args[0] as AttributeValue
         );
-        return request.end.apply(this, arguments as never);
+        return clientRequest.end.apply(this, arguments as never);
       };
-    } else if (request instanceof IncomingMessage) {
+    } else if (request.constructor.name === 'IncomingMessage') {
       // request body capture
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
       };
       request.on('data', listener);
+      
       request.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         request.removeListener('data', listener);
@@ -150,36 +152,36 @@ function createHttpResponseHook(
     );
 
     //add http.response.body for the server response msg
-    if (response instanceof ServerResponse) {
-      const originalWrite = response.write;
-      response.write = function (chunk: any, callback) {
+    if (response.constructor.name ===  'ServerResponse') {
+      const serverResponse = response as ServerResponse;
+      const originalWrite = serverResponse.write;
+      serverResponse.write = function (chunk: any, callback) {
         bodyHandler.addChunk(chunk);
         return originalWrite.call(this, chunk, callback);
       };
 
-      const originalEnd = response.end;
-      response.end = function (..._args: ResponseEndArgs) {
-        //return the 'write()' function to be the originalOne
-        //only after the end() function is called.
-        response.write = originalWrite;
-        response.end = originalEnd;
+      const originalEnd = serverResponse.end;
+      serverResponse.end = function (..._args: ResponseEndArgs) {
+        //rollback 'write()' only after the end() function is called.
+        serverResponse.write = originalWrite;
+        serverResponse.end = originalEnd;
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         addAttribute(
           span,
           SemanticAttributes.HTTP_RESPONSE_BODY,
           _args[0] as AttributeValue
         );
-        return response.end.apply(this, arguments as never);
+        return serverResponse.end.apply(this, arguments as never);
       };
     }
 
     //add http.response.body for the client incoming msg
-    if (response instanceof IncomingMessage) {
+    if (response.constructor.name ===  'IncomingMessage') {
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
       };
       response.on('data', listener);
-
+   
       response.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         response.removeListener('data', listener);

@@ -113,16 +113,16 @@ describe('Capturing HTTP Headers/Bodies', () => {
     utils.cleanEnvironmentVariables();
   });
 
+  afterEach(() => {
+    instrumentation.setConfig({});
+    setInnerOptions({ payloadsEnabled: true });
+  });
+
   after(() => {
     server.close();
   });
 
   describe('when user configuration specified', () => {
-    afterEach(() => {
-      instrumentation.setConfig({});
-      configureHttpInstrumentation(instrumentation, testOptions);
-      setInnerOptions({ payloadsEnabled: true });
-    });
 
     it('should see user request hook tags', async () => {
       instrumentation.setConfig({
@@ -243,6 +243,39 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(
         spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         SUCCESS_POST_MESSAGE
+      );
+    });
+
+    it('test capture request/response - post message using end function', async () => {
+      debugger
+      await utils.httpRequest.postUsingEndFunction(
+        {
+          host: 'localhost',
+          port: SERVER_PORT,
+          path: '/test_post_end',
+          headers: REQUEST_HEADERS,
+        },
+        POST_REQUEST_DATA
+      );
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 2);
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER
+      );
+      assertExpectedObj(
+        spans[1],
+        EXTRA_RESPONSE_HEADERS,
+        SemanticAttributes.HTTP_RESPONSE_HEADER
+      );
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
+        POST_REQUEST_DATA
+      );
+      assert.equal(
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
+        POST_REQUEST_DATA
       );
     });
 
