@@ -123,7 +123,6 @@ describe('Capturing HTTP Headers/Bodies', () => {
   });
 
   describe('when user configuration specified', () => {
-
     it('should see user request hook tags', async () => {
       instrumentation.setConfig({
         requestHook: (span, request) => {
@@ -247,7 +246,6 @@ describe('Capturing HTTP Headers/Bodies', () => {
     });
 
     it('test capture request/response - post message using end function', async () => {
-      debugger
       await utils.httpRequest.postUsingEndFunction(
         {
           host: 'localhost',

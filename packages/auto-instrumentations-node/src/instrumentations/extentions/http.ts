@@ -120,7 +120,7 @@ function createHttpRequestHook(
         bodyHandler.addChunk(chunk);
       };
       request.on('data', listener);
-      
+
       request.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
         request.removeListener('data', listener);
@@ -152,7 +152,7 @@ function createHttpResponseHook(
     );
 
     //add http.response.body for the server response msg
-    if (response.constructor.name ===  'ServerResponse') {
+    if (response.constructor.name === 'ServerResponse') {
       const serverResponse = response as ServerResponse;
       const originalWrite = serverResponse.write;
       serverResponse.write = function (chunk: any, callback) {
@@ -176,12 +176,12 @@ function createHttpResponseHook(
     }
 
     //add http.response.body for the client incoming msg
-    if (response.constructor.name ===  'IncomingMessage') {
+    if (response.constructor.name === 'IncomingMessage') {
       const listener = (chunk: any) => {
         bodyHandler.addChunk(chunk);
       };
       response.on('data', listener);
-   
+
       response.prependOnceListener('end', () => {
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         response.removeListener('data', listener);
