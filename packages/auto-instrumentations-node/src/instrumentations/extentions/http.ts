@@ -160,11 +160,13 @@ function createHttpResponseHook(
         return originalWrite.call(this, chunk, callback);
       };
 
+
       const originalEnd = serverResponse.end;
       serverResponse.end = function (..._args: ResponseEndArgs) {
         //rollback 'write()' only after the end() function is called.
         serverResponse.write = originalWrite;
         serverResponse.end = originalEnd;
+        
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
         addAttribute(
           span,
