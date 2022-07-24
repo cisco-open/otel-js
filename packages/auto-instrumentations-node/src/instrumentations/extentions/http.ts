@@ -25,9 +25,9 @@ import {
   ResponseEndArgs,
 } from '@opentelemetry/instrumentation-http';
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { AttributeValue, isSpanContextValid } from '@opentelemetry/api';
+import { isSpanContextValid } from '@opentelemetry/api';
 import { PayloadHandler } from '../utils/PayloadHandler';
-import { addAttribute, addFlattenedObj } from '../utils/utils';
+import { addFlattenedObj } from '../utils/utils';
 
 export function configureHttpInstrumentation(
   instrumentation: Instrumentation,
@@ -106,12 +106,9 @@ function createHttpRequestHook(
         //rollback 'write()' only after the end() function is called.
         clientRequest.write = originalWrite;
         clientRequest.end = originalEnd;
+        // add the 'body' in case end(body) was called
+        bodyHandler.addChunk(_args[0]);
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_REQUEST_BODY);
-        addAttribute(
-          span,
-          SemanticAttributes.HTTP_REQUEST_BODY,
-          _args[0] as AttributeValue
-        );
         return clientRequest.end.apply(this, arguments as never);
       };
     } else if (request.constructor.name === 'IncomingMessage') {
@@ -165,13 +162,9 @@ function createHttpResponseHook(
         //rollback 'write()' only after the end() function is called.
         serverResponse.write = originalWrite;
         serverResponse.end = originalEnd;
-
+        // add the 'body' in case end(body) was called
+        bodyHandler.addChunk(_args[0]);
         bodyHandler.setPayload(span, SemanticAttributes.HTTP_RESPONSE_BODY);
-        addAttribute(
-          span,
-          SemanticAttributes.HTTP_RESPONSE_BODY,
-          _args[0] as AttributeValue
-        );
         return serverResponse.end.apply(this, arguments as never);
       };
     }

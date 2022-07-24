@@ -52,6 +52,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
 
   const SUCCESS_GET_MESSAGE = JSON.stringify({ status: 'get_success' });
   const SUCCESS_POST_MESSAGE = JSON.stringify({ status: 'post_success' });
+  const BODY_FROM_END_FUNACTION = JSON.stringify(' plus body sent from end()');
 
   const express = require('express');
   const bodyParser = require('body-parser');
@@ -74,6 +75,22 @@ describe('Capturing HTTP Headers/Bodies', () => {
     const body = JSON.stringify(req.body);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(body);
+  });
+
+  app.post('/test_post_empty_end', (req: any, res: any) => {
+    res.set(EXTRA_RESPONSE_HEADERS);
+    const body = JSON.stringify(req.body);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(body);
+    res.end();
+  });
+
+  app.post('/test_post_with_write_and_end', (req: any, res: any) => {
+    res.set(EXTRA_RESPONSE_HEADERS);
+    const body = JSON.stringify(req.body);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(body);
+    res.end(BODY_FROM_END_FUNACTION);
   });
 
   app.get('/circular_test', (req: any, res: any) => {
@@ -245,7 +262,7 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
     });
 
-    it('test capture request/response - post message using end function', async () => {
+    it('test capture request/response - client post message using end() function', async () => {
       await utils.httpRequest.postUsingEndFunction(
         {
           host: 'localhost',
@@ -326,6 +343,64 @@ describe('Capturing HTTP Headers/Bodies', () => {
       assert.equal(
         spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
         POST_REQUEST_DATA
+      );
+    });
+
+    it('test post when the response comes from write() and end() is empty', async () => {
+      await utils.httpRequest.post(
+        {
+          host: 'localhost',
+          port: SERVER_PORT,
+          path: '/test_post_empty_end',
+          headers: REQUEST_HEADERS,
+        },
+        POST_REQUEST_DATA
+      );
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 2);
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER
+      );
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
+        POST_REQUEST_DATA
+      );
+      assert.equal(
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
+        POST_REQUEST_DATA
+      );
+    });
+
+    it('test post when the response is both from write() and end() functions', async () => {
+      await utils.httpRequest.post(
+        {
+          host: 'localhost',
+          port: SERVER_PORT,
+          path: '/test_post_with_write_and_end',
+          headers: REQUEST_HEADERS,
+        },
+        POST_REQUEST_DATA
+      );
+      const spans = memoryExporter.getFinishedSpans();
+      assert.equal(spans.length, 2);
+      assertExpectedObj(
+        spans[1],
+        REQUEST_HEADERS,
+        SemanticAttributes.HTTP_REQUEST_HEADER
+      );
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_REQUEST_BODY],
+        POST_REQUEST_DATA
+      );
+      assert.equal(
+        spans[0].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
+        POST_REQUEST_DATA+BODY_FROM_END_FUNACTION
+      );
+      assert.equal(
+        spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
+        POST_REQUEST_DATA+BODY_FROM_END_FUNACTION
       );
     });
   });
