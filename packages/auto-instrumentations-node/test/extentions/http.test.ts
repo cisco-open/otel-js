@@ -396,11 +396,11 @@ describe('Capturing HTTP Headers/Bodies', () => {
       );
       assert.equal(
         spans[0].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
-        POST_REQUEST_DATA+BODY_FROM_END_FUNACTION
+        POST_REQUEST_DATA + BODY_FROM_END_FUNACTION
       );
       assert.equal(
         spans[1].attributes[SemanticAttributes.HTTP_RESPONSE_BODY],
-        POST_REQUEST_DATA+BODY_FROM_END_FUNACTION
+        POST_REQUEST_DATA + BODY_FROM_END_FUNACTION
       );
     });
   });
