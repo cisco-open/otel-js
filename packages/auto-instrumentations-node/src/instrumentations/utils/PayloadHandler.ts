@@ -36,13 +36,17 @@ export class PayloadHandler {
     if (!chunk) {
       return;
     }
-    this.isBufferString = typeof chunk === 'string';
+    try {
+      this.isBufferString = typeof chunk === 'string';
 
-    const chunkSize = chunk.length;
-    if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
-      this.totalChunks.push(chunk);
-    } else {
-      this.totalChunks.push(chunk.slice(0, this.maxPayloadSize - chunkSize));
+      const chunkSize = chunk.length;
+      if (this.currentBodySize + chunkSize <= this.maxPayloadSize) {
+        this.totalChunks.push(chunk);
+      } else {
+        this.totalChunks.push(chunk.slice(0, this.maxPayloadSize - chunkSize));
+      }
+    } catch (error) {
+      diag.warn(`Could not add chunk ${chunk}, An error occurred: ${error}`);
     }
   }
 
