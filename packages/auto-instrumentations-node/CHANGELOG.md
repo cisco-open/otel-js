@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.8](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.7...@cisco-telescope/auto-instrumentations-node@2.3.8) (2022-07-25)
+
+
+### Bug Fixes
+
+* **http-body:** add try catch to addChunk ([720588f](https://github.com/cisco-open/otel-js/commit/720588fb485a18cbe4fcc10b1a269ac44bccd2a8))
+* **http.response.body:** lint ([fafef34](https://github.com/cisco-open/otel-js/commit/fafef34afd69fb11ffcea178f86956409c9d6c38))
+* **http.response.body:** should contain the full body sent from write() and end() functions ([d103b5c](https://github.com/cisco-open/otel-js/commit/d103b5ca4dd54ac3e65b522dae71944731df198d))
+
+
+
+
+
 ## [2.3.7](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/auto-instrumentations-node@2.3.6...@cisco-telescope/auto-instrumentations-node@2.3.7) (2022-07-21)
 
 
