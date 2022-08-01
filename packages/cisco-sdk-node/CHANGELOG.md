@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.9...@cisco-telescope/cisco-sdk-node@2.6.0) (2022-08-01)
+
+
+### Features
+
+* **b3:** added b3 propagation option ([c46b199](https://github.com/cisco-open/otel-js/commit/c46b199bbee3fbf23ff7987d81e13691f2812ea6))
+
+
+
+
+
 ## [2.5.9](https://github.com/cisco-open/otel-js/compare/@cisco-telescope/cisco-sdk-node@2.5.8...@cisco-telescope/cisco-sdk-node@2.5.9) (2022-07-25)
 
 **Note:** Version bump only for package @cisco-telescope/cisco-sdk-node
