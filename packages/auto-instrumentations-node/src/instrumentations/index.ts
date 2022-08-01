@@ -56,6 +56,8 @@ export function getCiscoNodeAutoInstrumentations(
         diag.debug('Adding Cisco http patching');
         configureHttpInstrumentation(instrumentation, options);
         break;
+      case '@opentelemetry/instrumentation-graphql':
+        break;
       case '@opentelemetry/instrumentation-aws-sdk':
         diag.debug('Adding Cisco aws-sdk patching');
         configureAwsInstrumentation(instrumentation, options);
