@@ -32,6 +32,7 @@ import {
 import { MongoDBInstrumentationConfig } from '@opentelemetry/instrumentation-mongodb';
 import { _configDefaultOptions, Options } from '../options';
 import { GrpcInstrumentation } from '@opentelemetry/instrumentation-grpc';
+import { configureGraphQLInstrumentation } from './extentions/graphql';
 
 // TODO: fillout the options
 export function getCiscoNodeAutoInstrumentations(
@@ -57,6 +58,8 @@ export function getCiscoNodeAutoInstrumentations(
         configureHttpInstrumentation(instrumentation, options);
         break;
       case '@opentelemetry/instrumentation-graphql':
+        diag.debug('Adding Cisco graphql patching');
+        configureGraphQLInstrumentation(instrumentation, options);
         break;
       case '@opentelemetry/instrumentation-aws-sdk':
         diag.debug('Adding Cisco aws-sdk patching');

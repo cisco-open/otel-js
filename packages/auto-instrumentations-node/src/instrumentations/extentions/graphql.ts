@@ -22,7 +22,7 @@ import { GraphQLInstrumentationConfig } from '@opentelemetry/instrumentation-gra
 import { GraphQLInstrumentationExecutionResponseHook } from '@opentelemetry/instrumentation-graphql/build/src/types';
 import { isSpanContextValid } from '@opentelemetry/api';
 
-export function configureGrpahQLnstrumentation(
+export function configureGraphQLInstrumentation(
   instrumentation: Instrumentation,
   options: Options
 ) {
@@ -38,31 +38,5 @@ export function configureGrpahQLnstrumentation(
     config = {};
   }
 
-  const responseHook = createHttpResponseHook(options);
-
-  if (config.responseHook === undefined) {
-    config.responseHook = responseHook;
-  } else {
-    const original = config.responseHook;
-    config.responseHook = function (this: unknown, span, response) {
-      responseHook(span, response);
-      original.call(this, span, response);
-    };
-  }
-
   instrumentation.setConfig(config);
-}
-
-function createHttpResponseHook(
-  options: Options
-): GraphQLInstrumentationExecutionResponseHook {
-  return (span, data: graphqlTypes.ExecutionResult) => {
-    const spanContext = span.spanContext();
-
-    if (!isSpanContextValid(spanContext)) {
-      return;
-    }
-
-    console.log(data.data);
-  };
 }
