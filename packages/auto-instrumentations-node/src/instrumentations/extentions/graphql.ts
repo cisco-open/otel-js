@@ -15,12 +15,12 @@
  */
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { Options } from '../../options';
-import type * as graphqlTypes from 'graphql';
+//import type * as graphqlTypes from 'graphql';
 
 import { GraphQLInstrumentationConfig } from '@opentelemetry/instrumentation-graphql';
 // TODO: import straight from graphql instrumentation once our PR will approved
-import { GraphQLInstrumentationExecutionResponseHook } from '@opentelemetry/instrumentation-graphql/build/src/types';
-import { isSpanContextValid } from '@opentelemetry/api';
+//import { GraphQLInstrumentationExecutionResponseHook } from '@opentelemetry/instrumentation-graphql/build/src/types';
+//import { isSpanContextValid } from '@opentelemetry/api';
 
 export function configureGraphQLInstrumentation(
   instrumentation: Instrumentation,

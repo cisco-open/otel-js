@@ -24,16 +24,15 @@ import {
 
 const instrumentation = new GraphQLInstrumentation();
 instrumentation.enable();
-import * as utils from '../utils';
-import * as assert from 'assert';
-import { assertExpectedObj, testOptions } from '../utils';
-import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
-import { setInnerOptions } from '../../src/inner-options';
+// import * as utils from '../utils';
+// import * as assert from 'assert';
+// import { assertExpectedObj, testOptions } from '../utils';
+// import { SemanticAttributes } from 'cisco-opentelemetry-specifications';
+// import { setInnerOptions } from '../../src/inner-options';
 const memoryExporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider();
 instrumentation.setTracerProvider(provider);
-const tracer = provider.getTracer('test-https');
+//const tracer = provider.getTracer('test-https');
 provider.addSpanProcessor(new SimpleSpanProcessor(memoryExporter));
 
-describe('Capturing HTTP Headers/Bodies', () => {
-});
+describe('Capturing HTTP Headers/Bodies', () => {});
