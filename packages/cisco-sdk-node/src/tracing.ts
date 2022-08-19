@@ -18,6 +18,7 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { _configDefaultOptions, Options } from './options';
+import { getVersion } from './version';
 import {
   detectResources,
   envDetector,
@@ -58,7 +59,7 @@ export async function init(userOptions: Partial<Options>) {
 
   const ciscoResource = new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: options.serviceName,
-    [Consts.CISCO_SDK_VERSION]: getCiscoVersion(),
+    [Consts.CISCO_SDK_VERSION]: getVersion(),
   });
 
   const provider = new NodeTracerProvider({
@@ -88,9 +89,4 @@ function setConsoleLogger(logLevel: DiagLogLevel) {
   } catch (e) {
     diag.debug('Override the default Logger');
   }
-}
-
-require('pkginfo')(module, 'version');
-export function getCiscoVersion() {
-  return module.exports.version;
 }

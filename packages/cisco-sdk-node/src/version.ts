@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export default function getVersion(): string {
+export function getVersion(): string {
   // manually updated until we solve this issue
-  return '2.4.4';
+  return '2.6.1';
 }
