@@ -8,6 +8,8 @@
    <img src=https://github.com/cisco-open/otel-js/actions/workflows/ci.yaml/badge.svg?style=for-the-badge>
 </a></p>
 
+> **Note:**  This repository is archived since Telescope is no longer supported
+
 ![Trace](trace.png)
 
 This package provides OpenTelemetry-compliant tracing to Javascript applications for the collection of distributed tracing and performance metrics in [Cisco Telescope](https://console.telescope.app/?utm_source=github).
